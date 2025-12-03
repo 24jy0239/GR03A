@@ -1,0 +1,19 @@
+body{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+h1{
+    font-size: 480%;
+    margin-top: 0px;
+}
+
+button{
+    height: 50px;
+    width: 250px;
+    font-size: 180%;
+}

@@ -1,0 +1,133 @@
+/* --- 共通CSSの上書き・調整 --- */
+
+/* このページでは背景画像を消して、単色背景にする */
+body {
+    background-image: none;
+    background-color: #E9EBF5;
+}
+
+/* タイトル */
+h1 {
+    text-align: center;
+    font-size: 360%;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+/* TOPに戻るボタンを右上に固定＆青色に */
+#topBtn {
+    position: absolute;
+    right: 40px;
+    top: 30px;
+}
+
+/* general.css の button をベースにして色とサイズだけ変える */
+.btn-primary {
+    background-color: #4472C4;
+    color: #FFFFFF;
+    border-radius: 10px;
+    border: none;
+    height: 48px;
+    width: 140px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 3px 3px #5f5f5f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* ここが重要：共通の button の margin を消す */
+    margin: 0;
+}
+
+.btn-primary:active {
+    position: relative;
+    top: 2px;
+    left: 2px;
+    box-shadow: 1px 1px #5f5f5f;
+}
+
+/* 検索と＋新規は少し大きめ */
+.btn-large {
+    width: 160px;
+}
+
+/* --- 検索エリア --- */
+
+.search {
+    margin-top: 70px;
+    display: flex;                 /* ← 明示的に指定 */
+    justify-content: center;       /* 中央寄せ */
+    align-items: center;           /* 縦方向センター */
+    gap: 80px;                     /* グレー箱とボタンの間 */
+}
+
+/* 左のグレーの箱 */
+.category-panel {
+    background-color: #CDD4EA;
+    padding: 12px 24px;
+    min-width: 420px;
+    text-align: left;
+}
+
+/* 「味噌ラーメン」（薄いグレー文字） */
+.category-title {
+    font-size: 18px;
+    color: #8b8b8b;
+    margin-bottom: 12px;
+}
+
+/* ラーメン／定食／揚げ物のタブ */
+.tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.tab {
+    background-color: #FFFFFF;
+    border: 1px solid #000;
+    border-radius: 0;
+    padding: 8px 24px;
+    font-size: 16px;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.tab.active {
+    background-color: #FFFFFF;
+    font-weight: bold;
+}
+
+/* 検索ボタン・新規ボタンの位置調整 */
+.search-buttons,
+.new-buttons {
+    display: flex;
+    align-items: center;
+}
+
+/* --- メニューカード一覧 --- */
+
+.menu-grid {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: nowrap;
+}
+
+.menu-card {
+    text-align: center;
+}
+
+.menu-card img {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 32px;
+}
+
+.menu-name {
+    margin-top: 12px;
+    font-size: 22px;
+    font-weight: bold;
+}

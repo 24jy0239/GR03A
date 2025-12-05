@@ -1,0 +1,95 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+/* 左上カテゴリボタン */
+.category-area {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.category-btn {
+    width: 100px;
+    height: 40px;
+    font-size: 16px;
+}
+
+/* 右上：カートボタン */
+.cart-area {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.cart-btn {
+    width: 120px;
+    height: 40px;
+    font-size: 16px;
+}
+
+/* カートの中身 */
+.cart-list {
+    margin-top: 10px;
+    width: 200px;
+    height: 300px;
+    border: 1px solid gray;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.menu-area {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 80%;
+    display: grid;
+
+    grid-template-columns: repeat(5, 1fr); /* 6列固定 */
+    grid-template-rows: repeat(2, auto);   /* 2行固定 */
+    gap: 20px; 
+    justify-items: center;
+}
+
+
+.menu-item {
+    text-align: center;
+
+}
+
+.menu-item img {
+	height: 150px;
+	width: 150px;
+    border-radius: 10px;
+}
+
+/* 左下：注文確認 */
+.confirm-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 150px;
+    height: 50px;
+    font-size: 20px;
+}
+
+/* 右下：注文送信 */
+.send-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 50px;
+    font-size: 20px;
+}

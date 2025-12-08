@@ -1,0 +1,120 @@
+/* ===== Background / Header ===== */
+body {
+    background-color: #E9EBF5;
+}
+
+.header {
+    position: relative;
+}
+
+h1 {
+    text-align: center;
+    font-size: 360%;
+    margin-top: 30px;
+}
+
+#topBtn {
+    position: absolute;
+    right: 40px;
+    top: 30px;
+}
+
+/* ===== Layout Container ===== */
+.wait-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ===== 14-grid layout (7 left, 7 right) ===== */
+.order-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 10px;
+    height: calc(100vh - 150px);
+}
+
+/* ===== Each grid row ===== */
+.order-card {
+    display: grid;
+    grid-template-columns: 3.5fr 1.2fr 1.2fr; /* name | start | finish */
+    min-height: 90px;
+}
+
+/* Empty grids still appear */
+.order-card.empty {
+    border: 1px solid #C7CFE8;
+}
+
+/* ===== Column Colors (distinct) ===== */
+.name-col {
+    background-color: #E3E7F5;
+    padding: 10px;
+}
+
+.start-col {
+    background-color: #D0DCF8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.finish-col {
+    background-color: #C3D4F0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== The dish name ===== */
+.dish-name {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* ===== 3-in-1 info row ===== */
+.info-row-3 {
+    margin-top: 6px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.info-box {
+    background-color: #D7DDF0;
+    padding: 4px 6px;
+    border-radius: 4px;
+}
+
+.info-label {
+    font-size: 12px;
+}
+
+.info-value {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+}
+
+/* ===== Buttons ===== */
+.action-btn {
+    width: 80%;
+    height: 46px;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 3px 3px #5f5f5f;
+}
+
+.action-btn:active {
+    top: 2px;
+    left: 2px;
+    position: relative;
+    box-shadow: 1px 1px #5f5f5f;
+}
+
+/* Empty card: hide all content */
+.order-card.empty .dish-name,
+.order-card.empty .info-row-3,
+.order-card.empty .action-btn {
+    display: none;
+}

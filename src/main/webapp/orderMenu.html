@@ -4,29 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注文画面</title>
-    <link rel="stylesheet" href="./css/0202.css">
-	<link rel="stylesheet" href="./css/02common.css">
+    <link rel="stylesheet" href="./css/orderMenu.css">
+	<link rel="stylesheet" href="./css/orderCommon.css">
 </head>
 <body>
+	
+	<!-- 右上：リスト -->
+	<div class="side-list-area">
+	    <button class="side-list-btn">リスト</button>
+	    <div class="side-list" id="sideList"></div>
+	</div>
+
 
 <div class="container">
 
     <!-- 左上：カテゴリボタン -->
     <div class="category-area">
-        <button class="category-btn" onclick="showMenu('ramen')" style="background-color: linen">ラーメン</button>
-        <button class="category-btn" onclick="showMenu('teishoku')" style="background-color: linen">定食</button>
-        <button class="category-btn" onclick="showMenu('fried')" style="background-color: linen">揚げ物</button>
+        <button class="category-btn" onclick="showMenu('ramen')">ラーメン</button>
+        <button class="category-btn" onclick="showMenu('teishoku')">定食</button>
+        <button class="category-btn" onclick="showMenu('fried')">揚げ物</button>
     </div>
 
-    <!-- 右上：注文カートボタンとリスト -->
-    <div class="cart-area">
-        <button class="cart-btn" style="background-color: silver">注文カート</button>
-        <div class="cart-list" id="cartList">
-            <!-- カート内容が入る部分 -->
-        </div>
-    </div>
-
-    <!-- 中央：メニュー画像 6 × 2 行 -->
+    <!-- 中央：メニュー画像 5 × 2 行 -->
     <div class="menu-area" id="menuArea">
         <div class="menu-item"><img src="img/ramen.jpg"><p>メニュー1</p></div>
         <div class="menu-item"><img src="img/ramen.jpg"><p>メニュー2</p></div>
@@ -41,10 +40,10 @@
     </div>
 
     <!-- 左下：注文確認 -->
-    <button class="confirm-btn" style="background-color: gold">注文確認</button>
+    <button class="confirm-btn" style="background-color: gold"  onclick="location.href='payConfirmation.html'">注文確認</button>
 
     <!-- 右下：注文送信 -->
-    <button class="send-btn" style="background-color: gold">注文送信</button>
+    <button class="send-btn" style="background-color: gold"  onclick="location.href='orderConfirmation.html'">注文送信</button>
 
 </div>
 

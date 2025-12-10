@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メニュー新規</title>
+    <link rel="stylesheet" href="./css/general.css">
+    <link rel="stylesheet" href="./css/0103.css"> <!-- このページ専用 -->
+</head>
+<body>
+    <header class="header">
+        <h1>メニュー新規</h1>
+        <button id="topBtn">TOPに戻る</button>
+    </header>
+
+    <main class="new-menu-container">
+        <!-- 左：写真アップロード枠 ＋ 右：フォーム -->
+        <section class="new-menu-row">
+            <!-- 写真アップロード枠 -->
+            <div class="upload-box">
+                <p class="upload-text">
+                    ↑<br>
+                    写真をアップロード<br>
+                    してください
+                </p>
+            </div>
+
+            <!-- 種類・品名・価格 -->
+            <div class="form-fields">
+                <div class="field-row">
+                    <label class="field-label">種類：</label>
+                    <input type="text" class="field-input">
+                </div>
+
+                <div class="field-row">
+                    <label class="field-label">品名：</label>
+                    <input type="text" class="field-input">
+                </div>
+
+                <div class="field-row">
+                    <label class="field-label">価格：</label>
+                    <div class="price-wrapper">
+                        <input type="number" class="field-input">
+                        <span class="price-unit">円</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 下：保存／取消す ボタン -->
+        <section class="new-menu-buttons">
+            <button class="btn-primary btn-large">保存</button>
+            <button class="btn-danger btn-large">取消す</button>
+        </section>
+    </main>
+</body>
+</html>

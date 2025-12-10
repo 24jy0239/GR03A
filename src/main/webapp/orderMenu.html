@@ -49,15 +49,16 @@
 
 
 <script>
-    window.onload = function() {
-        const params = new URLSearchParams(window.location.search);
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
 
-        // sent=1 が URL にある場合だけメッセージ表示
-        if (params.get('sent') === '1') {
-            alert("注文を送信しました！");
-        }
+    // sent=1 が URL にある場合だけメッセージ表示
+    if (params.get('sent') === '1') {
+        alert("注文を送信しました！");
     }
+}
 </script>
+
 
 </body>
 </html>

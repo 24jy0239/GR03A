@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注文画面</title>
-    <link rel="stylesheet" href="./css/orderMenu.css">
+    <link rel="stylesheet" href="./css/orderMenu.css?v=5">
 	<link rel="stylesheet" href="./css/orderCommon.css">
 </head>
 <body>
@@ -46,6 +46,18 @@
     <button class="send-btn" style="background-color: gold"  onclick="location.href='orderConfirmation.html'">注文送信</button>
 
 </div>
+
+
+<script>
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search);
+
+        // sent=1 が URL にある場合だけメッセージ表示
+        if (params.get('sent') === '1') {
+            alert("注文を送信しました！");
+        }
+    }
+</script>
 
 </body>
 </html>

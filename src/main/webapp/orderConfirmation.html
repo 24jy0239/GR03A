@@ -18,21 +18,18 @@
         <div class="order-item">焼き餃子<br>数量：1　￥330(税込み)</div>
     </div>
 
-	<!-- 下：合計＋ボタン -->
-	<div class="bottom-area">
-	    <div class="total" id="totalAmount">合計：950円(税込み)</div>
 
-	    <div class="btn-area">
-	        <!-- 戻るボタンはそのまま -->
-	        <button class="btn back-btn" style="background-color: #ccc;" onclick="location.href='orderMenu.html'">戻る</button>
-
-	        <!-- フォームで送信 -->
-	        <form action="orderMenu.html" method="get" style="display:inline;">
-	            <input type="hidden" name="sent" value="1">
-	            <button type="submit" class="btn send-btn" style="background-color: gold;">送信</button>
-	        </form>
-	    </div>
-	</div>
+    <!-- 下：合計＋ボタン -->
+    <div class="bottom-area">
+        <div class="total" id="totalAmount">合計：950円(税込み)</div>
+		
+        <div class="btn-area">
+            <button class="btn back-btn" style="background-color: #ccc;" onclick="location.href='orderMenu.html'">戻る</button>
+			<button class="btn send-btn" style="background-color: gold;"
+			    onclick="location.href='orderMenu.html?sent=1'">送信</button>
+on>
+			</div>
+    </div>
 
 
 </body>

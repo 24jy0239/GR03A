@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注文確認画面（時間順）</title>
+    <link rel="stylesheet" href="./css/general.css">
+    <link rel="stylesheet" href="./css/orderConfirmationByTime.css">
+</head>
+
+<body>
+
+<header class="header">
+    <button id="backBtn">← 卓順を戻る</button>
+    <h1>注文確認画面（時間順）</h1>
+</header>
+
+<main class="confirm-container">
+
+    <!-- LEFT SIDE (7 rows) -->
+    <section class="left-side">
+
+        <!-- 1 -->
+        <div class="confirm-card">
+            <div class="name-col">
+                <div class="dish-name">チャーシューチャーハン</div>
+
+                <div class="info-row-3">
+                    <div class="info-box"><span class="info-label">卓番</span><span class="info-value">01</span></div>
+                    <div class="info-box"><span class="info-label">経過</span><span class="info-value">05:01</span></div>
+                    <div class="info-box"><span class="info-label">数量</span><span class="info-value">5</span></div>
+                </div>
+            </div>
+
+            <div class="action-col">
+                <button class="action-btn">済む</button>
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="confirm-card">
+            <div class="name-col">
+                <div class="dish-name">ラーメン</div>
+
+                <div class="info-row-3">
+                    <div class="info-box"><span class="info-label">卓番</span><span class="info-value">02</span></div>
+                    <div class="info-box"><span class="info-label">経過</span><span class="info-value">04:59</span></div>
+                    <div class="info-box"><span class="info-label">数量</span><span class="info-value">1</span></div>
+                </div>
+            </div>
+
+            <div class="action-col">
+                <button class="action-btn">済む</button>
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="confirm-card">
+            <div class="name-col">
+                <div class="dish-name">焼き餃子</div>
+
+                <div class="info-row-3">
+                    <div class="info-box"><span class="info-label">卓番</span><span class="info-value">03</span></div>
+                    <div class="info-box"><span class="info-label">経過</span><span class="info-value">00:30</span></div>
+                    <div class="info-box"><span class="info-label">数量</span><span class="info-value">1</span></div>
+                </div>
+            </div>
+
+            <div class="action-col">
+                調理中
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="confirm-card">
+            <div class="name-col">
+                <div class="dish-name">ニラレバ定食</div>
+
+                <div class="info-row-3">
+                    <div class="info-box"><span class="info-label">卓番</span><span class="info-value">02</span></div>
+                    <div class="info-box"><span class="info-label">経過</span><span class="info-value">00:15</span></div>
+                    <div class="info-box"><span class="info-label">数量</span><span class="info-value">1</span></div>
+                </div>
+            </div>
+
+            <div class="action-col">
+                調理中
+            </div>
+        </div>
+
+        <!-- 5–7 empty -->
+        <div class="confirm-card empty"></div>
+        <div class="confirm-card empty"></div>
+        <div class="confirm-card empty"></div>
+
+    </section>
+
+
+    <!-- RIGHT SIDE (7 rows) -->
+    <section class="right-side">
+        <div class="confirm-card empty"></div>
+        <div class="confirm-card empty"></div>
+        <div class="confirm-card empty"></div>
+        <div class="confirm-card empty"></div>
+        <div class="confirm-card empty"></div>
+        <div class="confirm-card empty"></div>
+        <div class="confirm-card empty"></div>
+    </section>
+
+</main>
+
+</body>
+</html>

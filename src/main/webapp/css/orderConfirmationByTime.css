@@ -140,3 +140,8 @@ h1 {
 .confirm-card.empty .action-col {
     background-color: transparent;
 }
+
+#backBtn {
+    position: relative;
+    z-index: 9999;
+}

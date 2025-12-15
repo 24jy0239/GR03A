@@ -1,35 +1,41 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>送信確認</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>送信確認</title>
 	<link rel="stylesheet" href="./css/orderCommon.css">
-    <link rel="stylesheet" href="./css/orderConfirmation.css">
+	<link rel="stylesheet" href="./css/orderConfirmation.css">
 </head>
+
 <body>
 
-    <!-- 上：タイトル -->
-    <div class="header"><h1>送信確認</h1></div>
+	<!-- 上：タイトル -->
+	<div class="header">
+		<h1>送信確認</h1>
+	</div>
 
-    <!-- 中：注文内容 -->
-    <div class="order-list" id="orderList">
-        <div class="order-item">味噌ラーメン<br>数量：1　￥620(税込み)</div>
-        <div class="order-item">焼き餃子<br>数量：1　￥330(税込み)</div>
-    </div>
+	<!-- 中：注文内容 -->
+	<div class="order-list" id="orderList">
+		<div class="order-item">味噌ラーメン<br>数量：1　￥620(税込み)</div>
+		<div class="order-item">焼き餃子<br>数量：1　￥330(税込み)</div>
+	</div>
 
 
-    <!-- 下：合計＋ボタン -->
-    <div class="bottom-area">
-        <div class="total" id="totalAmount">合計：950円(税込み)</div>
-		
-        <div class="btn-area">
-            <button class="btn back-btn" style="background-color: #ccc;" onclick="location.href='orderMenu.html'">戻る</button>
+	<!-- 下：合計＋ボタン -->
+	<div class="bottom-area">
+		<div class="total" id="totalAmount">合計：950円(税込み)</div>
+
+		<div class="btn-area">
+			<button class="btn back-btn" style="background-color: #ccc;"
+				onclick="location.href='orderMenu.html'">戻る</button>
 			<button class="btn send-btn" style="background-color: gold;"
-			    onclick="location.href='orderMenu.html?sent=1'">送信</button>
-			</div>
-    </div>
+				onclick="location.href='orderMenu.html?sent=1'">送信</button>
+		</div>
+	</div>
 
 
 </body>
+
 </html>

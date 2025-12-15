@@ -1,88 +1,122 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>注文画面</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>注文画面</title>
 	<link rel="stylesheet" href="./css/orderCommon.css">
-    <link rel="stylesheet" href="./css/orderMenu.css?v=5">
+	<link rel="stylesheet" href="./css/orderMenu.css?v=5">
 </head>
 
-
-
 <body>
-	
+
 	<!-- リスト -->
 	<div id="sideList" class="side-list">
-	    <button id="listBtn" class="side-list-btn">リスト≫</button>
+		<button id="listBtn" class="side-list-btn">リスト≫</button>
 
-	    <div class="list-panel">
-	        <ul>
-	            <li>メニュー1</li>
-	            <li>メニュー2</li>
-	            <li>メニュー3</li>
-	        </ul>
+		<div class="list-panel">
+			<ul>
+				<li>メニュー1</li>
+				<li>メニュー2</li>
+				<li>メニュー3</li>
+			</ul>
+		</div>
+	</div>
+
+
+	<div class="container">
+
+		<!-- 左上：カテゴリボタン -->
+		<div class="category-area">
+			<button class="category-btn" onclick="showMenu('ramen')">ラーメン</button>
+			<button class="category-btn" onclick="showMenu('teishoku')">定食</button>
+			<button class="category-btn" onclick="showMenu('fried')">揚げ物</button>
+		</div>
+
+		<!-- 中央：メニュー画像 5 × 2 行 -->
+		<div class="menu-area" id="menuArea">
+			<div class="menu-item"><img src="img/ramen.jpg">
+				<p>味噌ラーメン</p>
+			</div>
+			<div class="menu-item"><img src="img/syougayaki.jpg">
+				<p>生姜焼き定食</p>
+			</div>
+			<div class="menu-item"><img src="img/karaage.jpg">
+				<p>唐揚げ</p>
+			</div>
+			<div class="menu-item"><img src="img/potato.jpg">
+				<p>ポテト</p>
+			</div>
+			<div class="menu-item"><img src="img/tyuukasoba.jpg">
+				<p>中華そば</p>
+			</div>
+			<div class="menu-item"><img src="img/ramen.jpg">
+				<p>味噌ラーメン</p>
+			</div>
+			<div class="menu-item"><img src="img/syougayaki.jpg">
+				<p>生姜焼き定食</p>
+			</div>
+			<div class="menu-item"><img src="img/karaage.jpg">
+				<p>唐揚げ</p>
+			</div>
+			<div class="menu-item"><img src="img/potato.jpg">
+				<p>ポテト</p>
+			</div>
+			<div class="menu-item"><img src="img/tyuukasoba.jpg">
+				<p>中華そば</p>
+			</div>
+		</div>
+
+		<!-- 左下：注文確認 -->
+		<button class="confirm-btn" style="background-color: gold"
+			onclick="location.href='payConfirmation.html'">注文確認</button>
+
+		<!-- 右下：注文送信 -->
+		<button class="send-btn" style="background-color: gold"
+			onclick="location.href='orderConfirmation.html'">注文送信</button>
+
+	</div>
+
+	<!-- 注文送信モーダル -->
+	<div id="sentModal" class="modal">
+	    <div class="modal-content">
+	        <p>注文を送信しました！</p>
+	        <button id="closeModal">閉じる</button>
 	    </div>
 	</div>
 
 
-<div class="container">
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
 
-    <!-- 左上：カテゴリボタン -->
-    <div class="category-area">
-        <button class="category-btn" onclick="showMenu('ramen')">ラーメン</button>
-        <button class="category-btn" onclick="showMenu('teishoku')">定食</button>
-        <button class="category-btn" onclick="showMenu('fried')">揚げ物</button>
-    </div>
+			/* ===== リスト開閉 ===== */
+			const btn = document.getElementById("listBtn");
+			const panel = document.getElementById("sideList");
 
-    <!-- 中央：メニュー画像 5 × 2 行 -->
-    <div class="menu-area" id="menuArea">
-        <div class="menu-item"><img src="img/ramen.jpg"><p>味噌ラーメン</p></div>
-        <div class="menu-item"><img src="img/syougayaki.jpg"><p>生姜焼き定食</p></div>
-        <div class="menu-item"><img src="img/karaage.jpg"><p>唐揚げ</p></div>
-        <div class="menu-item"><img src="img/potato.jpg"><p>ポテト</p></div>
-        <div class="menu-item"><img src="img/tyuukasoba.jpg"><p>中華そば</p></div>
-		<div class="menu-item"><img src="img/ramen.jpg"><p>味噌ラーメン</p></div>
-		<div class="menu-item"><img src="img/syougayaki.jpg"><p>生姜焼き定食</p></div>
-		<div class="menu-item"><img src="img/karaage.jpg"><p>唐揚げ</p></div>
-		<div class="menu-item"><img src="img/potato.jpg"><p>ポテト</p></div>
-		<div class="menu-item"><img src="img/tyuukasoba.jpg"><p>中華そば</p></div>
-    </div>
+			// 初期：折り畳み
+			panel.classList.remove("open");
 
-    <!-- 左下：注文確認 -->
-    <button class="confirm-btn" style="background-color: gold"  onclick="location.href='payConfirmation.html'">注文確認</button>
+			btn.addEventListener("click", () => {
+				panel.classList.toggle("open");
+			});
+			
+			//モーダルウインドウ
+			const params = new URLSearchParams(window.location.search);
+			const modal = document.getElementById("sentModal");
+			const closeBtn = document.getElementById("closeModal");
 
-    <!-- 右下：注文送信 -->
-    <button class="send-btn" style="background-color: gold"  onclick="location.href='orderConfirmation.html'">注文送信</button>
+			if (params.get('sent') === '1') {
+			    modal.classList.add("show");
+			}
 
-</div>
+			closeBtn.addEventListener("click", () => {
+			    modal.classList.remove("show");
+			});
 
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    /* ===== URLパラメータチェック ===== */
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('sent') === '1') {
-        alert("注文を送信しました！");
-    }
-
-    /* ===== リスト開閉 ===== */
-    const btn = document.getElementById("listBtn");
-    const panel = document.getElementById("sideList");
-
-    // 初期状態：折り畳み
-    panel.classList.remove("open");
-
-    btn.addEventListener("click", () => {
-        panel.classList.toggle("open");
-    });
-
-});
-</script>
-
-
-
+		});
+	</script>
 
 </body>
+
 </html>

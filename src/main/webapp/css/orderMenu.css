@@ -9,7 +9,7 @@ body {
     height: 100vh;
 }
 
-/* 左上カテゴリボタン */
+/* カテゴリボタン */
 .category-area {
     position: absolute;
     top: 20px;
@@ -25,32 +25,54 @@ body {
     background-color: linen;
 }
 
+/*リストパーツ*/
 
-.side-list-area {
-    position: fixed !important;
-    right: 0;
+/* ボタン＋リスト全体 */
+.side-list {
+    position: fixed;
     top: 10%;
+    right: -250px;   /* ← リスト分だけ隠す */
     display: flex;
-    align-items: center;
-    z-index: 9999;
+    z-index: 1000;
+    transition: right 0.3s ease;
 }
 
+/* 開いた状態（ボタン含め全部出る） */
+.side-list.open {
+    right: 0;
+}
+
+/* ボタン */
 .side-list-btn {
-	background-color: silver;
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     width: 40px;
     height: 150px;
+    background-color: silver;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    border-radius: 6px 0 0 6px;
+    cursor: pointer;
 }
 
-/* --------------------------------------------- */
-/* メニューエリア中央固定                         */
-/* --------------------------------------------- */
+/* リスト */
+.list-panel {
+    width: 200px;
+	height: 600px;
+    background-color: rgb(0, 0, 0);
+    padding: 20px;
+}
+
+
+   .list-panel ul {
+	color: aliceblue;
+       list-style: none;
+       padding: 0;
+   }
+
+   .list-panel li {
+       margin-bottom: 10px;
+   }
+
+/*メニュー部分*/
 
 .menu-area {
     position: absolute;
@@ -77,7 +99,7 @@ body {
     border-radius: 10px;
 }
 
-/* 左下：注文確認 */
+/* 注文確認 */
 .confirm-btn {
     position: absolute;
     bottom: 20px;
@@ -87,7 +109,7 @@ body {
     font-size: 20px;
 }
 
-/* 右下：注文送信 */
+/* 注文送信 */
 .send-btn {
     position: absolute;
     bottom: 20px;

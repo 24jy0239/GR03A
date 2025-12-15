@@ -4,15 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注文画面</title>
-    <link rel="stylesheet" href="./css/orderMenu.css?v=5">
 	<link rel="stylesheet" href="./css/orderCommon.css">
+    <link rel="stylesheet" href="./css/orderMenu.css?v=5">
 </head>
+
+
+
 <body>
 	
-	<!-- 右上：リスト -->
-	<div class="side-list-area">
-	    <button class="side-list-btn">リスト</button>
-	    <div class="side-list" id="sideList"></div>
+	<!-- リスト -->
+	<div id="sideList" class="side-list">
+	    <button id="listBtn" class="side-list-btn">リスト≫</button>
+
+	    <div class="list-panel">
+	        <ul>
+	            <li>メニュー1</li>
+	            <li>メニュー2</li>
+	            <li>メニュー3</li>
+	        </ul>
+	    </div>
 	</div>
 
 
@@ -49,15 +59,29 @@
 
 
 <script>
-window.onload = function() {
-    const params = new URLSearchParams(window.location.search);
+document.addEventListener("DOMContentLoaded", () => {
 
-    // sent=1 が URL にある場合だけメッセージ表示
+    /* ===== URLパラメータチェック ===== */
+    const params = new URLSearchParams(window.location.search);
     if (params.get('sent') === '1') {
         alert("注文を送信しました！");
     }
-}
+
+    /* ===== リスト開閉 ===== */
+    const btn = document.getElementById("listBtn");
+    const panel = document.getElementById("sideList");
+
+    // 初期状態：折り畳み
+    panel.classList.remove("open");
+
+    btn.addEventListener("click", () => {
+        panel.classList.toggle("open");
+    });
+
+});
 </script>
+
+
 
 
 </body>

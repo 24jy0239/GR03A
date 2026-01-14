@@ -7,9 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import model.Visit;
 
 
-public class addVisitDBAccess {
+
+public class VisitDAO {
 
 		private Connection createConnection() throws Exception {
 			Connection con = null;
@@ -40,15 +42,15 @@ public class addVisitDBAccess {
 			}
 		}
 
-		public ArrayList<Customer> searchCustomerByTel(String tel) throws Exception {
+		public ArrayList<Visit> findAll() throws Exception {
 			Connection con = createConnection();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			ArrayList<Customer> list = new ArrayList<Customer>();
+			ArrayList<Visit> list = new ArrayList<Visit>();
 			try {
 				if (con != null) {
-					String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-							"FROM customer WHERE TEL = ?;";
+					String sql = "SELECT * " +
+							"FROM Visit;";
 					pstmt = con.prepareStatement(sql);
 					pstmt.setString(1, tel);
 					rs = pstmt.executeQuery();
@@ -59,7 +61,7 @@ public class addVisitDBAccess {
 						String fintel = rs.getString("TEL");
 						String finadd = rs.getString("ADDRESS");
 
-						Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
+						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
 						list.add(cust);
 					}
 				}
@@ -90,17 +92,17 @@ public class addVisitDBAccess {
 			return list;
 		}
 
-		public ArrayList<Customer> searchCustomerByKana(String kana) throws Exception {
+		public ArrayList<Visit> findById(int visitid) throws Exception {
 			Connection con = createConnection();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			ArrayList<Customer> list = new ArrayList<Customer>();
+			ArrayList<Visit> list = new ArrayList<Visit>();
 			try {
 				if (con != null) {
 					String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-							"FROM customer WHERE KANA LIKE ?;";
+							"FROM Visit WHERE TEL = ?;";
 					pstmt = con.prepareStatement(sql);
-					pstmt.setString(1, "%" + kana + "%");
+					pstmt.setString(1, visitid);
 					rs = pstmt.executeQuery();
 					while (rs.next() == true) {
 						int finid = rs.getInt("CUSTID");
@@ -109,7 +111,7 @@ public class addVisitDBAccess {
 						String fintel = rs.getString("TEL");
 						String finadd = rs.getString("ADDRESS");
 
-						Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
+						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
 						list.add(cust);
 					}
 				}
@@ -140,18 +142,67 @@ public class addVisitDBAccess {
 			return list;
 		}
 
-		public ArrayList<Customer> searchCustomer(String tel, String kana) throws Exception {
+		public ArrayList<Visit> findByTableNum(int tableNum) throws Exception {
 			Connection con = createConnection();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			ArrayList<Customer> list = new ArrayList<Customer>();
+			ArrayList<Visit> list = new ArrayList<Visit>();
 			try {
 				if (con != null) {
 					String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-							"FROM customer WHERE TEL = ? AND KANA LIKE ?;";
+							"FROM Visit WHERE TEL = ?;";
+					pstmt = con.prepareStatement(sql);
+					pstmt.setString(1, tableNum);
+					rs = pstmt.executeQuery();
+					while (rs.next() == true) {
+						int finid = rs.getInt("CUSTID");
+						String finname = rs.getString("CUSTNAME");
+						String finkana = rs.getString("KANA");
+						String fintel = rs.getString("TEL");
+						String finadd = rs.getString("ADDRESS");
+
+						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
+						list.add(cust);
+					}
+				}
+			} catch (SQLException e) {
+				System.out.println(
+						"DB切断時にエラーが発生しました（商品検索）。");
+				e.printStackTrace();
+				throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+			} finally {
+				try {
+					if (rs != null) {
+						rs.close();
+					}
+				} catch (SQLException e) {
+					System.out.println("DB切断時にエラーが発生しました。");
+					e.printStackTrace();
+				}
+				try {
+					if (pstmt != null) {
+						pstmt.close();
+					}
+				} catch (SQLException e) {
+					System.out.println("DB切断時にエラーが発生しました。");
+					e.printStackTrace();
+				}
+			}
+			closeConnection(con);
+			return list;
+		}
+		
+		public void insert(Visit visit) throws Exception {
+			Connection con = createConnection();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			ArrayList<Visit> list = new ArrayList<Visit>();
+			try {
+				if (con != null) {
+					String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
+							"FROM Visit WHERE TEL = ?;";
 					pstmt = con.prepareStatement(sql);
 					pstmt.setString(1, tel);
-					pstmt.setString(2, "%" + kana + "%");
 					rs = pstmt.executeQuery();
 					while (rs.next() == true) {
 						int finid = rs.getInt("CUSTID");
@@ -160,7 +211,7 @@ public class addVisitDBAccess {
 						String fintel = rs.getString("TEL");
 						String finadd = rs.getString("ADDRESS");
 
-						Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
+						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
 						list.add(cust);
 					}
 				}
@@ -190,6 +241,7 @@ public class addVisitDBAccess {
 			closeConnection(con);
 			return list;
 		}
+		
 	}
 
 

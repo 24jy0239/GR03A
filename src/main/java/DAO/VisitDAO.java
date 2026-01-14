@@ -47,97 +47,57 @@ public class VisitDAO {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			ArrayList<Visit> list = new ArrayList<Visit>();
-			try {
-				if (con != null) {
-					String sql = "SELECT * " +
-							"FROM Visit;";
-					pstmt = con.prepareStatement(sql);
-					pstmt.setString(1, tel);
-					rs = pstmt.executeQuery();
-					while (rs.next() == true) {
-						int finid = rs.getInt("CUSTID");
-						String finname = rs.getString("CUSTNAME");
-						String finkana = rs.getString("KANA");
-						String fintel = rs.getString("TEL");
-						String finadd = rs.getString("ADDRESS");
-
-						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
-						list.add(cust);
-					}
-				}
-			} catch (SQLException e) {
-				System.out.println(
-						"DB切断時にエラーが発生しました（商品検索）。");
-				e.printStackTrace();
-				throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
-			} finally {
-				try {
-					if (rs != null) {
-						rs.close();
-					}
-				} catch (SQLException e) {
-					System.out.println("DB切断時にエラーが発生しました。");
-					e.printStackTrace();
-				}
-				try {
-					if (pstmt != null) {
-						pstmt.close();
-					}
-				} catch (SQLException e) {
-					System.out.println("DB切断時にエラーが発生しました。");
-					e.printStackTrace();
-				}
-			}
+//			try {
+//				if (con != null) {
+//					String sql = "SELECT * " +
+//							"FROM Visit;";
+//					pstmt = con.prepareStatement(sql);
+//					pstmt.setString(1, tel);
+//					rs = pstmt.executeQuery();
+//					while (rs.next() == true) {
+//						int finid = rs.getInt("CUSTID");
+//						String finname = rs.getString("CUSTNAME");
+//						String finkana = rs.getString("KANA");
+//						String fintel = rs.getString("TEL");
+//						String finadd = rs.getString("ADDRESS");
+//
+//						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
+//						list.add(cust);
+//					}
+//				}
+//			} catch (SQLException e) {
+//				System.out.println(
+//						"DB切断時にエラーが発生しました（商品検索）。");
+//				e.printStackTrace();
+//				throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+//			} finally {
+//				try {
+//					if (rs != null) {
+//						rs.close();
+//					}
+//				} catch (SQLException e) {
+//					System.out.println("DB切断時にエラーが発生しました。");
+//					e.printStackTrace();
+//				}
+//				try {
+//					if (pstmt != null) {
+//						pstmt.close();
+//					}
+//				} catch (SQLException e) {
+//					System.out.println("DB切断時にエラーが発生しました。");
+//					e.printStackTrace();
+//				}
+//			}
 			closeConnection(con);
 			return list;
 		}
 
-		public ArrayList<Visit> findById(int visitid) throws Exception {
+		public ArrayList<Visit> findById(int visitId) throws Exception {
 			Connection con = createConnection();
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			ArrayList<Visit> list = new ArrayList<Visit>();
-			try {
-				if (con != null) {
-					String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-							"FROM Visit WHERE TEL = ?;";
-					pstmt = con.prepareStatement(sql);
-					pstmt.setString(1, visitid);
-					rs = pstmt.executeQuery();
-					while (rs.next() == true) {
-						int finid = rs.getInt("CUSTID");
-						String finname = rs.getString("CUSTNAME");
-						String finkana = rs.getString("KANA");
-						String fintel = rs.getString("TEL");
-						String finadd = rs.getString("ADDRESS");
-
-						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
-						list.add(cust);
-					}
-				}
-			} catch (SQLException e) {
-				System.out.println(
-						"DB切断時にエラーが発生しました（商品検索）。");
-				e.printStackTrace();
-				throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
-			} finally {
-				try {
-					if (rs != null) {
-						rs.close();
-					}
-				} catch (SQLException e) {
-					System.out.println("DB切断時にエラーが発生しました。");
-					e.printStackTrace();
-				}
-				try {
-					if (pstmt != null) {
-						pstmt.close();
-					}
-				} catch (SQLException e) {
-					System.out.println("DB切断時にエラーが発生しました。");
-					e.printStackTrace();
-				}
-			}
+//			
 			closeConnection(con);
 			return list;
 		}
@@ -147,47 +107,7 @@ public class VisitDAO {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			ArrayList<Visit> list = new ArrayList<Visit>();
-			try {
-				if (con != null) {
-					String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-							"FROM Visit WHERE TEL = ?;";
-					pstmt = con.prepareStatement(sql);
-					pstmt.setString(1, tableNum);
-					rs = pstmt.executeQuery();
-					while (rs.next() == true) {
-						int finid = rs.getInt("CUSTID");
-						String finname = rs.getString("CUSTNAME");
-						String finkana = rs.getString("KANA");
-						String fintel = rs.getString("TEL");
-						String finadd = rs.getString("ADDRESS");
-
-						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
-						list.add(cust);
-					}
-				}
-			} catch (SQLException e) {
-				System.out.println(
-						"DB切断時にエラーが発生しました（商品検索）。");
-				e.printStackTrace();
-				throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
-			} finally {
-				try {
-					if (rs != null) {
-						rs.close();
-					}
-				} catch (SQLException e) {
-					System.out.println("DB切断時にエラーが発生しました。");
-					e.printStackTrace();
-				}
-				try {
-					if (pstmt != null) {
-						pstmt.close();
-					}
-				} catch (SQLException e) {
-					System.out.println("DB切断時にエラーが発生しました。");
-					e.printStackTrace();
-				}
-			}
+//			
 			closeConnection(con);
 			return list;
 		}
@@ -197,49 +117,69 @@ public class VisitDAO {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			ArrayList<Visit> list = new ArrayList<Visit>();
-			try {
-				if (con != null) {
-					String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-							"FROM Visit WHERE TEL = ?;";
-					pstmt = con.prepareStatement(sql);
-					pstmt.setString(1, tel);
-					rs = pstmt.executeQuery();
-					while (rs.next() == true) {
-						int finid = rs.getInt("CUSTID");
-						String finname = rs.getString("CUSTNAME");
-						String finkana = rs.getString("KANA");
-						String fintel = rs.getString("TEL");
-						String finadd = rs.getString("ADDRESS");
-
-						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
-						list.add(cust);
-					}
-				}
-			} catch (SQLException e) {
-				System.out.println(
-						"DB切断時にエラーが発生しました（商品検索）。");
-				e.printStackTrace();
-				throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
-			} finally {
-				try {
-					if (rs != null) {
-						rs.close();
-					}
-				} catch (SQLException e) {
-					System.out.println("DB切断時にエラーが発生しました。");
-					e.printStackTrace();
-				}
-				try {
-					if (pstmt != null) {
-						pstmt.close();
-					}
-				} catch (SQLException e) {
-					System.out.println("DB切断時にエラーが発生しました。");
-					e.printStackTrace();
-				}
-			}
+//			try {
+//				if (con != null) {
+//					String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
+//							"FROM Visit WHERE TEL = ?;";
+//					pstmt = con.prepareStatement(sql);
+//					pstmt.setString(1, tel);
+//					rs = pstmt.executeQuery();
+//					while (rs.next() == true) {
+//						int finid = rs.getInt("CUSTID");
+//						String finname = rs.getString("CUSTNAME");
+//						String finkana = rs.getString("KANA");
+//						String fintel = rs.getString("TEL");
+//						String finadd = rs.getString("ADDRESS");
+//
+//						Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
+//						list.add(cust);
+//					}
+//				}
+//			} catch (SQLException e) {
+//				System.out.println(
+//						"DB切断時にエラーが発生しました（商品検索）。");
+//				e.printStackTrace();
+//				throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+//			} finally {
+//				try {
+//					if (rs != null) {
+//						rs.close();
+//					}
+//				} catch (SQLException e) {
+//					System.out.println("DB切断時にエラーが発生しました。");
+//					e.printStackTrace();
+//				}
+//				try {
+//					if (pstmt != null) {
+//						pstmt.close();
+//					}
+//				} catch (SQLException e) {
+//					System.out.println("DB切断時にエラーが発生しました。");
+//					e.printStackTrace();
+//				}
+//			}
 			closeConnection(con);
-			return list;
+			
+		}
+		
+		public void update(Visit visit) throws Exception {
+			Connection con = createConnection();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			ArrayList<Visit> list = new ArrayList<Visit>();
+//			
+			closeConnection(con);
+			
+		}
+		
+		public void delecte(int visitid) throws Exception {
+			Connection con = createConnection();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			ArrayList<Visit> list = new ArrayList<Visit>();
+//			
+			closeConnection(con);
+			
 		}
 		
 	}

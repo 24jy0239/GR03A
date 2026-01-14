@@ -1,11 +1,13 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Visit {
 	int visitId, tableNum, totalAmount;
 	LocalDateTime visitTime;
 	boolean paymentStatus;
+	private ArrayList<Order> orders = new ArrayList<>();
 	
 	Visit(){};
 	public int getVisitId() {
@@ -29,7 +31,10 @@ public class Visit {
 	}
 
 	public void setTotalAmount(int totalAmount) {
-		this.totalAmount = totalAmount;
+		totalAmount = 0;
+		for(Order order : orders) {
+			totalAmount+=order.getOSubtotal();
+		}
 	}
 
 	public LocalDateTime getVisitTime() {
@@ -46,5 +51,11 @@ public class Visit {
 
 	public void setPaymentStatus(boolean paymentStatus) {
 		this.paymentStatus = paymentStatus;
+	}
+	public ArrayList<Order> getOrders(){
+		return orders;
+	}
+	public void setOrders(Order order) {
+		orders.add(order);
 	}
 }

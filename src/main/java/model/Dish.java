@@ -12,37 +12,41 @@ public class Dish {
 		this.category = category;
 		this.photo = photo;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public int getDishId() {
+		return dishId;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setPrice(int price) {
-		this.price = price;
+	public void setDishId(int dishId) {
+		this.dishId = dishId;
 	}
 	public int getPrice() {
 		return price;
 	}
-	public void setCategory(int category) {
-		this.category = category;
+	public void setPrice(int price) {
+		this.price = price;
 	}
 	public int getCategory() {
 		return category;
 	}
-	public void setPhoto(String photo) {
-		this.photo = photo;
+	public void setCategory(int category) {
+		this.category = category;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getPhoto() {
 		return photo;
 	}
-	public int getDishId() {
-		return dishId;
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+	public boolean isAvailable() {
+		return available;
 	}
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
-	public boolean getAvailable() {
-		return available;
-	}
+	
 }

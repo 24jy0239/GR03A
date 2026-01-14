@@ -21,7 +21,7 @@ public class Order {
 	public void setVisitId(int visitId) {
 		this.visitId = visitId;
 	}
-	public int calculateSubtotal() {
+	public int getOSubtotal() {
 		int Osubtotal = 0;
 		for(OrderItem orderItem : orderItems) {
 			Osubtotal+=orderItem.getOISubtotal();
@@ -31,8 +31,8 @@ public class Order {
 	public ArrayList<OrderItem> getOrderItems() {
 		return orderItems;
 	}
-	public void setOrderItems(ArrayList<OrderItem> orderItems) {
-		this.orderItems = orderItems;
+	public void setOrderItems(OrderItem orderItem) {
+		orderItems.add(orderItem);
 	}
 	public LocalDateTime getOrderTime() {
 		return orderTime;

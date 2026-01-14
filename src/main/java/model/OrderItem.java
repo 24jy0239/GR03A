@@ -1,15 +1,15 @@
 package model;
 
 public class OrderItem {
-	private int orderItem, orderId, dishId, quantity, itemStatus;
+	private int orderItemId, orderId, dishId, quantity, itemStatus;
 	private Dish dish;
 	
 	OrderItem(){};
-	public int getOrderItem() {
-		return orderItem;
+	public int getOrderItemId() {
+		return orderItemId;
 	}
-	public void setOrderItem(int orderItem) {
-		this.orderItem = orderItem;
+	public void setOrderItemId(int orderItem) {
+		this.orderItemId = orderItem;
 	}
 	public int getOrderId() {
 		return orderId;

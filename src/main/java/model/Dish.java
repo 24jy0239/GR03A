@@ -5,7 +5,7 @@ public class Dish {
 	private String name, photo;
 	private boolean available;
 	
-	Dish(){};
+	public Dish(){};
 	Dish(String name, int price, int category, String photo){
 		this.name = name;
 		this.price = price;

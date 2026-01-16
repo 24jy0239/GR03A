@@ -9,7 +9,7 @@ public class Visit {
 	boolean paymentStatus;
 	private ArrayList<Order> orders = new ArrayList<>();
 	
-	Visit(){};
+	public Visit(){};
 	
 	public Visit(int visitId, int tableId, int totalAmount, LocalDateTime visitTime) {
 		super();

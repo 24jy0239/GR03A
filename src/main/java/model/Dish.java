@@ -1,16 +1,18 @@
 package model;
 
 public class Dish {
-	private int dishId, price, category;
-	private String name, photo;
+	private int dishId, price;
+	private String name, photo, category;
 	private boolean available;
 	
 	public Dish(){};
-	Dish(String name, int price, int category, String photo){
+	public Dish(int dishId, String name, int price, String category, String photo, boolean available){
+		this.dishId = dishId;
 		this.name = name;
 		this.price = price;
 		this.category = category;
 		this.photo = photo;
+		this.available = available;
 	}
 	public int getDishId() {
 		return dishId;
@@ -24,10 +26,10 @@ public class Dish {
 	public void setPrice(int price) {
 		this.price = price;
 	}
-	public int getCategory() {
+	public String getCategory() {
 		return category;
 	}
-	public void setCategory(int category) {
+	public void setCategory(String category) {
 		this.category = category;
 	}
 	public String getName() {

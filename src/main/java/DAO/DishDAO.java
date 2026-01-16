@@ -45,29 +45,28 @@ public class DishDAO {
 		ResultSet rs = null;
 		ArrayList<Dish> list = new ArrayList<>();
 		//下のコメントアウトのところに書き直す
-		/*try {
+		try {
 			if (con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-						"FROM customer WHERE TEL = ?;";
+				String sql = "SELECT * " +
+						"FROM dish;";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, tel);
 				rs = pstmt.executeQuery();
 				while (rs.next() == true) {
-					int finid = rs.getInt("CUSTID");
-					String finname = rs.getString("CUSTNAME");
-					String finkana = rs.getString("KANA");
-					String fintel = rs.getString("TEL");
-					String finadd = rs.getString("ADDRESS");
-
-					Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
-					list.add(cust);
+					int finid = rs.getInt("DISH_ID");
+					String finname = rs.getString("DISH_NAME");
+					int finprice = rs.getInt("DISH_PRICE");
+					String fincategory = rs.getString("DISH_CATEGORY");
+					String finphoto = rs.getString("DISH_PHOTO");
+					boolean finavailable = rs.getInt("DISH_AVAILABLE") != 0;
+					Dish dish = new Dish(finid, finname, finprice, fincategory, finphoto, finavailable);
+					list.add(dish);
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
+					"DB切断時にエラーが発生しました（メニュー検索）。");
 			e.printStackTrace();
-			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+			throw new Exception("メニュー検索処理に失敗しました！管理者に連絡してください。");
 		} finally {
 			try {
 				if (rs != null) {
@@ -85,7 +84,7 @@ public class DishDAO {
 				System.out.println("DB切断時にエラーが発生しました。");
 				e.printStackTrace();
 			}
-		}*/
+		}
 		closeConnection(con);
 		return list;
 	}
@@ -96,29 +95,31 @@ public class DishDAO {
 		ResultSet rs = null;
 		Dish dish = new Dish();
 		//下のコメントアウトのところに書き直す
-		/*try {
+		try {
 			if (con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-						"FROM customer WHERE TEL = ?;";
+				String sql = "SELECT * " +
+						"FROM dish WHERE DISH_ID = ?;";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, tel);
+				pstmt.setInt(1, dishId);
 				rs = pstmt.executeQuery();
-				while (rs.next() == true) {
-					int finid = rs.getInt("CUSTID");
-					String finname = rs.getString("CUSTNAME");
-					String finkana = rs.getString("KANA");
-					String fintel = rs.getString("TEL");
-					String finadd = rs.getString("ADDRESS");
-
-					Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
-					list.add(cust);
-				}
+				int finid = rs.getInt("DISH_ID");
+				String finname = rs.getString("DISH_NAME");
+				int finprice = rs.getInt("DISH_PRICE");
+				String fincategory = rs.getString("DISH_CATEGORY");
+				String finphoto = rs.getString("DISH_PHOTO");
+				boolean finavailable = rs.getInt("DISH_AVAILABLE") != 0;
+				dish.setDishId(finid);
+				dish.setName(finname);;
+				dish.setPrice(finprice);
+				dish.setCategory(fincategory);
+				dish.setPhoto(finphoto);
+				dish.setAvailable(finavailable);
 			}
 		} catch (SQLException e) {
 			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
+					"DB切断時にエラーが発生しました（メニュー検索）。");
 			e.printStackTrace();
-			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+			throw new Exception("メニュー検索処理に失敗しました！管理者に連絡してください。");
 		} finally {
 			try {
 				if (rs != null) {
@@ -136,40 +137,40 @@ public class DishDAO {
 				System.out.println("DB切断時にエラーが発生しました。");
 				e.printStackTrace();
 			}
-		}*/
+		}
 		closeConnection(con);
 		return dish;
 	}
 	
-	public ArrayList<Dish> findByCategory(int category) throws Exception {
+	public ArrayList<Dish> findByCategory(String category) throws Exception {
 		Connection con = createConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		ArrayList<Dish> list = new ArrayList<>();
 		//下のコメントアウトのところに書き直す
-		/*try {
+		try {
 			if (con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-						"FROM customer WHERE TEL = ?;";
+				String sql = "SELECT * " +
+						"FROM customer WHERE DISH_CATEGORY = ?;";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, tel);
+				pstmt.setString(1, category);
 				rs = pstmt.executeQuery();
 				while (rs.next() == true) {
-					int finid = rs.getInt("CUSTID");
-					String finname = rs.getString("CUSTNAME");
-					String finkana = rs.getString("KANA");
-					String fintel = rs.getString("TEL");
-					String finadd = rs.getString("ADDRESS");
-
-					Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
-					list.add(cust);
+					int finid = rs.getInt("DISH_ID");
+					String finname = rs.getString("DISH_NAME");
+					int finprice = rs.getInt("DISH_PRICE");
+					String fincategory = rs.getString("DISH_CATEGORY");
+					String finphoto = rs.getString("DISH_PHOTO");
+					boolean finavailable = rs.getInt("DISH_AVAILABLE") != 0;
+					Dish dish = new Dish(finid, finname, finprice, fincategory, finphoto, finavailable);
+					list.add(dish);
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
+					"DB切断時にエラーが発生しました（メニュー検索）。");
 			e.printStackTrace();
-			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+			throw new Exception("メニュー検索処理に失敗しました！管理者に連絡してください。");
 		} finally {
 			try {
 				if (rs != null) {
@@ -187,7 +188,7 @@ public class DishDAO {
 				System.out.println("DB切断時にエラーが発生しました。");
 				e.printStackTrace();
 			}
-		}*/
+		}
 		closeConnection(con);
 		return list;
 	}
@@ -198,29 +199,28 @@ public class DishDAO {
 		ResultSet rs = null;
 		ArrayList<Dish> list = new ArrayList<>();
 		//下のコメントアウトのところに書き直す
-		/*try {
+		try {
 			if (con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-						"FROM customer WHERE TEL = ?;";
+				String sql = "SELECT * " +
+						"FROM customer WHERE DISHAVAILABLE = 1;";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, tel);
 				rs = pstmt.executeQuery();
 				while (rs.next() == true) {
-					int finid = rs.getInt("CUSTID");
-					String finname = rs.getString("CUSTNAME");
-					String finkana = rs.getString("KANA");
-					String fintel = rs.getString("TEL");
-					String finadd = rs.getString("ADDRESS");
-
-					Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
-					list.add(cust);
+					int finid = rs.getInt("DISH_ID");
+					String finname = rs.getString("DISH_NAME");
+					int finprice = rs.getInt("DISH_PRICE");
+					String fincategory = rs.getString("DISH_CATEGORY");
+					String finphoto = rs.getString("DISH_PHOTO");
+					boolean finavailable = rs.getInt("DISH_AVAILABLE") != 0;
+					Dish dish = new Dish(finid, finname, finprice, fincategory, finphoto, finavailable);
+					list.add(dish);
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
+					"DB切断時にエラーが発生しました（メニュー検索）。");
 			e.printStackTrace();
-			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+			throw new Exception("メニュー検索処理に失敗しました！管理者に連絡してください。");
 		} finally {
 			try {
 				if (rs != null) {
@@ -238,7 +238,7 @@ public class DishDAO {
 				System.out.println("DB切断時にエラーが発生しました。");
 				e.printStackTrace();
 			}
-		}*/
+		}
 		closeConnection(con);
 		return list;
 	}
@@ -248,29 +248,22 @@ public class DishDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		//下のコメントアウトのところに書き直す
-		/*try {
+		try {
 			if (con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-						"FROM customer WHERE TEL = ?;";
+				String sql = "INSERT INTO dish (DISH_NAME, DISH_PRICE, DISH_CATEGORY, DISH_PHOTO " +
+						"VALUES (?, ?, ?, ?);";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, tel);
+				pstmt.setString(1, dish.getName());
+				pstmt.setInt(2, dish.getPrice());
+				pstmt.setString(3, dish.getCategory());
+				pstmt.setString(4, dish.getPhoto());
 				rs = pstmt.executeQuery();
-				while (rs.next() == true) {
-					int finid = rs.getInt("CUSTID");
-					String finname = rs.getString("CUSTNAME");
-					String finkana = rs.getString("KANA");
-					String fintel = rs.getString("TEL");
-					String finadd = rs.getString("ADDRESS");
-
-					Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
-					list.add(cust);
-				}
 			}
 		} catch (SQLException e) {
 			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
+					"DB切断時にエラーが発生しました（メニュー追加）。");
 			e.printStackTrace();
-			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+			throw new Exception("メニュー追加処理に失敗しました！管理者に連絡してください。");
 		} finally {
 			try {
 				if (rs != null) {
@@ -288,7 +281,7 @@ public class DishDAO {
 				System.out.println("DB切断時にエラーが発生しました。");
 				e.printStackTrace();
 			}
-		}*/
+		}
 		closeConnection(con);
 	}
 	
@@ -297,29 +290,24 @@ public class DishDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		//下のコメントアウトのところに書き直す
-		/*try {
+		try {
 			if (con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-						"FROM customer WHERE TEL = ?;";
+				String sql = "UPDATE　dish " +
+						"SET DISH_NAME = ? " + "SET DISH_PRICE = ? " + "SET DISH_CATEGORY = ? " + "SET DISH_PHOTO = ? " + 
+						"WHERE DISH_ID = ?;";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, tel);
+				pstmt.setString(1, dish.getName());
+				pstmt.setInt(2, dish.getPrice());
+				pstmt.setString(3, dish.getCategory());
+				pstmt.setString(4, dish.getPhoto());
+				pstmt.setInt(5, dish.getDishId());
 				rs = pstmt.executeQuery();
-				while (rs.next() == true) {
-					int finid = rs.getInt("CUSTID");
-					String finname = rs.getString("CUSTNAME");
-					String finkana = rs.getString("KANA");
-					String fintel = rs.getString("TEL");
-					String finadd = rs.getString("ADDRESS");
-
-					Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
-					list.add(cust);
-				}
 			}
 		} catch (SQLException e) {
 			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
+					"DB切断時にエラーが発生しました（メニュー更新）。");
 			e.printStackTrace();
-			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+			throw new Exception("メニュー更新処理に失敗しました！管理者に連絡してください。");
 		} finally {
 			try {
 				if (rs != null) {
@@ -337,7 +325,7 @@ public class DishDAO {
 				System.out.println("DB切断時にエラーが発生しました。");
 				e.printStackTrace();
 			}
-		}*/
+		}
 		closeConnection(con);
 	}
 	
@@ -346,29 +334,19 @@ public class DishDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		//下のコメントアウトのところに書き直す
-		/*try {
+		try {
 			if (con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS " +
-						"FROM customer WHERE TEL = ?;";
+				String sql = "DELETE FROM　dish " +
+						"WHERE DISH_ID = ?;";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, tel);
+				pstmt.setInt(1, dishId);
 				rs = pstmt.executeQuery();
-				while (rs.next() == true) {
-					int finid = rs.getInt("CUSTID");
-					String finname = rs.getString("CUSTNAME");
-					String finkana = rs.getString("KANA");
-					String fintel = rs.getString("TEL");
-					String finadd = rs.getString("ADDRESS");
-
-					Customer cust = new Customer(finid, finname, finkana, fintel, finadd);
-					list.add(cust);
-				}
 			}
 		} catch (SQLException e) {
 			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
+					"DB切断時にエラーが発生しました（メニュー削除）。");
 			e.printStackTrace();
-			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+			throw new Exception("メニュー削除処理に失敗しました！管理者に連絡してください。");
 		} finally {
 			try {
 				if (rs != null) {
@@ -386,7 +364,7 @@ public class DishDAO {
 				System.out.println("DB切断時にエラーが発生しました。");
 				e.printStackTrace();
 			}
-		}*/
+		}
 		
 		closeConnection(con);
 	}

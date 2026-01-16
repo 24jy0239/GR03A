@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import model.Order;
@@ -41,52 +42,58 @@ public class OrderDAO {
 		}
 	}
 
-	public ArrayList<Visit> findAll() throws Exception {
+	public ArrayList<Order> findAll() throws Exception {
 		Connection con = createConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		ArrayList<Visit> list = new ArrayList<Visit>();
-//		try {
-//			if (con != null) {
-//				String sql = "SELECT * " +
-//						"FROM Visit;";
-//				pstmt = con.prepareStatement(sql);
-//				pstmt.setString(1, tel);
-//				rs = pstmt.executeQuery();
-//				while (rs.next() == true) {
-//					int finid = rs.getInt("CUSTID");
-//					String finname = rs.getString("CUSTNAME");
-//					String finkana = rs.getString("KANA");
-//					String fintel = rs.getString("TEL");
-//					String finadd = rs.getString("ADDRESS");
+		ArrayList<Order> list = new ArrayList<Order>();
+		try {
+			if (con != null) {
+			    String sql = "SELECT ID, TABLE_ID, PAYMENT_TIME, TOTAL_AMOUNT FROM ORDER_HISTORY";
+			    pstmt = con.prepareStatement(sql);
+			    rs = pstmt.executeQuery();
+
+			    while (rs.next()) {
+			        String orderId = rs.getString("ID");        // CHAR(12)
+			        String tableId = rs.getString("TABLE_ID");  // CHAR(3)
+			        Timestamp paymentTime = rs.getTimestamp("PAYMENT_TIME");
+			        int totalAmount = rs.getInt("TOTAL_AMOUNT");
+
+//			        // 根据你的实体类来改构造函数
+//			        Visit visit = new Visit(
+//			                orderId,
+//			                tableId,
+//			                paymentTime,
+//			                totalAmount
+//			        );
 //
-//					Visit cust = new Visit(finid, finname, finkana, fintel, finadd);
-//					list.add(cust);
-//				}
-//			}
-//		} catch (SQLException e) {
-//			System.out.println(
-//					"DB切断時にエラーが発生しました（商品検索）。");
-//			e.printStackTrace();
-//			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
-//		} finally {
-//			try {
-//				if (rs != null) {
-//					rs.close();
-//				}
-//			} catch (SQLException e) {
-//				System.out.println("DB切断時にエラーが発生しました。");
-//				e.printStackTrace();
-//			}
-//			try {
-//				if (pstmt != null) {
-//					pstmt.close();
-//				}
-//			} catch (SQLException e) {
-//				System.out.println("DB切断時にエラーが発生しました。");
-//				e.printStackTrace();
-//			}
-//		}
+//			        list.add(order);
+			    }
+			}
+
+		} catch (SQLException e) {
+			System.out.println(
+					"DB切断時にエラーが発生しました（商品検索）。");
+			e.printStackTrace();
+			throw new Exception("顧客情報検索処理に失敗しました！管理者に連絡してください。");
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				System.out.println("DB切断時にエラーが発生しました。");
+				e.printStackTrace();
+			}
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				System.out.println("DB切断時にエラーが発生しました。");
+				e.printStackTrace();
+			}
+		}
 		closeConnection(con);
 		return list;
 	}

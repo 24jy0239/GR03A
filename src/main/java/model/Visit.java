@@ -4,12 +4,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Visit {
-	int visitId, tableNum, totalAmount;
+	int visitId, tableId, totalAmount;
 	LocalDateTime visitTime;
 	boolean paymentStatus;
 	private ArrayList<Order> orders = new ArrayList<>();
 	
 	Visit(){};
+	
+	public Visit(int visitId, int tableId, int totalAmount, LocalDateTime visitTime) {
+		super();
+		this.visitId = visitId;
+		this.tableId = tableId;
+		this.totalAmount = totalAmount;
+		this.visitTime = visitTime;
+	}
+
 	public int getVisitId() {
 		return visitId;
 	}
@@ -18,24 +27,25 @@ public class Visit {
 		this.visitId = visitId;
 	}
 
-	public int getTableNum() {
-		return tableNum;
+	public int getTableId() {
+		return tableId;
 	}
 
-	public void setTableNum(int tableNum) {
-		this.tableNum = tableNum;
+	public void setTableId(int tableId) {
+		this.tableId = tableId;
 	}
 
 	public int getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(int totalAmount) {
-		totalAmount = 0;
-		for(Order order : orders) {
-			totalAmount+=order.getOSubtotal();
-		}
+	public void setTotalAmount() {
+	    this.totalAmount = 0;
+	    for (Order order : orders) {
+	        this.totalAmount += order.getOSubtotal();
+	    }
 	}
+
 
 	public LocalDateTime getVisitTime() {
 		return visitTime;

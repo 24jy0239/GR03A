@@ -7,8 +7,16 @@ public class Order {
 	private int orderId, visitId;
 	LocalDateTime orderTime;
 	private ArrayList<OrderItem> orderItems = new ArrayList<>();
+
+	public Order(){};
 	
-	Order(){};
+	public Order(int orderId, int visitId, LocalDateTime orderTime, ArrayList<OrderItem> orderItems) {
+		super();
+		this.orderId = orderId;
+		this.visitId = visitId;
+		this.orderTime = orderTime;
+		this.orderItems = orderItems;
+	}
 	public int getOrderId() {
 		return orderId;
 	}

@@ -1,41 +1,73 @@
 package servlet;
 
+import java.io.IOException;
+import java.util.List;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import manager.OrderManager;
+import model.OrderItemWithDetails;
 
 /**
- * Servlet implementation class HallServlet
+ * HallServlet - ホール画面
+ * 提供待ちの注文明細を表示、配膳完了を更新
  */
-@WebServlet("/HallServlet")
+@WebServlet("/admin/hall")
 public class HallServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public HallServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	private OrderManager manager = OrderManager.getInstance();
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * ホール画面表示
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// 提供待ちのアイテムを取得（状態2）
+		List<OrderItemWithDetails> hallItems = manager.getHallItems();
+
+		request.setAttribute("hallItems", hallItems);
+		request.setAttribute("totalCount", hallItems.size());
+
+		// ホール画面へ
+		request.getRequestDispatcher("/WEB-INF/admin/hall.jsp")
+				.forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * 配膳完了更新
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
+		String action = request.getParameter("action");
+		String orderItemId = request.getParameter("orderItemId");
+
+		if (orderItemId == null) {
+			response.sendRedirect(request.getContextPath() + "/admin/hall");
+			return;
+		}
+
+		boolean updated = false;
+
+		if ("serve".equals(action)) {
+			// 配膳完了: 2 → 3
+			updated = manager.updateItemStatus(orderItemId, 3);
+		}
+
+		if (updated) {
+			System.out.println("ホール: 配膳完了 - " + orderItemId);
+		} else {
+			System.out.println("ホール: 配膳完了失敗 - " + orderItemId);
+		}
+
+		// ホール画面へリダイレクト
+		response.sendRedirect(request.getContextPath() + "/admin/hall");
+	}
 }

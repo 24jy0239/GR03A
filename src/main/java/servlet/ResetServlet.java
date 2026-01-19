@@ -1,41 +1,61 @@
 package servlet;
 
+import java.io.IOException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import jakarta.servlet.http.HttpSession;
+
+import manager.OrderManager;
 
 /**
- * Servlet implementation class ResetServlet
+ * ResetServlet - リセット処理
+ * テーブルのリセット（Session破棄 + Visit削除）
  */
-@WebServlet("/ResetServlet")
+@WebServlet("/reset")
 public class ResetServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ResetServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	private OrderManager manager = OrderManager.getInstance();
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * リセット処理
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		HttpSession session = request.getSession(false);
+
+		if (session != null) {
+			String visitId = (String) session.getAttribute("visitId");
+
+			if (visitId != null) {
+				// Visitを削除（会計済みの場合のみ）
+				manager.removeVisit(visitId);
+
+				System.out.println("Visit削除: visitId=" + visitId);
+			}
+
+			// Session破棄
+			session.invalidate();
+
+			System.out.println("Session破棄");
+		}
+
+		// トップページへリダイレクト
+		response.sendRedirect(request.getContextPath() + "/");
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * POSTも同じ処理
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		doGet(request, response);
 	}
-
 }

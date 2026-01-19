@@ -20,9 +20,9 @@ import model.OrderItem;
  */
 public class OrderDAO {
     
-    private static final String URL = "jdbc:mysql://localhost:3306/24ｊｙ0228";
-    private static final String USER = "24ｊｙ0228";
-    private static final String PASSWORD = "24ｊｙ0228";
+    private static final String URL = "jdbc:mysql://localhost:3306/24jy0228";
+    private static final String USER = "24jy0228";
+    private static final String PASSWORD = "24jy0228";
     
     /**
      * DB接続を取得

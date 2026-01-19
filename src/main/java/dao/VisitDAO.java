@@ -20,7 +20,7 @@ import model.Visit;
  */
 public class VisitDAO {
     
-    private static final String URL = "jdbc:mysql://localhost:3306/24jy0228";
+    private static final String URL = "jdbc:mysql://10.64.144.5:3306/24jy0228";
     private static final String USER = "24jy0228";
     private static final String PASSWORD = "24jy0228";
     

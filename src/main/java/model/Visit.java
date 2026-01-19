@@ -2,70 +2,132 @@ package model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Visit（来店記録）
+ * 1つの来店に対して複数の注文（Order）が紐づく
+ */
 public class Visit {
-	int visitId, tableId, totalAmount;
-	LocalDateTime visitTime;
-	boolean paymentStatus;
-	private ArrayList<Order> orders = new ArrayList<>();
-	
-	public Visit(){};
-	
-	public Visit(int visitId, int tableId, int totalAmount, LocalDateTime visitTime) {
-		super();
-		this.visitId = visitId;
-		this.tableId = tableId;
-		this.totalAmount = totalAmount;
-		this.visitTime = visitTime;
-	}
-
-	public int getVisitId() {
-		return visitId;
-	}
-
-	public void setVisitId(int visitId) {
-		this.visitId = visitId;
-	}
-
-	public int getTableId() {
-		return tableId;
-	}
-
-	public void setTableId(int tableId) {
-		this.tableId = tableId;
-	}
-
-	public int getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount() {
-	    this.totalAmount = 0;
-	    for (Order order : orders) {
-	        this.totalAmount += order.getOSubtotal();
-	    }
-	}
-
-
-	public LocalDateTime getVisitTime() {
-		return visitTime;
-	}
-
-	public void setVisitTime(LocalDateTime visitTime) {
-		this.visitTime = visitTime;
-	}
-
-	public boolean isPaymentStatus() {
-		return paymentStatus;
-	}
-
-	public void setPaymentStatus(boolean paymentStatus) {
-		this.paymentStatus = paymentStatus;
-	}
-	public ArrayList<Order> getOrders(){
-		return orders;
-	}
-	public void setOrders(Order order) {
-		orders.add(order);
-	}
+    
+    private String visitId;              // 来店ID（例: 20260116-1030-XY7K9）
+    private int tableNum;                // テーブル番号
+    private LocalDateTime arrivalTime;   // 来店時刻
+    private int totalAmount;             // 合計金額
+    private LocalDateTime paymentTime;   // 会計時刻（NULL = 会計前）
+    private List<Order> orders;          // 注文リスト（追加注文対応）
+    
+    /**
+     * デフォルトコンストラクタ
+     */
+    public Visit() {
+        this.orders = new ArrayList<>();
+    }
+    
+    /**
+     * コンストラクタ（基本情報）
+     */
+    public Visit(String visitId, int tableNum, LocalDateTime arrivalTime) {
+        this.visitId = visitId;
+        this.tableNum = tableNum;
+        this.arrivalTime = arrivalTime;
+        this.totalAmount = 0;
+        this.orders = new ArrayList<>();
+    }
+    
+    // ==================== Getters and Setters ====================
+    
+    public String getVisitId() {
+        return visitId;
+    }
+    
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
+    }
+    
+    public int getTableNum() {
+        return tableNum;
+    }
+    
+    public void setTableNum(int tableNum) {
+        this.tableNum = tableNum;
+    }
+    
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
+    }
+    
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+    
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+    
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+    
+    public LocalDateTime getPaymentTime() {
+        return paymentTime;
+    }
+    
+    public void setPaymentTime(LocalDateTime paymentTime) {
+        this.paymentTime = paymentTime;
+    }
+    
+    public List<Order> getOrders() {
+        return orders;
+    }
+    
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+    
+    // ==================== ビジネスロジック ====================
+    
+    /**
+     * 注文を追加
+     */
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
+    
+    /**
+     * 会計済みかチェック
+     */
+    public boolean isPaid() {
+        return paymentTime != null;
+    }
+    
+    /**
+     * 注文数を取得
+     */
+    public int getOrderCount() {
+        return orders.size();
+    }
+    
+    /**
+     * 全OrderItemを取得（全注文の全明細）
+     */
+    public List<OrderItem> getAllOrderItems() {
+        List<OrderItem> allItems = new ArrayList<>();
+        for (Order order : orders) {
+            allItems.addAll(order.getOrderItems());
+        }
+        return allItems;
+    }
+    
+    @Override
+    public String toString() {
+        return "Visit{" +
+               "visitId='" + visitId + '\'' +
+               ", tableNum=" + tableNum +
+               ", arrivalTime=" + arrivalTime +
+               ", totalAmount=" + totalAmount +
+               ", paymentTime=" + paymentTime +
+               ", orders=" + orders.size() + " orders" +
+               '}';
+    }
 }

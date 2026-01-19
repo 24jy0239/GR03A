@@ -3,7 +3,7 @@
     // ===== Session 桌号校验 =====
     Integer tableNum = (Integer) session.getAttribute("tableNum");
     if (tableNum == null) {
-        response.sendRedirect("START.jsp");
+        response.sendRedirect("index.jsp");
         return;
     }
 %>

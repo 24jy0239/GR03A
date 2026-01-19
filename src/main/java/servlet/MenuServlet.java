@@ -72,6 +72,7 @@ public class MenuServlet extends HttpServlet {
 					dishMap.put(dish.getDishId(), dish);
 				}
 
+			
 				session.setAttribute("dishMap", dishMap);
 
 				System.out.println("料理マスタ読み込み: " + dishes.size() + "件");

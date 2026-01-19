@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+
 <%
     // ===== 桌号取得（URL 假设传入）=====
     String tableNumParam = request.getParameter("tableNum");

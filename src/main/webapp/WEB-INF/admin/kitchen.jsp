@@ -1,6 +1,20 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="model.OrderItemWithDetails"%>
+<%@ page import="java.util.List"%>
+<%
+@SuppressWarnings("unchecked")
+List<OrderItemWithDetails> kitchenItems = (List<OrderItemWithDetails>) request.getAttribute("kitchenItems");
+Integer pendingCount = (Integer) request.getAttribute("pendingCount");
+Integer cookingCount = (Integer) request.getAttribute("cookingCount");
+
+if (pendingCount == null)
+	pendingCount = 0;
+if (cookingCount == null)
+	cookingCount = 0;
+if (kitchenItems == null)
+	kitchenItems = new java.util.ArrayList<>();
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +34,7 @@ body {
 }
 
 .header {
-	background: linear-gradient(135deg, #FF6B6B 0%, #C44569 100%);
+	background: linear-gradient(135deg, #ff5252 0%, #c62828 100%);
 	color: white;
 	padding: 20px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -86,49 +100,28 @@ body {
 	padding: 0 20px;
 }
 
-.section {
-	background: white;
-	padding: 30px;
-	border-radius: 10px;
-	margin-bottom: 20px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.section-title {
-	font-size: 1.5em;
-	margin-bottom: 20px;
-	color: #333;
-	border-left: 5px solid #FF6B6B;
-	padding-left: 15px;
-}
-
-.order-grid {
+.items-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 	gap: 20px;
 }
 
-.order-card {
-	border: 2px solid #ddd;
+.item-card {
+	background: white;
 	border-radius: 10px;
-	padding: 20px;
+	padding: 25px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	transition: all 0.3s;
-	position: relative;
+	border: 3px solid transparent;
 }
 
-.order-card.status-0 {
-	background: #fff3cd;
-	border-color: #ffc107;
+.item-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
-.order-card.status-1 {
-	background: #d1ecf1;
-	border-color: #17a2b8;
-}
-
-.order-card.priority-urgent {
+.item-card.urgent {
 	border-color: #ff5252;
-	border-width: 3px;
 	animation: pulse 2s infinite;
 }
 
@@ -138,32 +131,15 @@ keyframes pulse { 0%, 100% {
 }
 
 50
-
-
 %
 {
 box-shadow
-
-
 :
-
-
 0
-
-
 0
-
-
 0
-
-
 10px
-
-
-rgba
-(
-
-
+rgba(
 255
 ,
 82
@@ -171,41 +147,58 @@ rgba
 82
 ,
 0
-
-
-)
-;
-
-
+);
 }
 }
-.order-card.priority-warning {
+.item-card.warning {
 	border-color: #ffc107;
-	border-width: 3px;
+}
+
+.item-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
 }
 
 .table-badge {
-	display: inline-block;
-	background: #667eea;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	color: white;
-	padding: 5px 15px;
+	padding: 8px 15px;
 	border-radius: 20px;
 	font-weight: bold;
 	font-size: 1.1em;
-	margin-bottom: 10px;
+}
+
+.status-badge {
+	padding: 5px 15px;
+	border-radius: 20px;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+
+.status-pending {
+	background: #ffeb3b;
+	color: #333;
+}
+
+.status-cooking {
+	background: #ff9800;
+	color: white;
 }
 
 .dish-name {
-	font-size: 1.3em;
+	font-size: 1.5em;
 	font-weight: bold;
 	color: #333;
-	margin: 10px 0;
+	margin: 15px 0;
 }
 
 .quantity {
-	font-size: 1.5em;
-	color: #FF6B6B;
+	font-size: 1.8em;
+	color: #ff5252;
 	font-weight: bold;
+	margin: 10px 0;
 }
 
 .time-info {
@@ -218,36 +211,30 @@ rgba
 .time-label {
 	font-size: 0.9em;
 	color: #666;
-}
-
-.time-value {
-	font-size: 1.1em;
-	font-weight: bold;
-	color: #333;
+	margin-right: 10px;
 }
 
 .elapsed-time {
 	font-size: 1.2em;
 	font-weight: bold;
-	margin-top: 5px;
-}
-
-.elapsed-time.urgent {
-	color: #ff5252;
-}
-
-.elapsed-time.warning {
-	color: #ffc107;
 }
 
 .elapsed-time.normal {
 	color: #4CAF50;
 }
 
-.action-buttons {
+.elapsed-time.warning {
+	color: #ffc107;
+}
+
+.elapsed-time.urgent {
+	color: #ff5252;
+}
+
+.item-actions {
 	display: flex;
 	gap: 10px;
-	margin-top: 15px;
+	margin-top: 20px;
 }
 
 .btn {
@@ -262,12 +249,12 @@ rgba
 }
 
 .btn-start {
-	background: #17a2b8;
+	background: #ff9800;
 	color: white;
 }
 
 .btn-start:hover {
-	background: #138496;
+	background: #f57c00;
 	transform: translateY(-2px);
 }
 
@@ -285,6 +272,8 @@ rgba
 	text-align: center;
 	padding: 60px 20px;
 	color: #999;
+	background: white;
+	border-radius: 10px;
 }
 
 .empty-icon {
@@ -305,7 +294,6 @@ rgba
 }
 </style>
 <script>
-	// 自動リフレッシュ（10秒ごと）
 	setTimeout(function() {
 		location.reload();
 	}, 10000);
@@ -318,92 +306,97 @@ rgba
 
 			<div class="stats">
 				<div class="stat-item">
-					<div class="stat-label">注文</div>
-					<div class="stat-value">${orderedCount}</div>
+					<div class="stat-label">未着手</div>
+					<div class="stat-value"><%=pendingCount%></div>
 				</div>
 				<div class="stat-item">
 					<div class="stat-label">調理中</div>
-					<div class="stat-value">${cookingCount}</div>
-				</div>
-				<div class="stat-item">
-					<div class="stat-label">合計</div>
-					<div class="stat-value">${totalCount}</div>
+					<div class="stat-value"><%=cookingCount%></div>
 				</div>
 			</div>
 
 			<div class="nav-links">
-				<a href="${pageContext.request.contextPath}/admin/hall">🚶 ホール画面</a>
-				<a href="${pageContext.request.contextPath}/admin/table-status">📊
-					テーブル状態</a> <a href="${pageContext.request.contextPath}/">🏠 トップ</a>
+				<a href="<%=request.getContextPath()%>/admin/hall">🚶 ホール画面</a> <a
+					href="<%=request.getContextPath()%>/admin/table-status">📊
+					テーブル状態</a> <a href="<%=request.getContextPath()%>/">🏠 トップ</a>
 			</div>
 		</div>
 	</div>
 
 	<div class="container">
-		<c:choose>
-			<c:when test="${empty kitchenItems}">
-				<div class="section">
-					<div class="empty-state">
-						<div class="empty-icon">✅</div>
-						<h2>すべての注文が完了しています</h2>
-						<p>新しい注文をお待ちしています...</p>
+		<%
+		if (kitchenItems.isEmpty()) {
+		%>
+		<div class="empty-state">
+			<div class="empty-icon">✅</div>
+			<h2>未完了の注文はありません</h2>
+			<p>すべて調理完了しています</p>
+		</div>
+		<%
+		} else {
+		%>
+		<div class="items-grid">
+			<%
+			for (OrderItemWithDetails item : kitchenItems) {
+			%>
+			<div class="item-card <%=item.getPriority()%>">
+				<div class="item-header">
+					<div class="table-badge">
+						🍽️ テーブル
+						<%=item.getTableNum()%>
+					</div>
+					<div
+						class="status-badge status-<%=item.getItemStatus() == 0 ? "pending" : "cooking"%>">
+						<%=item.getItemStatus() == 0 ? "未着手" : "調理中"%>
 					</div>
 				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="section">
-					<h2 class="section-title">📋 未完了の注文</h2>
 
-					<div class="order-grid">
-						<c:forEach var="item" items="${kitchenItems}">
-							<div
-								class="order-card status-${item.itemStatus} priority-${item.priority}">
-								<div class="table-badge">テーブル ${item.tableNum} 番</div>
+				<div class="dish-name"><%=item.getDishName()%></div>
+				<div class="quantity">
+					×
+					<%=item.getQuantity()%></div>
 
-								<div class="dish-name">${item.dishName}</div>
-
-								<div class="quantity">× ${item.quantity}</div>
-
-								<div class="time-info">
-									<div class="time-label">注文時刻</div>
-									<div class="time-value">${item.formattedOrderTime}</div>
-
-									<div class="elapsed-time ${item.priority}">経過:
-										${item.elapsedTimeText}</div>
-								</div>
-
-								<div class="action-buttons">
-									<c:choose>
-										<c:when test="${item.itemStatus == 0}">
-											<form
-												action="${pageContext.request.contextPath}/admin/kitchen"
-												method="post" style="flex: 1;">
-												<input type="hidden" name="action" value="start"> <input
-													type="hidden" name="orderItemId"
-													value="${item.orderItemId}">
-												<button type="submit" class="btn btn-start">🔥 調理開始
-												</button>
-											</form>
-										</c:when>
-										<c:when test="${item.itemStatus == 1}">
-											<form
-												action="${pageContext.request.contextPath}/admin/kitchen"
-												method="post" style="flex: 1;">
-												<input type="hidden" name="action" value="complete">
-												<input type="hidden" name="orderItemId"
-													value="${item.orderItemId}">
-												<button type="submit" class="btn btn-complete">✅
-													調理完了</button>
-											</form>
-										</c:when>
-									</c:choose>
-								</div>
-							</div>
-						</c:forEach>
-					</div>
+				<div class="time-info">
+					<span class="time-label">注文時刻:</span>
+					<%=item.getFormattedOrderTime()%>
+					<br> <span class="time-label">経過時間:</span> <span
+						class="elapsed-time <%=item.getPriority()%>"> <%=item.getElapsedTimeText()%>
+					</span>
 				</div>
-			</c:otherwise>
-		</c:choose>
+
+				<div class="item-actions">
+					<%
+					if (item.getItemStatus() == 0) {
+					%>
+					<form action="<%=request.getContextPath()%>/admin/kitchen"
+						method="post" style="flex: 1;">
+						<input type="hidden" name="action" value="start"> <input
+							type="hidden" name="orderItemId"
+							value="<%=item.getOrderItemId()%>">
+						<button type="submit" class="btn btn-start">🔥 調理開始</button>
+					</form>
+					<%
+					} else {
+					%>
+					<form action="<%=request.getContextPath()%>/admin/kitchen"
+						method="post" style="flex: 1;">
+						<input type="hidden" name="action" value="complete"> <input
+							type="hidden" name="orderItemId"
+							value="<%=item.getOrderItemId()%>">
+						<button type="submit" class="btn btn-complete">✅ 調理完了</button>
+					</form>
+					<%
+					}
+					%>
+				</div>
+			</div>
+			<%
+			}
+			%>
+		</div>
+		<%
+		}
+		%>
 	</div>
 
 	<div class="auto-refresh">🔄 10秒ごとに自動更新</div>

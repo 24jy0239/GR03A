@@ -1,12 +1,29 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="model.TableStatus"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.text.NumberFormat"%>
+<%
+@SuppressWarnings("unchecked")
+List<TableStatus> tables = (List<TableStatus>) request.getAttribute("tables");
+Integer inUseCount = (Integer) request.getAttribute("inUseCount");
+Integer totalRevenue = (Integer) request.getAttribute("totalRevenue");
+
+if (inUseCount == null)
+	inUseCount = 0;
+if (totalRevenue == null)
+	totalRevenue = 0;
+if (tables == null)
+	tables = new java.util.ArrayList<>();
+
+NumberFormat formatter = NumberFormat.getInstance();
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📊 テーブル状態管理 - レストラン注文システム</title>
+<title>📊 テーブル状態 - レストラン注文システム</title>
 <style>
 * {
 	margin: 0;
@@ -20,7 +37,7 @@ body {
 }
 
 .header {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
 	color: white;
 	padding: 20px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -86,76 +103,74 @@ body {
 	padding: 0 20px;
 }
 
-.section {
-	background: white;
-	padding: 30px;
-	border-radius: 10px;
-	margin-bottom: 20px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.section-title {
-	font-size: 1.5em;
-	margin-bottom: 20px;
-	color: #333;
-	border-left: 5px solid #667eea;
-	padding-left: 15px;
-}
-
-.table-grid {
+.tables-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 	gap: 20px;
 }
 
 .table-card {
-	border: 3px solid #4CAF50;
-	border-radius: 10px;
-	padding: 20px;
-	transition: all 0.3s;
 	background: white;
+	border-radius: 10px;
+	padding: 25px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s;
+	border: 3px solid transparent;
 }
 
 .table-card:hover {
 	transform: translateY(-5px);
-	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.table-card.in-use {
+	border-color: #4CAF50;
+}
+
+.table-card.available {
+	border-color: #e0e0e0;
+	opacity: 0.7;
+}
+
+.table-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
 }
 
 .table-number {
 	font-size: 2em;
 	font-weight: bold;
-	color: #667eea;
-	margin-bottom: 15px;
-	text-align: center;
+	color: #333;
 }
 
-.table-status {
-	display: inline-block;
-	padding: 5px 15px;
+.status-badge {
+	padding: 8px 15px;
 	border-radius: 20px;
+	font-size: 0.9em;
 	font-weight: bold;
-	margin-bottom: 15px;
 }
 
-.status-occupied {
-	background: #4CAF50;
-	color: white;
+.status-badge.in-use {
+	background: #c8e6c9;
+	color: #2e7d32;
 }
 
-.status-empty {
-	background: #f0f0f0;
-	color: #999;
+.status-badge.available {
+	background: #e0e0e0;
+	color: #666;
 }
 
 .table-info {
-	margin-top: 15px;
+	margin: 15px 0;
 }
 
 .info-row {
 	display: flex;
 	justify-content: space-between;
 	padding: 10px 0;
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid #f0f0f0;
 }
 
 .info-row:last-child {
@@ -164,6 +179,7 @@ body {
 
 .info-label {
 	color: #666;
+	font-size: 0.95em;
 }
 
 .info-value {
@@ -171,21 +187,22 @@ body {
 	color: #333;
 }
 
-.total-amount {
+.revenue {
 	font-size: 1.3em;
 	color: #4CAF50;
 }
 
-.visit-id {
-	font-size: 0.85em;
-	color: #999;
-	word-break: break-all;
+.duration {
+	font-size: 1.1em;
+	color: #666;
 }
 
 .empty-state {
 	text-align: center;
 	padding: 60px 20px;
 	color: #999;
+	background: white;
+	border-radius: 10px;
 }
 
 .empty-icon {
@@ -204,35 +221,8 @@ body {
 	font-size: 0.9em;
 	color: #666;
 }
-
-.summary-cards {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-	gap: 20px;
-	margin-bottom: 30px;
-}
-
-.summary-card {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	color: white;
-	padding: 25px;
-	border-radius: 10px;
-	text-align: center;
-}
-
-.summary-label {
-	font-size: 1em;
-	opacity: 0.9;
-	margin-bottom: 10px;
-}
-
-.summary-value {
-	font-size: 2.5em;
-	font-weight: bold;
-}
 </style>
 <script>
-	// 自動リフレッシュ（15秒ごと）
 	setTimeout(function() {
 		location.reload();
 	}, 15000);
@@ -246,77 +236,88 @@ body {
 			<div class="stats">
 				<div class="stat-item">
 					<div class="stat-label">使用中</div>
-					<div class="stat-value">${occupiedCount}</div>
+					<div class="stat-value"><%=inUseCount%></div>
 				</div>
 				<div class="stat-item">
-					<div class="stat-label">売上合計</div>
+					<div class="stat-label">本日売上</div>
 					<div class="stat-value">
-						¥
-						<fmt:formatNumber value="${totalSales}" pattern="#,###" />
-					</div>
+						¥<%=formatter.format(totalRevenue)%></div>
 				</div>
 			</div>
 
 			<div class="nav-links">
-				<a href="${pageContext.request.contextPath}/admin/kitchen">🔪
-					キッチン画面</a> <a href="${pageContext.request.contextPath}/admin/hall">🚶
-					ホール画面</a> <a href="${pageContext.request.contextPath}/">🏠 トップ</a>
+				<a href="<%=request.getContextPath()%>/admin/kitchen">🔪
+					キッチン画面</a> <a href="<%=request.getContextPath()%>/admin/hall">🚶
+					ホール画面</a> <a href="<%=request.getContextPath()%>/">🏠 トップ</a>
 			</div>
 		</div>
 	</div>
 
 	<div class="container">
-		<c:choose>
-			<c:when test="${empty tableStatusList}">
-				<div class="section">
-					<div class="empty-state">
-						<div class="empty-icon">🪑</div>
-						<h2>使用中のテーブルはありません</h2>
-						<p>すべてのテーブルが空席です</p>
+		<%
+		if (tables.isEmpty()) {
+		%>
+		<div class="empty-state">
+			<div class="empty-icon">🍽️</div>
+			<h2>テーブル情報がありません</h2>
+		</div>
+		<%
+		} else {
+		%>
+		<div class="tables-grid">
+			<%
+			for (TableStatus table : tables) {
+			%>
+			<div
+				class="table-card <%=table.isOccupied() ? "in-use" : "available"%>">
+				<div class="table-header">
+					<div class="table-number">
+						🍽️ テーブル
+						<%=table.getTableNum()%>
+					</div>
+					<div
+						class="status-badge <%=table.isOccupied() ? "in-use" : "available"%>">
+						<%=table.isOccupied() ? "使用中" : "空席"%>
 					</div>
 				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="section">
-					<h2 class="section-title">🍽️ テーブル状態一覧</h2>
 
-					<div class="table-grid">
-						<c:forEach var="table" items="${tableStatusList}">
-							<div class="table-card">
-								<div class="table-number">テーブル ${table.tableNum}</div>
-
-								<div style="text-align: center;">
-									<span
-										class="table-status ${table.occupied ? 'status-occupied' : 'status-empty'}">
-										${table.status} </span>
-								</div>
-
-								<div class="table-info">
-									<div class="info-row">
-										<span class="info-label">来店時刻</span> <span class="info-value">${table.formattedArrivalTime}</span>
-									</div>
-
-									<div class="info-row">
-										<span class="info-label">滞在時間</span> <span class="info-value">${table.formattedStayTime}</span>
-									</div>
-
-									<div class="info-row">
-										<span class="info-label">合計金額</span> <span
-											class="info-value total-amount">
-											${table.formattedTotal} </span>
-									</div>
-
-									<div class="info-row">
-										<span class="info-label">来店ID</span> <span
-											class="info-value visit-id">${table.visitId}</span>
-									</div>
-								</div>
-							</div>
-						</c:forEach>
+				<%
+				if (table.isOccupied()) {
+				%>
+				<div class="table-info">
+					<div class="info-row">
+						<span class="info-label">訪問ID</span> <span class="info-value"><%=table.getVisitId()%></span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">来店時刻</span> <span class="info-value"><%=table.getFormattedArrivalTime()%></span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">滞在時間</span> <span
+							class="info-value duration"><%=table.getFormattedStayTime()%></span>
+					</div>
+					<div class="info-row">
+						<span class="info-label">売上</span> <span
+							class="info-value revenue">¥<%=formatter.format(table.getTotalAmount())%></span>
 					</div>
 				</div>
-			</c:otherwise>
-		</c:choose>
+				<%
+				} else {
+				%>
+				<div class="table-info">
+					<p style="text-align: center; color: #999; padding: 20px 0;">
+						利用可能</p>
+				</div>
+				<%
+				}
+				%>
+			</div>
+			<%
+			}
+			%>
+		</div>
+		<%
+		}
+		%>
 	</div>
 
 	<div class="auto-refresh">🔄 15秒ごとに自動更新</div>

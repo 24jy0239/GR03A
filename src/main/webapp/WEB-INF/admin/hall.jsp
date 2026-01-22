@@ -1,6 +1,17 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="model.OrderItemWithDetails"%>
+<%@ page import="java.util.List"%>
+<%
+@SuppressWarnings("unchecked")
+List<OrderItemWithDetails> hallItems = (List<OrderItemWithDetails>) request.getAttribute("hallItems");
+Integer totalCount = (Integer) request.getAttribute("totalCount");
+
+if (totalCount == null)
+	totalCount = 0;
+if (hallItems == null)
+	hallItems = new java.util.ArrayList<>();
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -224,7 +235,6 @@ body {
 }
 </style>
 <script>
-	// 自動リフレッシュ（10秒ごと）
 	setTimeout(function() {
 		location.reload();
 	}, 10000);
@@ -238,88 +248,96 @@ body {
 			<div class="stats">
 				<div class="stat-item">
 					<div class="stat-label">提供待ち</div>
-					<div class="stat-value">${totalCount}</div>
+					<div class="stat-value"><%=totalCount%></div>
 				</div>
 			</div>
 
 			<div class="nav-links">
-				<a href="${pageContext.request.contextPath}/admin/kitchen">🔪
-					キッチン画面</a> <a
-					href="${pageContext.request.contextPath}/admin/table-status">📊
-					テーブル状態</a> <a href="${pageContext.request.contextPath}/">🏠 トップ</a>
+				<a href="<%=request.getContextPath()%>/admin/kitchen">🔪
+					キッチン画面</a> <a href="<%=request.getContextPath()%>/admin/table-status">📊
+					テーブル状態</a> <a href="<%=request.getContextPath()%>/">🏠 トップ</a>
 			</div>
 		</div>
 	</div>
 
 	<div class="container">
-		<c:choose>
-			<c:when test="${empty hallItems}">
-				<div class="section">
-					<div class="empty-state">
-						<div class="empty-icon">✅</div>
-						<h2>提供待ちの料理はありません</h2>
-						<p>すべて配膳完了しています</p>
-					</div>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="section">
-					<h2 class="section-title">🍽️ 提供待ちの料理</h2>
+		<%
+		if (hallItems.isEmpty()) {
+		%>
+		<div class="section">
+			<div class="empty-state">
+				<div class="empty-icon">✅</div>
+				<h2>提供待ちの料理はありません</h2>
+				<p>すべて配膳完了しています</p>
+			</div>
+		</div>
+		<%
+		} else {
+		%>
+		<div class="section">
+			<h2 class="section-title">🍽️ 提供待ちの料理</h2>
 
-					<%-- テーブル番号でグループ化 --%>
-					<c:set var="currentTable" value="" />
-					<c:set var="tableItems" value="" />
+			<%
+			int currentTable = -1;
+			for (int i = 0; i < hallItems.size(); i++) {
+				OrderItemWithDetails item = hallItems.get(i);
 
-					<c:forEach var="item" items="${hallItems}" varStatus="status">
-						<c:choose>
-							<c:when test="${currentTable != item.tableNum}">
-								<%-- 前のテーブルグループを閉じる --%>
-								<c:if test="${not empty currentTable}">
-				</div>
+				if (currentTable != item.getTableNum()) {
+					if (currentTable != -1) {
+			%>
+		</div>
 	</div>
-	</c:if>
-
-	<%-- 新しいテーブルグループを開始 --%>
+	<%
+	}
+	currentTable = item.getTableNum();
+	%>
 	<div class="table-group">
-		<div class="table-header">🍽️ テーブル ${item.tableNum} 番</div>
+		<div class="table-header">
+			🍽️ テーブル
+			<%=currentTable%>
+			番
+		</div>
 		<div class="item-list">
-
-			<c:set var="currentTable" value="${item.tableNum}" />
-			</c:when>
-			</c:choose>
-
-			<%-- アイテム行 --%>
+			<%
+			}
+			%>
 			<div class="item-row">
 				<div class="item-info">
-					<div class="dish-name">${item.dishName}</div>
-					<div class="quantity">× ${item.quantity}</div>
+					<div class="dish-name"><%=item.getDishName()%></div>
+					<div class="quantity">
+						×
+						<%=item.getQuantity()%></div>
 
 					<div class="time-info">
-						<span>注文時刻: ${item.formattedOrderTime}</span> <span
-							class="elapsed-time ${item.priority}"> 経過:
-							${item.elapsedTimeText} </span>
+						<span>注文時刻: <%=item.getFormattedOrderTime()%></span> <span
+							class="elapsed-time <%=item.getPriority()%>"> 経過: <%=item.getElapsedTimeText()%>
+						</span>
 					</div>
 				</div>
 
 				<div class="item-actions">
-					<form action="${pageContext.request.contextPath}/admin/hall"
+					<form action="<%=request.getContextPath()%>/admin/hall"
 						method="post">
 						<input type="hidden" name="action" value="serve"> <input
-							type="hidden" name="orderItemId" value="${item.orderItemId}">
+							type="hidden" name="orderItemId"
+							value="<%=item.getOrderItemId()%>">
 						<button type="submit" class="btn btn-serve">✅ 配膳完了</button>
 					</form>
 				</div>
 			</div>
-
-			<%-- 最後のアイテムならグループを閉じる --%>
-			<c:if test="${status.last}">
+			<%
+			if (i == hallItems.size() - 1) {
+			%>
 		</div>
 	</div>
-	</c:if>
-	</c:forEach>
+	<%
+	}
+	}
+	%>
 	</div>
-	</c:otherwise>
-	</c:choose>
+	<%
+	}
+	%>
 	</div>
 
 	<div class="auto-refresh">🔄 10秒ごとに自動更新</div>

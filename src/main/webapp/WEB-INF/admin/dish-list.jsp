@@ -1,6 +1,6 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core"%>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>     ← これになっているか？
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>   ← これになっているか？
 <!DOCTYPE html>
 <html>
 <head>

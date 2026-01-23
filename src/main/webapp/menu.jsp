@@ -1,18 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="model.Dish" %>
-<%@ page import="java.util.List" %>
+	pageEncoding="UTF-8"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="model.Dish"%>
+<%@ page import="java.util.List"%>
+<%@ page import="model.CartItem"%>
 
 <%
 // ===== Session 桌号校验 =====
-    Integer tableNum = (Integer) session.getAttribute("tableNum");
-    if (tableNum == null) {
-        response.sendRedirect("index.jsp");
-        return;
-    }
-
-    List<Dish> dishList = (List<Dish>) request.getAttribute("dishList");
+Integer tableNum = (Integer) session.getAttribute("tableNum");
+if (tableNum == null) {
+	response.sendRedirect("index.jsp");
+	return;
+}
 %>
 
 <!DOCTYPE html>
@@ -32,62 +31,96 @@
 	<!--        テーブルtableNumNum %>-->
 	<!--    </div>-->
 
-	<!-- リスト -->
+	<!-- cartリスト -->
 	<div id="sideList" class="side-list">
 		<button id="listBtn" class="side-list-btn">リスト≫</button>
 
 		<div class="list-panel">
 			<ul>
-				<li>メニュー1</li>
-				<li>メニュー2</li>
-				<li>メニュー3</li>
+				<%
+				List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+
+				if (cart == null || cart.isEmpty()) {
+				%>
+				<li>カートは空です</li>
+				<%
+				} else {
+				for (CartItem item : cart) {
+				%>
+				<li class="cart-item"><img src="<%=item.getPhotoPath()%>"
+					width="40"> <span class="cart-name"><%=item.getName()%></span>
+					<span class="cart-qty">× <%=item.getQuantity()%></span> <span
+					class="cart-price"> <%=item.getFormattedSubtotal()%>
+				</span></li>
+				<%
+				}
+				}
+				%>
 			</ul>
 		</div>
 	</div>
 
-	<div class="container">
 
-		<!-- カテゴリ -->
-		<div class="category-area">
-			<button class="category-btn" onclick="showMenu('ramen')">ラーメン</button>
-			<button class="category-btn" onclick="showMenu('teishoku')">定食</button>
-			<button class="category-btn" onclick="showMenu('fried')">揚げ物</button>
+
+		<!--		 カテゴリ -->
+	<div class="container">
+    <a href="<%=request.getContextPath()%>/menu?category=CAT001">麺類</a>
+    <a href="<%=request.getContextPath()%>/menu?category=CAT002">ご飯</a>
+    <a href="<%=request.getContextPath()%>/menu?category=CAT003">点心</a>
+    <a href="<%=request.getContextPath()%>/menu?category=CAT004">揚げ物</a>
+    <a href="<%=request.getContextPath()%>/menu?category=CAT005">ドリンク</a>
+    <a href="<%=request.getContextPath()%>/menu?category=CAT006">デザート</a>
+</div>
+	
+		<!-- メニュー -->
+
+		<%
+		List<Dish> dishList = (List<Dish>) request.getAttribute("dishList");
+		%>
+
+		<%
+		if (dishList == null || dishList.isEmpty()) {
+		%>
+
+		<p>メニューがありません。</p>
+
+		<%
+		} else {
+		%>
+
+		<div class="menu-area" id="menuArea">
+
+			<%
+			for (Dish dish : dishList) {
+			%>
+
+			<div class="menu-item">
+				<form action="<%=request.getContextPath()%>/menu" method="post">
+					<input type="hidden" name="action" value="add"> <input
+						type="hidden" name="dishId" value="<%=dish.getDishId()%>">
+					<input type="hidden" name="quantity" value="1">
+
+					<button type="submit" style="all: unset; cursor: pointer;">
+						<img src="<%=dish.getPhotoPath()%>" alt="">
+						<p>
+							<%=dish.getName()%><br>
+							<%=dish.getFormattedPrice()%>
+						</p>
+					</button>
+				</form>
+			</div>
+
+			<%
+			} // for
+			%>
+
 		</div>
 
-		<!-- メニュー -->
-		
 		<%
-    // MenuServlet 中放进 session 的 dishMap
-    Map<String, Dish> dishMap =
-        (Map<String, Dish>) session.getAttribute("dishMap");
-%>
-		
-		
-<% if (dishMap == null || dishMap.isEmpty()) { %>
-    <p>メニューがありません。</p>
-<% } else { %>
+		}
+		%>
 
-		
-<div class="menu-area" id="menuArea">
-<%
-    if (dishList != null) {
-        for (Dish dish : dishList) {
-%>
-    <div class="menu-item">
-        <img src="<%= dish.getPhotoPath() %>">
-        <p>
-            <%= dish.getName() %><br>
-            <%= dish.getFormattedPrice() %>
-        </p>
-    </div>
-<%
-        }
-    }
-%>
-</div>
 
-<% } %>
-</div>
 
 		<!-- 注文操作 -->
 		<button class="confirm-btn"

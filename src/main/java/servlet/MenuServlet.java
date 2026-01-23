@@ -75,13 +75,25 @@ public class MenuServlet extends HttpServlet {
 			
 				session.setAttribute("dishMap", dishMap);
 
+
 				System.out.println("料理マスタ読み込み: " + dishes.size() + "件");
 
 			} catch (SQLException e) {
 				throw new ServletException("料理マスタ読み込みエラー", e);
 			}
 		}
+		String categoryId = request.getParameter("category");//カテゴリ取得
+		 List<Dish> dishList = new ArrayList<>();
+	        for (Dish dish : dishMap.values()) {
+	            if (categoryId == null || categoryId.isEmpty()) {
+	                dishList.add(dish); // 全件
+	            } else if (categoryId.equals(dish.getCategory())) {
+	                dishList.add(dish); // 指定カテゴリ
+	            }
+	        }
 
+	        request.setAttribute("dishList", dishList);
+	        request.setAttribute("selectedCategory", categoryId);
 		// カートをSessionから取得（なければ新規作成）
 		@SuppressWarnings("unchecked")
 		List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");

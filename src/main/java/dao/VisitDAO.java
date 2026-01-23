@@ -24,6 +24,15 @@ public class VisitDAO {
     private static final String USER = "24jy0228";
     private static final String PASSWORD = "24jy0228";
     
+    // staticイニシャライザでドライバをロード
+    static {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MySQL JDBC Driver not found", e);
+        }
+    }
+    
     /**
      * DB接続を取得
      */

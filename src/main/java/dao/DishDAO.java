@@ -24,7 +24,16 @@ public class DishDAO {
 	 * DB接続を取得
 	 */
 	public Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(URL, USER, PASSWORD);
+		Connection con = null;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+		} catch (ClassNotFoundException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			System.out.println("DBに接続できませんでした");
+		}
+		return con;
 	}
 
 	// ==================== READ ====================

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -105,8 +106,7 @@ public class DishManageServlet extends HttpServlet {
 		request.setAttribute("dishes", dishes);
 
 		// 一覧画面へ
-		request.getRequestDispatcher("/WEB-INF/admin/dish-list.jsp")
-				.forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/admin/dish-list.jsp").forward(request, response);
 	}
 
 	/**
@@ -121,8 +121,8 @@ public class DishManageServlet extends HttpServlet {
 		request.setAttribute("mode", "add");
 
 		// フォーム画面へ
-		request.getRequestDispatcher("/WEB-INF/admin/dish-form.jsp")
-				.forward(request, response);
+		RequestDispatcher dispatcher =  request.getRequestDispatcher("/WEB-INF/admin/dish-form.jsp");
+		dispatcher.forward(request, response);
 	}
 
 	/**

@@ -20,20 +20,28 @@ public class DishDAO {
 	private static final String USER = "24jy0228";
 	private static final String PASSWORD = "24jy0228";
 
+	// staticイニシャライザを一時的にコメントアウト
+	/*
+	static {
+	    try {
+	        Class.forName("com.mysql.jdbc.Driver");
+	    } catch (ClassNotFoundException e) {
+	        throw new RuntimeException("MySQL JDBC Driver not found", e);
+	    }
+	}
+	*/
+
 	/**
 	 * DB接続を取得
 	 */
 	public Connection getConnection() throws SQLException {
-		Connection con = null;
+		// 接続時に明示的にドライバをロード
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
-			System.out.println("DBに接続できませんでした");
 		}
-		return con;
+		return DriverManager.getConnection(URL, USER, PASSWORD);
 	}
 
 	// ==================== READ ====================

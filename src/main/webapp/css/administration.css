@@ -1,19 +1,50 @@
-body{
+body {
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 25px;
+    background-color: #E9EBF5; /* 建议背景色与整体风格一致 */
 }
 
-h1{
+h1 {
     font-size: 480%;
     margin-top: 0px;
+    color: #333;
 }
 
-button{
-    height: 50px;
-    width: 250px;
+button {
+    height: 60px; /* 稍微增加高度以适应大字体 */
+    width: 300px;
     font-size: 180%;
+    background-color: #4472c4;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    
+    /* 初始阴影：右下角偏移 */
+    box-shadow: 4px 4px 0px #2e4d85;
+    
+    /* 平滑过渡效果 */
+    transition: all 0.1s ease;
+    
+    /* 防止文字被选中 */
+    user-select: none;
+}
+
+/* 悬停效果：按钮稍微变亮 */
+button:hover {
+    background-color: #5583d5;
+}
+
+/* 点击效果：模仿物理点击感 */
+button:active {
+    /* 1. 减少阴影大小 */
+    box-shadow: 1px 1px 0px #2e4d85;
+    
+    /* 2. 按钮向右下角移动，抵消掉减少的阴影高度 */
+    transform: translate(3px, 3px);
 }

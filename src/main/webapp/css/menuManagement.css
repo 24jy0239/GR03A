@@ -1,169 +1,112 @@
-/* --- 共通CSSの上書き・調整 --- */
-body {
-    background-image: none;
-    background-color: #E9EBF5;
-    /* 全体を上下左右中央に配置する設定 */
+/* Core Layout */
+html, body {
+    height: 100%;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;    /* 左右中央 */
-    justify-content: center; /* 上下中央 */
-    min-height: 100vh;      /* 画面の高さ一杯を使って中央寄せ */
+    overflow: hidden; /* Page doesn't scroll, only the list does */
+    background-color: #E9EBF5;
+    font-family: "Hiragino Sans", sans-serif;
 }
 
-/* ヘッダー：横幅を固定してボタン配置の基準にする */
-.header {
-    width: 100%;
-    max-width: 1200px;
+.page-header {
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    margin-bottom: 20px;
 }
 
-h1 {
-    text-align: center;
-    font-size: 360%;
-    margin-top: 30px;
-    margin-bottom: 10px;
-}
+.page-title { font-size: 4rem; margin: 0; }
 
-/* ★右上の戻るボタンを大きく修正 */
-#topBtn {
-    position: absolute;
-    right: 40px;
-    top: 50%;
-    transform: translateY(-50%); /* 縦方向のズレを微調整 */
-    
-    /* サイズを大きく変更 */
-    width: 180px;  /* 横幅を拡大 */
-    height: 55px;  /* 高さを拡大 */
-    font-size: 22px; /* 文字を大きく */
-    
+.header-btn-wrap { position: absolute; right: 50px; }
+
+#topBtn { width: 180px; height: 55px; font-size: 22px; }
+
+/* Buttons & Controls */
+.effect-btn {
     background-color: #4472C4;
-    color: #FFFFFF;
-    border-radius: 10px;
+    color: white;
     border: none;
+    border-radius: 10px;
     font-weight: bold;
-    box-shadow: 3px 3px #5f5f5f;
     cursor: pointer;
+    box-shadow: 4px 4px 0px #2e4d85;
+    transition: all 0.1s ease;
 }
+.effect-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0px #2e4d85; }
 
-/* メインコンテナ */
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* 検索行全体：横一行に並べる設定 */
-.search-row {
-    margin-top: 50px;
-    display: flex;
-    justify-content: center; /* 中央寄せ */
-    align-items: center;     /* 縦方向の中央を揃える */
-    gap: 20px;               /* 各要素の間隔（お好みで調整） */
-    width: 100%;
-}
-
-/* 入力ボックスの背景（グレーの部分） */
-.keyword-box {
-    background-color: #CDD4EA;
-    padding: 10px 20px;      /* 上下を少し細くして一行に馴染ませる */
-    display: flex;
-    align-items: center;
-    min-width: 400px;        /* 幅は維持 */
-    height: 50px;            /* ボタンの高さに合わせる */
-    border-radius: 5px;
-}
-
-.keyword-label {
-    font-size: 18px;
-    color: #8b8b8b;
-    margin: 0 0 12px 0;
-    font-weight: bold;
-}
-
-/* 入力欄自体の高さ調整 */
-.keyword-input {
-    width: 100%;
-    height: 35px;
-    padding: 0 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 18px;
-}
-
-/* 検索 / 新規ボタン */
-.action-buttons {
+.control-panel {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    gap: 25px;
+    padding-bottom: 20px;
 }
 
-/* ボタンの調整：action-buttonsという囲みを使わず、直接並べる */
-.btn-primary {
-    background-color: #4472C4;
-    color: #FFFFFF;
-    border-radius: 10px;
-    border: none;
-    height: 50px;           /* keyword-boxの高さに合わせると綺麗です */
-    width: 140px;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 3px 3px #5f5f5f;
-    cursor: pointer;
+.search-row { display: flex; gap: 20px; align-items: center; }
+.keyword-box { 
+    background-color: #CDD4EA; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    min-width: 400px; 
+    height: 55px;
     display: flex;
-    justify-content: center;
     align-items: center;
 }
+.keyword-input { width: 100%; height: 35px; font-size: 18px; border-radius: 4px; border: 1px solid #ccc; }
+.btn-primary { width: 140px; height: 55px; font-size: 18px; }
 
-/* カテゴリボタン行 */
-.category-row {
-    margin-top: 20px;
+.category-row { display: flex; gap: 12px; }
+.cat-btn { padding: 10px 30px; font-size: 18px; min-width: 120px; }
+.cat-btn.active { background-color: #2e4d85; }
+
+/* The Fix: Alignment and Scrolling */
+.main-container {
+    height: calc(100vh - 120px);
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    flex-direction: column;
 }
 
-.cat-btn {
-    background-color: #FFFFFF;
-    color: #000;
-    border: 1px solid #000;
-    padding: 8px 24px;
-    font-size: 16px;
+.dish-scroll-area {
+    flex: 1; /* Takes up all remaining vertical space */
+    overflow-y: auto; /* Enables scrolling */
+    display: flex;
+    justify-content: center; /* Centers the grid horizontally */
+    padding: 20px 0 50px 0;
+}
+
+.dish-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 per row */
+    gap: 50px 40px; /* Vertical and Horizontal spacing */
+    height: max-content; /* Ensure grid doesn't stretch past content */
+}
+
+.dish-card {
+    width: 220px;
+    text-align: center;
     cursor: pointer;
 }
 
-.cat-btn.active {
-    font-weight: bold;
-}
-
-/* メニューグリッドの中央寄せ */
-.menu-grid {
-    margin-top: 60px;
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap; /* 画面幅に合わせて折り返すように変更 */
-}
-
-.menu-card {
-    text-align: center;
-}
-
-.menu-card img {
+.image-box {
     width: 220px;
     height: 220px;
-    object-fit: cover;
-    border-radius: 32px;
+    background-color: #f0f0f0;
+    border-radius: 35px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.menu-name {
-    margin-top: 12px;
-    font-size: 22px;
-    font-weight: bold;
-}
+.image-box img { width: 100%; height: 100%; object-fit: cover; }
 
-/* 以前あったボタン用の囲み（action-buttons）のスタイルは不要になります */
-.action-buttons {
-    display: contents; /* 囲みを無視して中身を直接並べる */
+.dish-label { margin-top: 15px; font-size: 22px; font-weight: bold; }
+
+/* Custom Scrollbar */
+.dish-scroll-area::-webkit-scrollbar { width: 12px; }
+.dish-scroll-area::-webkit-scrollbar-thumb {
+    background: #4472C4;
+    border-radius: 10px;
+    border: 3px solid #E9EBF5;
 }

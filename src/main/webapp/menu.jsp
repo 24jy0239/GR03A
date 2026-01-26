@@ -21,7 +21,7 @@ if (tableNum == null) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>注文画面</title>
 <link rel="stylesheet" href="./css/orderCommon.css">
-<link rel="stylesheet" href="./css/orderMenu.css?v=5">
+<link rel="stylesheet" href="./css/orderMenu.css?v=999">
 </head>
 
 <body>
@@ -60,20 +60,25 @@ if (tableNum == null) {
 		</div>
 	</div>
 
-
-
-		<!--		 カテゴリ -->
+	<!--		 カテゴリ -->
 	<div class="container">
-    <a href="<%=request.getContextPath()%>/menu?category=CAT001">麺類</a>
-    <a href="<%=request.getContextPath()%>/menu?category=CAT002">ご飯</a>
-    <a href="<%=request.getContextPath()%>/menu?category=CAT003">点心</a>
-    <a href="<%=request.getContextPath()%>/menu?category=CAT004">揚げ物</a>
-    <a href="<%=request.getContextPath()%>/menu?category=CAT005">ドリンク</a>
-    <a href="<%=request.getContextPath()%>/menu?category=CAT006">デザート</a>
-</div>
-	
-		<!-- メニュー -->
 
+		<div class="category-area">
+			<a class="category-btn"
+				href="<%=request.getContextPath()%>/menu?category=CAT001">麺類</a> <a
+				class="category-btn"
+				href="<%=request.getContextPath()%>/menu?category=CAT002">ご飯</a> <a
+				class="category-btn"
+				href="<%=request.getContextPath()%>/menu?category=CAT003">点心</a> <a
+				class="category-btn"
+				href="<%=request.getContextPath()%>/menu?category=CAT004">揚げ物</a> <a
+				class="category-btn"
+				href="<%=request.getContextPath()%>/menu?category=CAT005">ドリンク</a> <a
+				class="category-btn"
+				href="<%=request.getContextPath()%>/menu?category=CAT006">デザート</a>
+		</div>
+
+		<!-- メニュー -->
 		<%
 		List<Dish> dishList = (List<Dish>) request.getAttribute("dishList");
 		%>
@@ -128,6 +133,7 @@ if (tableNum == null) {
 
 		<button class="send-btn"
 			onclick="location.href='orderConfirmation.jsp'">注文送信</button>
+
 	</div>
 
 	<!-- モーダル -->

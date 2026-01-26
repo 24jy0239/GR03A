@@ -135,7 +135,7 @@ button:active {
 			<a href="${pageContext.request.contextPath}/admin/kitchen">🔪キッチン画面</a> 
 			<a href="${pageContext.request.contextPath}/admin/hall">🚶ホール画面</a> 
 			<a href="${pageContext.request.contextPath}/admin/table-status">📊テーブル状態</a> 
-			<a href="/admin/dish-manage">🍽️料理管理</a>
+			<a href="${pageContext.request.contextPath}/admin/dish-manage">🍽️料理管理</a>
 		</div>
 	</div>
 </body>

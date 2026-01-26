@@ -72,9 +72,7 @@ public class MenuServlet extends HttpServlet {
 					dishMap.put(dish.getDishId(), dish);
 				}
 
-			
 				session.setAttribute("dishMap", dishMap);
-
 
 				System.out.println("料理マスタ読み込み: " + dishes.size() + "件");
 
@@ -83,17 +81,17 @@ public class MenuServlet extends HttpServlet {
 			}
 		}
 		String categoryId = request.getParameter("category");//カテゴリ取得
-		 List<Dish> dishList = new ArrayList<>();
-	        for (Dish dish : dishMap.values()) {
-	            if (categoryId == null || categoryId.isEmpty()) {
-	                dishList.add(dish); // 全件
-	            } else if (categoryId.equals(dish.getCategory())) {
-	                dishList.add(dish); // 指定カテゴリ
-	            }
-	        }
+		List<Dish> dishList = new ArrayList<>();
+		for (Dish dish : dishMap.values()) {
+			if (categoryId == null || categoryId.isEmpty()) {
+				dishList.add(dish); // 全件
+			} else if (categoryId.equals(dish.getCategory())) {
+				dishList.add(dish); // 指定カテゴリ
+			}
+		}
 
-	        request.setAttribute("dishList", dishList);
-	        request.setAttribute("selectedCategory", categoryId);
+		request.setAttribute("dishList", dishList);
+		request.setAttribute("selectedCategory", categoryId);
 		// カートをSessionから取得（なければ新規作成）
 		@SuppressWarnings("unchecked")
 		List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
@@ -186,6 +184,24 @@ public class MenuServlet extends HttpServlet {
 
 			System.out.println("カート更新: dishId=" + dishId + ", quantity=" + quantity);
 
+		} else if ("decrease".equals(action)) {
+			String dishId = request.getParameter("dishId");
+
+			for (int i = 0; i < cart.size(); i++) {
+				CartItem item = cart.get(i);
+				if (item.getDishId().equals(dishId)) {
+					int newQty = item.getQuantity() - 1;
+
+					if (newQty <= 0) {
+						cart.remove(i);
+					} else {
+						item.setQuantity(newQty);
+					}
+					break;
+				}
+			}
+
+			System.out.println("カート減少: dishId=" + dishId);
 		} else if ("clear".equals(action)) {
 			// カートをクリア
 			cart.clear();

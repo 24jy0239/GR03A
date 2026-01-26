@@ -74,7 +74,7 @@ public class OrderServlet extends HttpServlet {
 
 		if (cart == null || cart.isEmpty()) {
 			// カートが空の場合はメニューへ戻す
-			response.sendRedirect(request.getContextPath() + "/menu");
+			response.sendRedirect(request.getContextPath() + "/menu?sent=1");
 			return;
 		}
 

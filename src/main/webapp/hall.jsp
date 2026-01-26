@@ -216,7 +216,7 @@
 
         <button class="btn-primary footer-btn footer-btn-long"
                 type="button"
-                onclick="location.href='${pageContext.request.contextPath}/admin/hall-by-time'">
+                onclick="location.href='${pageContext.request.contextPath}/table-status.jsp'">
             配膳待ち一覧<br>（時間順）
         </button>
     </footer>

@@ -14,11 +14,10 @@ html, body {
    HEADER
 ================================ */
 .header {
-    position: relative;      /* 给 backBtn 作为 absolute 的参照 */
+    position: relative;      
     height: 12vh;
 }
 
-/* 标题：水平 + 垂直居中 */
 .header h1 {
     margin: 0;
     height: 12vh;
@@ -28,7 +27,6 @@ html, body {
     font-weight: bold;
 }
 
-/* 返回按钮：右上角（唯一且最终定义） */
 #backBtn {
     position: absolute;
     top: 18px;
@@ -55,7 +53,6 @@ html, body {
     display: flex;
 }
 
-/* 左右两栏，各占 50% */
 .left-side,
 .right-side {
     width: 50%;
@@ -67,11 +64,11 @@ html, body {
 }
 
 /* ================================
-   CARD（每一行）
+   CARD
 ================================ */
 .confirm-card {
     display: grid;
-    grid-template-columns: 3fr 1fr; /* 左：菜品信息 / 右：状态或按钮 */
+    grid-template-columns: 3fr 1fr; 
     background-color: #E3E7F5;
     border-radius: 6px;
 }
@@ -81,9 +78,6 @@ html, body {
     border: 1px solid #C7CFE8;
 }
 
-/* ================================
-   左侧：菜品信息
-================================ */
 .name-col {
     padding: 10px;
 }
@@ -93,7 +87,6 @@ html, body {
     font-weight: bold;
 }
 
-/* 卓番 / 经历 / 数量 */
 .info-row-3 {
     margin-top: 6px;
     display: grid;
@@ -110,15 +103,11 @@ html, body {
     font-size: 14px;
 }
 
-.info-box .info-value,
 .info-box strong {
     font-size: 18px;
     font-weight: bold;
 }
 
-/* ================================
-   右侧：状态 / 操作
-================================ */
 .action-col {
     background-color: #C3D4F0;
     display: flex;
@@ -127,7 +116,6 @@ html, body {
     font-weight: bold;
 }
 
-/* “済む” 按钮 */
 .action-btn {
     width: 70%;
     height: 46px;
@@ -148,9 +136,6 @@ html, body {
     box-shadow: 1px 1px #5f5f5f;
 }
 
-/* ================================
-   空行隐藏内容
-================================ */
 .confirm-card.empty .name-col,
 .confirm-card.empty .action-col {
     display: none;

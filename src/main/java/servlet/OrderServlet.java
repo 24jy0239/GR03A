@@ -93,7 +93,7 @@ public class OrderServlet extends HttpServlet {
 			session.setAttribute("message", "ご注文ありがとうございます！");
 
 			// メニュー画面へリダイレクト（追加注文可能）
-			response.sendRedirect(request.getContextPath() + "/menu");
+			response.sendRedirect(request.getContextPath() + "/menu?sent=1");
 
 		} catch (Exception e) {
 			e.printStackTrace();

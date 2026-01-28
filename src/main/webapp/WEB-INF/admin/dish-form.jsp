@@ -34,7 +34,7 @@
 <body>
     <header class="header">
         <h1 class="page-title"><%= pageTitle %></h1>
-        <button id="topBtn" class="btn-primary" onclick="history.back()">TOPに戻る</button>
+        <button id="topBtn" class="btn-primary" onclick="history.back()">戻る</button>
     </header>
 
     <main class="new-menu-container">

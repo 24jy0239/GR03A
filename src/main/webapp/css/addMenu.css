@@ -23,7 +23,7 @@ h1.page-title { font-size: 3.5rem; margin: 0; }
 /* 返回按钮：增加点击缩放特效 */
 #topBtn {
     position: absolute;
-    right: 50px; /* 避免出界 */
+    right: 50px; /* 距离右边界 50px */
     top: 40px;
     width: 200px;
     height: 65px;
@@ -35,7 +35,7 @@ h1.page-title { font-size: 3.5rem; margin: 0; }
     border-radius: 10px;
     cursor: pointer;
     box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
-    transition: transform 0.1s, box-shadow 0.1s;
+    transition: transform 0.1s; /* 添加平滑特效 */
 }
 
 /* 统一所有按钮的点击效果 */
@@ -76,9 +76,9 @@ h1.page-title { font-size: 3.5rem; margin: 0; }
 .new-menu-buttons { display: flex; justify-content: center; gap: 40px; }
 
 .btn-large {
-    width: 220px;
-    height: 70px;
-    font-size: 28px;
+    width: 320px;   /* 增加宽度，使其与上方照片框等宽 */
+    height: 75px;   /* 稍微增加高度，提升大气感 */
+    font-size: 26px;
     border-radius: 15px;
     border: none;
     font-weight: bold;

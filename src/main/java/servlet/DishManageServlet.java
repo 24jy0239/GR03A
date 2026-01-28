@@ -206,32 +206,24 @@ public class DishManageServlet extends HttpServlet {
 	/**
 	 * 料理編集
 	 */
-	private void editDish(HttpServletRequest request, HttpSession session)
-			throws SQLException {
+	private void editDish(HttpServletRequest request, HttpSession session) throws SQLException {
+	    String dishId = request.getParameter("dishId");
+	    String dishName = request.getParameter("dishName");
+	    int dishPrice = Integer.parseInt(request.getParameter("dishPrice"));
+	    String dishCategory = request.getParameter("dishCategory"); // 这里拿到的是 CAT001
+	    String dishPhoto = request.getParameter("dishPhoto");
+	    boolean available = "1".equals(request.getParameter("available"));
 
-		// パラメータ取得
-		String dishId = request.getParameter("dishId");
-		String dishName = request.getParameter("dishName");
-		int dishPrice = Integer.parseInt(request.getParameter("dishPrice"));
-		String dishCategory = request.getParameter("dishCategory");
-		String dishPhoto = request.getParameter("dishPhoto");
-		boolean available = "1".equals(request.getParameter("available"));
+	    Dish dish = new Dish();
+	    dish.setDishId(dishId);
+	    dish.setName(dishName);
+	    dish.setPrice(dishPrice);
+	    dish.setCategory(dishCategory);
+	    dish.setPhoto(dishPhoto);
+	    dish.setAvailable(available);
 
-		// Dishオブジェクト作成
-		Dish dish = new Dish();
-		dish.setDishId(dishId);
-		dish.setName(dishName);
-		dish.setPrice(dishPrice);
-		dish.setCategory(dishCategory);
-		dish.setPhoto(dishPhoto);
-		dish.setAvailable(available);
-
-		// DB更新
-		dishDAO.update(dish);
-
-		System.out.println("料理更新: " + dishName + " (ID: " + dishId + ")");
-
-		session.setAttribute("message", "料理「" + dishName + "」を更新しました");
+	    dishDAO.update(dish);
+	    session.setAttribute("message", "料理「" + dishName + "」を更新しました");
 	}
 
 	/**
@@ -254,17 +246,15 @@ public class DishManageServlet extends HttpServlet {
 	/**
 	 * 論理削除
 	 */
-	private void deleteDish(HttpServletRequest request, HttpSession session)
-			throws SQLException {
+	private void deleteDish(HttpServletRequest request, HttpSession session) throws SQLException {
+	    String dishId = request.getParameter("dishId");
 
-		String dishId = request.getParameter("dishId");
+	    if (dishId != null) {
+	        // 修改这里：从 softDelete 改为 hardDelete
+	        dishDAO.hardDelete(dishId); 
 
-		if (dishId != null) {
-			dishDAO.softDelete(dishId);
-
-			System.out.println("料理削除（論理）: " + dishId);
-
-			session.setAttribute("message", "料理を削除しました");
-		}
+	        System.out.println("料理物理删除: " + dishId);
+	        session.setAttribute("message", "料理をデータベースから完全に削除しました");
+	    }
 	}
 }

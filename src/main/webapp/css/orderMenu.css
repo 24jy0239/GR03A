@@ -207,7 +207,7 @@ body {
 /* =====================
    注文操作
 ===================== */
-.confirm-btn {
+.history-btn {
     position: absolute;
     bottom: 20px;
     left: 20px;

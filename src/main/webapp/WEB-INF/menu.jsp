@@ -31,6 +31,7 @@ if (message != null) {
 }
 %>
 
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -38,7 +39,7 @@ if (message != null) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>注文画面</title>
 <link rel="stylesheet" href="./css/orderCommon.css">
-<link rel="stylesheet" href="./css/orderMenu.css?v=999">
+<link rel="stylesheet" href="./css/orderMenu.css?v=5">
 </head>
 
 <body>
@@ -148,62 +149,63 @@ if (message != null) {
 		<%
 		} else {
 		%>
-<div class="menu-viewport">
-		<div class="menu-area" id="menuArea">
+		<div class="menu-viewport">
+			<div class="menu-area" id="menuArea">
 
-			<%
-			for (Dish dish : dishList) {
-			%>
+				<%
+				for (Dish dish : dishList) {
+				%>
 
-			<div class="menu-item">
-				<form action="<%=request.getContextPath()%>/menu" method="post">
-					<input type="hidden" name="action" value="add"> <input
-						type="hidden" name="dishId" value="<%=dish.getDishId()%>">
-					<input type="hidden" name="quantity" value="1">
+				<div class="menu-item">
+					<form action="<%=request.getContextPath()%>/menu" method="post">
+						<input type="hidden" name="action" value="add"> <input
+							type="hidden" name="dishId" value="<%=dish.getDishId()%>">
+						<input type="hidden" name="quantity" value="1">
 
-					<button type="submit" style="all: unset; cursor: pointer;">
-						<img src="<%=dish.getPhotoPath()%>" alt="">
-						<p>
-							<%=dish.getName()%><br>
-							<%=dish.getFormattedPrice()%>
-						</p>
-					</button>
-				</form>
+						<button type="submit" style="all: unset; cursor: pointer;">
+							<img src="<%=dish.getPhotoPath()%>" alt="">
+							<p>
+								<%=dish.getName()%><br>
+								<%=dish.getFormattedPrice()%>
+							</p>
+						</button>
+					</form>
+				</div>
+
+				<%
+				} // for
+				%>
+
 			</div>
-
-			<%
-			} // for
-			%>
-
 		</div>
-</div>
 		<%
 		}
 		%>
 
-
-
+		<!-- 注文操作 -->
 		<!-- 注文操作 -->
 		<button class="confirm-btn"
-			onclick="location.href='<%=request.getContextPath()%>/order'">
-			注文確認</button>
+			onclick="location.href='<%=request.getContextPath()%>/order/history'">
+			注文履歴</button>
 
-		<form action="<%=request.getContextPath()%>/order" method="post">
-			<button type="submit" class="send-btn">注文送信</button>
-		</form>
+		<button class="pay-btn"
+			onclick="location.href='<%=request.getContextPath()%>/order/payment'">
+			会計</button>
+
+		<button class="send-btn"
+			onclick="location.href='<%=request.getContextPath()%>/order-confirm'">
+			注文送信</button>
 
 
-	</div>
-
-	<!-- モーダル -->
-	<div id="sentModal" class="modal">
-		<div class="modal-content">
-			<p>注文を送信しました！</p>
-			<button id="closeModal">閉じる</button>
+		<!-- モーダル -->
+		<div id="sentModal" class="modal">
+			<div class="modal-content">
+				<p>注文を送信しました！</p>
+				<button id="closeModal">閉じる</button>
+			</div>
 		</div>
-	</div>
 
-	<script>
+		<script>
         document.addEventListener("DOMContentLoaded", () => {
 
             /* リスト開閉 */
@@ -229,6 +231,5 @@ if (message != null) {
             });
         });
     </script>
-
 </body>
 </html>

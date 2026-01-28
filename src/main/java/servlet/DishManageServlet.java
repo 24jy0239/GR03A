@@ -98,29 +98,29 @@ public class DishManageServlet extends HttpServlet {
 	 * 料理一覧表示
 	 */
 	private void showList(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException, SQLException {
+			throws ServletException, IOException, SQLException {
 
-	    String category = request.getParameter("category");
-	    String keyword = request.getParameter("keyword");
-	    
-	    // 【核心修复】：直接从数据库查询所有分类名，不再从 allDishes 里提取
-	    List<String> allCategories = dishDAO.getAllCategoryNames(); 
+		String category = request.getParameter("category");
+		String keyword = request.getParameter("keyword");
 
-	    // 获取用于展示的过滤列表
-	    List<Dish> displayDishes;
-	    if (keyword != null && !keyword.trim().isEmpty()) {
-	        displayDishes = dishDAO.findByKeyword(keyword);
-	    } else if (category != null && !category.isEmpty() && !"すべて".equals(category)) {
-	        displayDishes = dishDAO.findByKeyword(category);
-	    } else {
-	        displayDishes = dishDAO.findAll();
-	    }
+		// 【核心修复】：直接从数据库查询所有分类名，不再从 allDishes 里提取
+		List<String> allCategories = dishDAO.getAllCategoryNames();
 
-	    // 将两个列表传给 JSP
-	    request.setAttribute("fullCategories", allCategories); 
-	    request.setAttribute("dishes", displayDishes);        
-	    
-	    request.getRequestDispatcher("/WEB-INF/admin/dish-list.jsp").forward(request, response);
+		// 获取用于展示的过滤列表
+		List<Dish> displayDishes;
+		if (keyword != null && !keyword.trim().isEmpty()) {
+			displayDishes = dishDAO.findByKeyword(keyword);
+		} else if (category != null && !category.isEmpty() && !"すべて".equals(category)) {
+			displayDishes = dishDAO.findByKeyword(category);
+		} else {
+			displayDishes = dishDAO.findAll();
+		}
+
+		// 将两个列表传给 JSP
+		request.setAttribute("fullCategories", allCategories);
+		request.setAttribute("dishes", displayDishes);
+
+		request.getRequestDispatcher("/WEB-INF/admin/dish-list.jsp").forward(request, response);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class DishManageServlet extends HttpServlet {
 		request.setAttribute("mode", "add");
 
 		// フォーム画面へ
-		RequestDispatcher dispatcher =  request.getRequestDispatcher("/WEB-INF/admin/dish-form.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/admin/dish-form.jsp");
 		dispatcher.forward(request, response);
 	}
 

@@ -57,38 +57,48 @@ public class OrderManager {
 
 	/**
 	 * VISIT_ID生成
-	 * フォーマット: YYYYMMDD-HHMM-XXXXX
-	 * 例: 20260116-1030-XY7K9
+	 * フォーマット: VISYYMMDDHHMMss
+	 * 例: VIS260116103045
+	 * 長さ: 15文字
 	 */
 	public String generateVisitId() {
 		LocalDateTime now = LocalDateTime.now();
 
-		// 日付部分（YYYYMMDD）
-		String datePart = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		// VIS + 年月日時分秒（YYMMDDHHMMss）
+		String timestamp = now.format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
 
-		// 時分部分（HHMM）
-		String timePart = now.format(DateTimeFormatter.ofPattern("HHmm"));
-
-		// ランダム英数5文字
-		String randomPart = generateRandomString(5);
-
-		return datePart + "-" + timePart + "-" + randomPart;
+		return "VIS" + timestamp;
 	}
 
 	/**
 	 * ORDER_ID生成
-	 * 同じ形式
+	 * フォーマット: ORDYYMMDDHHMMss
+	 * 例: ORD260116103045
+	 * 長さ: 15文字
 	 */
 	public String generateOrderId() {
-		return generateVisitId();
+		LocalDateTime now = LocalDateTime.now();
+
+		// ORD + 年月日時分秒（YYMMDDHHMMss）
+		String timestamp = now.format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
+
+		return "ORD" + timestamp;
 	}
 
 	/**
 	 * ORDER_ITEM_ID生成
-	 * 同じ形式
+	 * フォーマット: ITMYYMMDDHHMMssRRR
+	 * 例: ITM26011610304ABC
+	 * 長さ: 18文字（最後の3文字はランダム）
 	 */
 	public String generateOrderItemId() {
-		return generateVisitId();
+		LocalDateTime now = LocalDateTime.now();
+
+		// ITM + 年月日時分秒（YYMMDDHHMMss） + ランダム3文字
+		String timestamp = now.format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
+		String randomChars = generateRandomString(3);
+
+		return "ITM" + timestamp + randomChars;
 	}
 
 	/**
@@ -351,6 +361,76 @@ public class OrderManager {
 		System.out.println("会計完了: visitId=" + visitId
 				+ ", total=" + visit.getTotalAmount()
 				+ ", time=" + paymentTime);
+	}
+
+	/**
+	 * DB保存（特定の Order の OrderItem のみ）
+	 */
+	public void saveOrderItems(Order order) throws SQLException {
+		if (order == null) {
+			throw new IllegalArgumentException("Order is null");
+		}
+
+		String visitId = order.getVisitId();
+		Visit visit = visits.get(visitId);
+
+		if (visit == null) {
+			throw new IllegalArgumentException("Visit not found: " + visitId);
+		}
+
+		OrderDAO orderDAO = new OrderDAO();
+		Connection conn = null;
+
+		try {
+			// トランザクション開始
+			conn = orderDAO.getConnection();
+			conn.setAutoCommit(false);
+
+			// Visit が DB に存在しない場合は保存
+			VisitDAO visitDAO = new VisitDAO();
+			try {
+				visitDAO.save(conn, visit);
+				System.out.println("Visit保存: " + visitId);
+			} catch (SQLException e) {
+				// 既に存在する場合は無視（または UPDATE）
+				System.out.println("Visit既存: " + visitId);
+			}
+
+			// OrderItem 保存
+			int itemCount = 0;
+			for (OrderItem item : order.getOrderItems()) {
+				orderDAO.saveItemDirect(conn, visitId, item);
+				itemCount++;
+			}
+			System.out.println("OrderItem保存: " + itemCount + "件");
+
+			// コミット
+			conn.commit();
+			System.out.println("DB保存完了: orderId=" + order.getOrderId());
+
+		} catch (SQLException e) {
+			// ロールバック
+			if (conn != null) {
+				try {
+					conn.rollback();
+					System.out.println("ロールバック実行");
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
+			}
+			throw e;
+
+		} finally {
+			// 接続クローズ
+			if (conn != null) {
+				try {
+					conn.setAutoCommit(true);
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**

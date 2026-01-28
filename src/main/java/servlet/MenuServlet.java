@@ -80,7 +80,9 @@ public class MenuServlet extends HttpServlet {
 				throw new ServletException("料理マスタ読み込みエラー", e);
 			}
 		}
-		String categoryId = request.getParameter("category");//カテゴリ取得
+
+		// カテゴリフィルター処理（グループメンバーの機能）
+		String categoryId = request.getParameter("category");
 		List<Dish> dishList = new ArrayList<>();
 		for (Dish dish : dishMap.values()) {
 			if (categoryId == null || categoryId.isEmpty()) {
@@ -92,6 +94,7 @@ public class MenuServlet extends HttpServlet {
 
 		request.setAttribute("dishList", dishList);
 		request.setAttribute("selectedCategory", categoryId);
+
 		// カートをSessionから取得（なければ新規作成）
 		@SuppressWarnings("unchecked")
 		List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
@@ -101,13 +104,30 @@ public class MenuServlet extends HttpServlet {
 			session.setAttribute("cart", cart);
 		}
 
-		// カートの合計金額を計算
+		// カートの合計金額と商品数を計算
 		int cartTotal = cart.stream()
 				.mapToInt(CartItem::getSubtotal)
 				.sum();
+		int cartCount = cart.size();
 
+		// requestにセット（JSP表示用）
 		request.setAttribute("cartTotal", cartTotal);
-		request.setAttribute("cartCount", cart.size());
+		request.setAttribute("cartCount", cartCount);
+
+		// sessionにもセット（OrderConfirmServlet用）
+		session.setAttribute("cartTotal", cartTotal);
+		session.setAttribute("cartCount", cartCount);
+
+		// 注文履歴を取得（あなたのコードの機能）
+		String visitId = (String) session.getAttribute("visitId");
+		if (visitId != null) {
+			Visit visit = manager.getVisit(visitId);
+			if (visit != null) {
+				// 注文履歴をrequestにセット
+				request.setAttribute("visit", visit);
+				request.setAttribute("orderHistory", visit.getOrders());
+			}
+		}
 
 		// メニュー画面へ
 		request.getRequestDispatcher("/WEB-INF/menu.jsp").forward(request, response);

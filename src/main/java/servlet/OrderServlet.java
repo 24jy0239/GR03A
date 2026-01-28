@@ -79,15 +79,29 @@ public class OrderServlet extends HttpServlet {
 		}
 
 		try {
-			// カートから注文作成
+			// カートから注文作成（メモリに保存）
 			Order order = manager.createOrderFromCart(visitId, cart);
 
 			System.out.println("注文確定: orderId=" + order.getOrderId()
 					+ ", items=" + order.getItemCount()
 					+ ", total=" + order.calculateTotal());
 
+			// データベースに保存（重要！）
+			try {
+				manager.saveOrderItems(order);
+				System.out.println("DB保存完了: orderId=" + order.getOrderId());
+			} catch (Exception e) {
+				System.err.println("DB保存エラー: " + e.getMessage());
+				e.printStackTrace();
+				// DB保存に失敗してもメモリには保存されているので続行
+			}
+
 			// カートをクリア
 			cart.clear();
+
+			// sessionのカウントもクリア
+			session.setAttribute("cartCount", 0);
+			session.setAttribute("cartTotal", 0);
 
 			// 成功メッセージ
 			session.setAttribute("message", "ご注文ありがとうございます！");

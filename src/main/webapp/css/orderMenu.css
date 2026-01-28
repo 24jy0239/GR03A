@@ -163,20 +163,36 @@ body {
 /* =====================
    メニュー部分
 ===================== */
-.menu-area {
+
+.menu-viewport {
     position: absolute;
     top: 100px;
     left: 50%;
     transform: translateX(-50%);
 
     width: 80%;
+    height: calc(100vh - 200px);  /* 🔥 自动适应窗口 */
+
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.menu-area {
     display: grid;
 
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, auto);
+    grid-template-rows: repeat(3, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: 180px;
+
     gap: 20px;
-    justify-items: center;
+
+    width: max-content;
+    height: 100%;   /* 🔥 非常重要 */
 }
+
+
+
+
 
 .menu-item {
     text-align: center;

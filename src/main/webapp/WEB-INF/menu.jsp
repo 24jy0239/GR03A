@@ -64,7 +64,7 @@ if (message != null) {
 				%>
 
 				<li class="cart-item">
-					<!-- 商品名 + 单价 -->
+					<!-- 商品名 + 単価 -->
 					<div class="cart-left">
 						<div class="cart-name"><%=item.getName()%></div>
 						<div class="cart-unit-price">
@@ -73,7 +73,7 @@ if (message != null) {
 					</div> <!-- 数量操作 -->
 					<div class="cart-right">
 
-						<!-- 减号 -->
+						<!-- 减 -->
 						<form action="<%=request.getContextPath()%>/menu" method="post">
 							<input type="hidden" name="action" value="decrease"> <input
 								type="hidden" name="dishId" value="<%=item.getDishId()%>">
@@ -82,7 +82,7 @@ if (message != null) {
 
 						<span class="cart-qty"><%=item.getQuantity()%></span>
 
-						<!-- 加号 -->
+						<!-- 加 -->
 						<form action="<%=request.getContextPath()%>/menu" method="post">
 							<input type="hidden" name="action" value="add"> <input
 								type="hidden" name="dishId" value="<%=item.getDishId()%>">
@@ -148,7 +148,7 @@ if (message != null) {
 		<%
 		} else {
 		%>
-
+<div class="menu-viewport">
 		<div class="menu-area" id="menuArea">
 
 			<%
@@ -176,7 +176,7 @@ if (message != null) {
 			%>
 
 		</div>
-
+</div>
 		<%
 		}
 		%>

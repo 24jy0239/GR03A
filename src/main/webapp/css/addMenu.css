@@ -1,41 +1,33 @@
-/* 全体のレイアウト調整：画面の真ん中に配置 */
 body {
     background-color: #E9EBF5;
-    font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    font-family: sans-serif;
     margin: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;    /* 左右中央 */
-    justify-content: center; /* 上下中央 */
-    min-height: 100vh;      /* 画面全体の高さに対して中央にする */
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
 }
 
-/* ヘッダー：横幅を固定して中央寄せの基準にする */
 .header {
     width: 100%;
-    max-width: 1100px; /* コンテンツの最大幅 */
-    position: relative;
-    margin-bottom: 40px;
+    padding: 30px 0;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 0;
 }
 
-h1 {
-    text-align: center;
-    font-size: 3.5rem;
-    margin: 0;
-}
+h1.page-title { font-size: 3.5rem; margin: 0; }
 
-/* ★右上の戻るボタン：大きさをさらに拡大 */
+/* 返回按钮：增加点击缩放特效 */
 #topBtn {
     position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%); /* 縦方向のズレを調整 */
-    
-    /* サイズを大きく変更 */
-    width: 200px;  /* 横幅を拡大 */
-    height: 65px;  /* 高さを拡大 */
-    font-size: 24px; /* 文字を大きく */
-    
+    right: 50px; /* 避免出界 */
+    top: 40px;
+    width: 200px;
+    height: 65px;
+    font-size: 24px;
     background-color: #4472C4;
     color: white;
     font-weight: bold;
@@ -43,22 +35,25 @@ h1 {
     border-radius: 10px;
     cursor: pointer;
     box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+    transition: transform 0.1s, box-shadow 0.1s;
 }
 
-/* メインコンテナ */
+/* 统一所有按钮的点击效果 */
+#topBtn:active, .btn-large:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow: none;
+}
+
 .new-menu-container {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.new-menu-row {
+    flex-grow: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 80px;
+    flex-direction: column;
+    justify-content: center; /* 整体居中偏下 */
+    padding-top: 100px;
 }
 
-/* 写真アップロード枠 */
+.new-menu-row { display: flex; justify-content: center; gap: 100px; margin-bottom: 60px; }
+
 .upload-box {
     width: 320px;
     height: 320px;
@@ -68,55 +63,17 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
-.upload-text {
-    font-size: 22px;
-    font-weight: bold;
-    color: #666;
-    text-align: center;
-}
+.upload-box img { width: 100%; height: 100%; object-fit: cover; }
 
-/* 入力エリア */
-.form-fields {
-    width: 500px;
-}
+.form-fields { width: 500px; }
+.field-row { display: flex; align-items: center; margin-bottom: 25px; }
+.field-label { width: 100px; font-size: 24px; font-weight: bold; }
+.field-input { flex: 1; height: 60px; border: 2px solid #9FAEDC; border-radius: 10px; padding: 0 20px; font-size: 22px; }
 
-.field-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.field-label {
-    width: 100px;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.field-input {
-    flex: 1;
-    height: 60px;
-    background-color: #FFFFFF;
-    border: 2px solid #9FAEDC;
-    border-radius: 10px;
-    padding: 0 20px;
-    font-size: 22px;
-}
-
-.price-unit {
-    margin-left: 15px;
-    font-size: 26px;
-    font-weight: bold;
-}
-
-/* 下部のボタン（保存・取消す） */
-.new-menu-buttons {
-    margin-top: 70px;
-    display: flex;
-    justify-content: center;
-    gap: 80px;
-}
+.new-menu-buttons { display: flex; justify-content: center; gap: 40px; }
 
 .btn-large {
     width: 220px;
@@ -127,12 +84,8 @@ h1 {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 4px 4px 6px rgba(0,0,0,0.2);
+    transition: transform 0.1s;
 }
 
 .btn-primary { background-color: #4472C4; color: white; }
 .btn-danger { background-color: #E74C3C; color: white; }
-
-.btn-large:active {
-    transform: translateY(3px);
-    box-shadow: none;
-}

@@ -1,295 +1,100 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.Dish" %>
 <%
-    String mode = (String) request.getAttribute("mode");
     Dish dish = (Dish) request.getAttribute("dish");
+    String mode = (String) request.getAttribute("mode");
     String nextId = (String) request.getAttribute("nextId");
     
     if (mode == null) mode = "add";
-    
-    String pageTitle = "add".equals(mode) ? "料理追加" : "料理編集";
+    boolean isEdit = "edit".equals(mode);
+    String pageTitle = isEdit ? "メニュー詳細" : "メニュー新規";
+
+    // 获取并清理分类 ID
+    String currentCat = (isEdit && dish != null && dish.getCategory() != null) ? dish.getCategory().trim() : "";
 %>
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= pageTitle %> - レストラン注文システム</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Hiragino Sans', 'メイリオ', sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 40px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        label {
-            display: block;
-            color: #555;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        
-        .required {
-            color: #ff5252;
-        }
-        
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        input[type="text"]:read-only {
-            background: #f0f0f0;
-            cursor: not-allowed;
-        }
-        
-        .hint {
-            margin-top: 5px;
-            font-size: 0.9em;
-            color: #999;
-        }
-        
-        .category-info {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 5px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .category-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .category-item {
-            padding: 8px;
-            background: white;
-            border-radius: 3px;
-            font-size: 0.9em;
-        }
-        
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 40px;
-        }
-        
-        .btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #666;
-        }
-        
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
-    </style>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/addMenu.css">
 </head>
 <body>
-    <div class="container">
-        <h1><%= pageTitle %></h1>
-        <p class="subtitle">料理情報を入力してください</p>
-        
-        <form action="<%= request.getContextPath() %>/admin/dish-manage" method="post">
-            <input type="hidden" name="action" value="<%= mode %>">
-            
-            <div class="form-group">
-                <label for="dishId">
-                    料理ID <span class="required">*</span>
-                </label>
-                <% if ("add".equals(mode)) { %>
-                    <input type="text" 
-                           id="dishId" 
-                           name="dishId" 
-                           value="<%= nextId != null ? nextId : "" %>" 
-                           required 
-                           pattern="DIS[0-9]{3}" 
-                           maxlength="6">
-                    <div class="hint">形式: DIS001 ～ DIS999</div>
-                <% } else { %>
-                    <input type="text" 
-                           id="dishId" 
-                           name="dishId" 
-                           value="<%= dish != null ? dish.getDishId() : "" %>" 
-                           readonly>
-                    <div class="hint">料理IDは変更できません</div>
-                <% } %>
-            </div>
-            
-            <div class="form-group">
-                <label for="dishName">
-                    料理名 <span class="required">*</span>
-                </label>
-                <input type="text" 
-                       id="dishName" 
-                       name="dishName" 
-                       value="<%= "edit".equals(mode) && dish != null ? dish.getName() : "" %>" 
-                       required 
-                       maxlength="30"
-                       placeholder="例: 醤油ラーメン">
-                <div class="hint">最大30文字</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="dishPrice">
-                    価格（円） <span class="required">*</span>
-                </label>
-                <input type="number" 
-                       id="dishPrice" 
-                       name="dishPrice" 
-                       value="<%= "edit".equals(mode) && dish != null ? dish.getPrice() : "" %>" 
-                       required 
-                       min="0" 
-                       max="99999"
-                       placeholder="例: 800">
-                <div class="hint">0 ～ 99,999円</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="dishCategory">
-                    カテゴリ <span class="required">*</span>
-                </label>
-                <select id="dishCategory" name="dishCategory" required>
-                    <option value="">-- 選択してください --</option>
-                    <option value="CAT001" <%= "edit".equals(mode) && dish != null && "CAT001".equals(dish.getCategory()) ? "selected" : "" %>>CAT001 - 麺類</option>
-                    <option value="CAT002" <%= "edit".equals(mode) && dish != null && "CAT002".equals(dish.getCategory()) ? "selected" : "" %>>CAT002 - ご飯</option>
-                    <option value="CAT003" <%= "edit".equals(mode) && dish != null && "CAT003".equals(dish.getCategory()) ? "selected" : "" %>>CAT003 - 点心</option>
-                    <option value="CAT004" <%= "edit".equals(mode) && dish != null && "CAT004".equals(dish.getCategory()) ? "selected" : "" %>>CAT004 - 揚げ物</option>
-                    <option value="CAT005" <%= "edit".equals(mode) && dish != null && "CAT005".equals(dish.getCategory()) ? "selected" : "" %>>CAT005 - ドリンク</option>
-                    <option value="CAT006" <%= "edit".equals(mode) && dish != null && "CAT006".equals(dish.getCategory()) ? "selected" : "" %>>CAT006 - デザート</option>
-                </select>
-                
-                <div class="category-info">
-                    💡 カテゴリ一覧
-                    <div class="category-list">
-                        <div class="category-item">CAT001: 麺類</div>
-                        <div class="category-item">CAT002: ご飯</div>
-                        <div class="category-item">CAT003: 点心</div>
-                        <div class="category-item">CAT004: 揚げ物</div>
-                        <div class="category-item">CAT005: ドリンク</div>
-                        <div class="category-item">CAT006: デザート</div>
+    <header class="header">
+        <h1 class="page-title"><%= pageTitle %></h1>
+        <button id="topBtn" onclick="history.back()">戻る</button>
+    </header>
+
+    <main class="new-menu-container">
+        <form action="${pageContext.request.contextPath}/admin/dish-manage" method="post" id="dishForm">
+            <input type="hidden" name="action" id="formAction" value="<%= mode %>">
+            <input type="hidden" name="dishId" value="<%= isEdit ? dish.getDishId() : (nextId != null ? nextId : "") %>">
+
+            <section class="new-menu-row">
+                <div class="photo-column">
+                    <div class="upload-box" id="dropArea">
+                        <% if (isEdit && dish != null && dish.getPhoto() != null && !dish.getPhoto().isEmpty()) { %>
+                            <img src="<%= dish.getPhoto() %>" id="previewImg">
+                        <% } else { %>
+                            <p class="upload-text">プレビュー</p>
+                        <% } %>
                     </div>
                 </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="dishPhoto">
-                    写真ファイル名
-                </label>
-                <input type="text" 
-                       id="dishPhoto" 
-                       name="dishPhoto" 
-                       value="<%= "edit".equals(mode) && dish != null ? (dish.getPhoto() != null ? dish.getPhoto() : "") : "" %>" 
-                       maxlength="50"
-                       placeholder="例: ramen.jpg">
-                <div class="hint">最大50文字（省略可）</div>
-            </div>
-            
-            <div class="form-group">
-                <label>状態</label>
-                <div class="checkbox-group">
-                    <input type="checkbox" 
-                           id="dishAvailable" 
-                           name="dishAvailable" 
-                           value="1" 
-                           <%= "edit".equals(mode) && dish != null ? (dish.isAvailable() ? "checked" : "") : "checked" %>>
-                    <label for="dishAvailable" style="font-weight: normal; margin: 0;">有効（メニューに表示）</label>
+
+                <div class="form-fields">
+                    <div class="field-row">
+                        <label class="field-label">種類：</label>
+                        <select name="dishCategory" class="field-input" required>
+                            <option value="">-- 選択 --</option>
+                            <option value="CAT001" <%= "CAT001".equals(currentCat) ? "selected" : "" %>>麺類</option>
+                            <option value="CAT002" <%= "CAT002".equals(currentCat) ? "selected" : "" %>>ご飯</option>
+                            <option value="CAT003" <%= "CAT003".equals(currentCat) ? "selected" : "" %>>点心</option>
+                            <option value="CAT004" <%= "CAT004".equals(currentCat) ? "selected" : "" %>>揚げ物</option>
+                            <option value="CAT005" <%= "CAT005".equals(currentCat) ? "selected" : "" %>>ドリンク</option>
+                            <option value="CAT006" <%= "CAT006".equals(currentCat) ? "selected" : "" %>>デザート</option>
+                        </select>
+                    </div>
+                    <div class="field-row">
+                        <label class="field-label">品名：</label>
+                        <input type="text" name="dishName" class="field-input" value="<%= isEdit ? dish.getName() : "" %>" required>
+                    </div>
+                    <div class="field-row">
+                        <label class="field-label">価格：</label>
+                        <div class="price-wrapper">
+                            <input type="number" name="dishPrice" class="field-input" value="<%= isEdit ? dish.getPrice() : "" %>" required>
+                            <span class="price-unit">円</span>
+                        </div>
+                    </div>
+                    <div class="field-row status-row">
+                        <input type="checkbox" name="available" value="1" id="availableCheck" <%= (!isEdit || (dish != null && dish.isAvailable())) ? "checked" : "" %>>
+                        <label for="availableCheck">有効（メニューに表示）</label>
+                    </div>
                 </div>
-                <div class="hint">チェックを外すと無効（非表示）になります</div>
-            </div>
-            
-            <div class="button-group">
-                <a href="<%= request.getContextPath() %>/admin/dish-manage" class="btn btn-secondary">
-                    ← キャンセル
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    <%= "add".equals(mode) ? "➕ 追加" : "💾 保存" %>
-                </button>
-            </div>
+            </section>
+
+            <section class="new-menu-buttons">
+                <button type="button" class="btn-large btn-primary" onclick="document.getElementById('fileInput').click()">アップロード</button>
+                <input type="file" id="fileInput" style="display: none;" accept="image/*">
+                <input type="hidden" name="dishPhoto" id="dishPhoto" value="<%= isEdit ? dish.getPhoto() : "" %>">
+
+                <button type="submit" class="btn-large btn-primary"><%= isEdit ? "更新" : "保存" %></button>
+                
+                <% if (isEdit) { %>
+                    <button type="button" class="btn-large btn-danger" onclick="confirmDelete()">削除</button>
+                <% } else { %>
+                    <button type="button" class="btn-large btn-danger" onclick="history.back()">取消す</button>
+                <% } %>
+            </section>
         </form>
-    </div>
+    </main>
+
+    <script>
+        function confirmDelete() {
+            if (confirm("この料理を削除してもよろしいですか？")) {
+                document.getElementById('formAction').value = 'delete';
+                document.getElementById('dishForm').submit();
+            }
+        }
+    </script>
 </body>
 </html>

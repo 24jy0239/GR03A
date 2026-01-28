@@ -51,11 +51,12 @@ public class DishDAO {
 	 * ★ メニュー表示用（最も重要）
 	 */
 	public List<Dish> findAvailable() throws SQLException {
-		String sql = "SELECT DISH_ID, DISH_NAME, DISH_PRICE, " +
-				"DISH_CATEGORY, DISH_PHOTO, DISH_AVAILABLE " +
-				"FROM DISH " +
-				"WHERE DISH_AVAILABLE = 1 " +
-				"ORDER BY DISH_CATEGORY, DISH_ID";
+		String sql = "SELECT d.DISH_ID, d.DISH_NAME, d.DISH_PRICE, " +
+				"c.CATEGORY_NAME AS DISH_CATEGORY, d.DISH_PHOTO, d.DISH_AVAILABLE " +
+				"FROM DISH d " +
+				"JOIN CATEGORY c ON d.DISH_CATEGORY = c.CATEGORY_ID " +
+				"WHERE d.DISH_AVAILABLE = 1 " +
+				"ORDER BY c.CATEGORY_ID, d.DISH_ID";
 
 		return executeQuery(sql);
 	}
@@ -64,10 +65,11 @@ public class DishDAO {
 	 * 全ての料理を取得（管理画面用）
 	 */
 	public List<Dish> findAll() throws SQLException {
-		String sql = "SELECT DISH_ID, DISH_NAME, DISH_PRICE, " +
-				"DISH_CATEGORY, DISH_PHOTO, DISH_AVAILABLE " +
-				"FROM DISH " +
-				"ORDER BY DISH_CATEGORY, DISH_ID";
+		String sql = "SELECT d.DISH_ID, d.DISH_NAME, d.DISH_PRICE, " +
+				"c.CATEGORY_NAME AS DISH_CATEGORY, d.DISH_PHOTO, d.DISH_AVAILABLE " +
+				"FROM DISH d " +
+				"JOIN CATEGORY c ON d.DISH_CATEGORY = c.CATEGORY_ID " +
+				"ORDER BY c.CATEGORY_ID, d.DISH_ID";
 
 		return executeQuery(sql);
 	}
@@ -76,10 +78,11 @@ public class DishDAO {
 	 * IDで料理を取得
 	 */
 	public Dish findById(String dishId) throws SQLException {
-		String sql = "SELECT DISH_ID, DISH_NAME, DISH_PRICE, " +
-				"DISH_CATEGORY, DISH_PHOTO, DISH_AVAILABLE " +
-				"FROM DISH " +
-				"WHERE DISH_ID = ?";
+		String sql = "SELECT d.DISH_ID, d.DISH_NAME, d.DISH_PRICE, " +
+				"c.CATEGORY_NAME AS DISH_CATEGORY, d.DISH_PHOTO, d.DISH_AVAILABLE " +
+				"FROM DISH d " +
+				"JOIN CATEGORY c ON d.DISH_CATEGORY = c.CATEGORY_ID " +
+				"WHERE d.DISH_ID = ?";
 
 		try (Connection conn = getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -92,19 +95,37 @@ public class DishDAO {
 				}
 			}
 		}
-
 		return null;
+	}
+
+	/**
+	 * 专门获取所有分类名称，用于生成按钮
+	 */
+	public List<String> getAllCategoryNames() throws SQLException {
+		List<String> categories = new ArrayList<>();
+		// 直接查询 CATEGORY 表，确保按钮始终存在，不依赖于是否有菜品
+		String sql = "SELECT CATEGORY_NAME FROM CATEGORY ORDER BY CATEGORY_ID";
+
+		try (Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				ResultSet rs = pstmt.executeQuery()) {
+			while (rs.next()) {
+				categories.add(rs.getString("CATEGORY_NAME"));
+			}
+		}
+		return categories;
 	}
 
 	/**
 	 * カテゴリ別に料理を取得
 	 */
 	public List<Dish> findByCategory(String categoryId) throws SQLException {
-		String sql = "SELECT DISH_ID, DISH_NAME, DISH_PRICE, " +
-				"DISH_CATEGORY, DISH_PHOTO, DISH_AVAILABLE " +
-				"FROM DISH " +
-				"WHERE DISH_CATEGORY = ? AND DISH_AVAILABLE = 1 " +
-				"ORDER BY DISH_ID";
+		String sql = "SELECT d.DISH_ID, d.DISH_NAME, d.DISH_PRICE, " +
+				"c.CATEGORY_NAME AS DISH_CATEGORY, d.DISH_PHOTO, d.DISH_AVAILABLE " +
+				"FROM DISH d " +
+				"JOIN CATEGORY c ON d.DISH_CATEGORY = c.CATEGORY_ID " +
+				"WHERE d.DISH_CATEGORY = ? AND d.DISH_AVAILABLE = 1 " +
+				"ORDER BY d.DISH_ID";
 
 		List<Dish> dishes = new ArrayList<>();
 
@@ -119,7 +140,35 @@ public class DishDAO {
 				}
 			}
 		}
+		return dishes;
+	}
 
+	/**
+	 * 关键词/分类名搜索 (用于搜索框和分类过滤)
+	 */
+	public List<Dish> findByKeyword(String keyword) throws SQLException {
+		// 使用 JOIN 确保可以通过分类名称 (CATEGORY_NAME) 进行搜索
+		String sql = "SELECT d.DISH_ID, d.DISH_NAME, d.DISH_PRICE, " +
+				"c.CATEGORY_NAME AS DISH_CATEGORY, d.DISH_PHOTO, d.DISH_AVAILABLE " +
+				"FROM DISH d " +
+				"JOIN CATEGORY c ON d.DISH_CATEGORY = c.CATEGORY_ID " +
+				"WHERE d.DISH_NAME LIKE ? OR c.CATEGORY_NAME LIKE ? " +
+				"ORDER BY c.CATEGORY_ID, d.DISH_ID";
+
+		List<Dish> dishes = new ArrayList<>();
+		try (Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			String query = "%" + keyword + "%";
+			pstmt.setString(1, query);
+			pstmt.setString(2, query);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					dishes.add(mapResultSetToDish(rs));
+				}
+			}
+		}
 		return dishes;
 	}
 

@@ -497,6 +497,46 @@ public class OrderManager {
 	// ==================== デバッグ用 ====================
 
 	/**
+	 * visits のサイズを取得（デバッグ用）
+	 */
+	public int getVisitsCount() {
+		return visits.size();
+	}
+
+	/**
+	 * 全ての Visit の情報を出力（デバッグ用）
+	 */
+	public void printAllVisits() {
+		System.out.println("=== visits の内容 ===");
+		System.out.println("visits.size(): " + visits.size());
+
+		if (visits.isEmpty()) {
+			System.out.println("  (空 - データがありません)");
+		} else {
+			for (java.util.Map.Entry<String, Visit> entry : visits.entrySet()) {
+				String visitId = entry.getKey();
+				Visit visit = entry.getValue();
+
+				System.out.println("Visit: " + visitId);
+				System.out.println("  tableNum: " + visit.getTableNum());
+				System.out.println("  orders: " + visit.getOrders().size());
+
+				for (Order order : visit.getOrders()) {
+					System.out.println("    Order: " + order.getOrderId());
+					System.out.println("      items: " + order.getItemCount());
+
+					for (OrderItem item : order.getOrderItems()) {
+						System.out.println("        - " + item.getDishName()
+								+ " (status=" + item.getItemStatus()
+								+ ", qty=" + item.getQuantity() + ")");
+					}
+				}
+			}
+		}
+		System.out.println("=====================");
+	}
+
+	/**
 	 * 現在の状態を表示
 	 */
 	public void printStatus() {

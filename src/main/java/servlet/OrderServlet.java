@@ -13,10 +13,11 @@ import jakarta.servlet.http.HttpSession;
 import manager.OrderManager;
 import model.CartItem;
 import model.Order;
+import model.Visit;
 
 /**
  * OrderServlet - 注文処理
- * カートから注文を作成
+ * カートから注文を作成（デバッグログ付き）
  */
 @WebServlet("/order")
 public class OrderServlet extends HttpServlet {
@@ -82,19 +83,49 @@ public class OrderServlet extends HttpServlet {
 			// カートから注文作成（メモリに保存）
 			Order order = manager.createOrderFromCart(visitId, cart);
 
-			System.out.println("注文確定: orderId=" + order.getOrderId()
-					+ ", items=" + order.getItemCount()
-					+ ", total=" + order.calculateTotal());
+			// ========== デバッグログ開始 ==========
+			System.out.println("==========================================");
+			System.out.println("【OrderServlet】注文確定");
+			System.out.println("------------------------------------------");
+			System.out.println("OrderManager instance: " + System.identityHashCode(manager));
+			System.out.println("visitId: " + visitId);
+			System.out.println("orderId: " + order.getOrderId());
+			System.out.println("items: " + order.getItemCount());
+			System.out.println("total: " + order.calculateTotal());
+
+			// visits の中身を確認
+			Visit visit = manager.getVisit(visitId);
+			if (visit != null) {
+				System.out.println("✅ visits に Visit が存在");
+				System.out.println("   tableNum: " + visit.getTableNum());
+				System.out.println("   orders count: " + visit.getOrders().size());
+
+				// 全ての OrderItem の状態を確認
+				System.out.println("   OrderItems:");
+				for (Order o : visit.getOrders()) {
+					for (model.OrderItem item : o.getOrderItems()) {
+						System.out.println("     - " + item.getDishName()
+								+ " (status=" + item.getItemStatus()
+								+ ", qty=" + item.getQuantity() + ")");
+					}
+				}
+			} else {
+				System.out.println("❌ visits に Visit が存在しない！");
+			}
+			System.out.println("------------------------------------------");
+			// ========== デバッグログ終了 ==========
 
 			// データベースに保存（重要！）
 			try {
 				manager.saveOrderItems(order);
-				System.out.println("DB保存完了: orderId=" + order.getOrderId());
+				System.out.println("✅ DB保存完了: orderId=" + order.getOrderId());
 			} catch (Exception e) {
-				System.err.println("DB保存エラー: " + e.getMessage());
+				System.err.println("❌ DB保存エラー: " + e.getMessage());
 				e.printStackTrace();
 				// DB保存に失敗してもメモリには保存されているので続行
 			}
+
+			System.out.println("==========================================");
 
 			// カートをクリア
 			cart.clear();
@@ -110,6 +141,9 @@ public class OrderServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/menu?sent=1");
 
 		} catch (Exception e) {
+			System.out.println("==========================================");
+			System.out.println("❌❌❌ エラー発生 ❌❌❌");
+			System.out.println("==========================================");
 			e.printStackTrace();
 			throw new ServletException("注文処理エラー", e);
 		}

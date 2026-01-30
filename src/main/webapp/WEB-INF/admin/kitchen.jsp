@@ -1,404 +1,268 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="model.OrderItemWithDetails"%>
-<%@ page import="java.util.List"%>
-<%
-@SuppressWarnings("unchecked")
-List<OrderItemWithDetails> kitchenItems = (List<OrderItemWithDetails>) request.getAttribute("kitchenItems");
-Integer pendingCount = (Integer) request.getAttribute("pendingCount");
-Integer cookingCount = (Integer) request.getAttribute("cookingCount");
-
-if (pendingCount == null)
-	pendingCount = 0;
-if (cookingCount == null)
-	cookingCount = 0;
-if (kitchenItems == null)
-	kitchenItems = new java.util.ArrayList<>();
-%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔪 キッチン画面 - レストラン注文システム</title>
+<title>キッチン管理</title>
 <style>
-* {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
-
 body {
-	font-family: 'Hiragino Sans', 'メイリオ', sans-serif;
-	background: #f5f5f5;
+	font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 20px;
+	background-color: #E9EBF5;
 }
 
 .header {
-	background: linear-gradient(135deg, #ff5252 0%, #c62828 100%);
-	color: white;
-	padding: 20px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	position: sticky;
-	top: 0;
-	z-index: 100;
-}
-
-.header-content {
-	max-width: 1400px;
-	margin: 0 auto;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.title {
-	font-size: 1.8em;
-	font-weight: bold;
-}
-
-.stats {
-	display: flex;
-	gap: 30px;
-}
-
-.stat-item {
 	text-align: center;
+	margin-bottom: 30px;
 }
 
-.stat-label {
-	font-size: 0.9em;
-	opacity: 0.9;
+h1 {
+	color: #333;
+	margin-bottom: 10px;
 }
 
-.stat-value {
-	font-size: 2em;
-	font-weight: bold;
-	margin-top: 5px;
-}
-
-.nav-links {
+.button-group {
 	display: flex;
-	gap: 15px;
+	gap: 10px;
+	justify-content: center;
+	margin-bottom: 20px;
 }
 
-.nav-links a {
-	color: white;
-	text-decoration: none;
+.btn {
 	padding: 10px 20px;
-	background: rgba(255, 255, 255, 0.2);
-	border-radius: 5px;
-	transition: background 0.3s;
+	border: none;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s;
+	text-decoration: none;
+	color: white;
+	display: inline-block;
 }
 
-.nav-links a:hover {
-	background: rgba(255, 255, 255, 0.3);
+.btn-primary {
+	background-color: #4472C4;
 }
 
-.container {
-	max-width: 1400px;
-	margin: 20px auto;
-	padding: 0 20px;
+.btn-primary:hover {
+	background-color: #365a9e;
 }
 
-.items-grid {
+.btn-secondary {
+	background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+	background-color: #5a6268;
+}
+
+.kitchen-items {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 	gap: 20px;
 }
 
-.item-card {
+.kitchen-card {
 	background: white;
-	border-radius: 10px;
-	padding: 25px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	transition: all 0.3s;
-	border: 3px solid transparent;
+	border-radius: 12px;
+	padding: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: transform 0.2s;
 }
 
-.item-card:hover {
+.kitchen-card:hover {
 	transform: translateY(-5px);
-	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.item-card.urgent {
-	border-color: #ff5252;
-	animation: pulse 2s infinite;
-}
-
-@
-keyframes pulse { 0%, 100% {
-	box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
-}
-
-50
-%
-{
-box-shadow
-:
-0
-0
-0
-10px
-rgba(
-255
-,
-82
-,
-82
-,
-0
-);
-}
-}
-.item-card.warning {
-	border-color: #ffc107;
-}
-
-.item-header {
+.card-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 15px;
-}
-
-.table-badge {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	color: white;
-	padding: 8px 15px;
-	border-radius: 20px;
-	font-weight: bold;
-	font-size: 1.1em;
-}
-
-.status-badge {
-	padding: 5px 15px;
-	border-radius: 20px;
-	font-size: 0.9em;
-	font-weight: bold;
-}
-
-.status-pending {
-	background: #ffeb3b;
-	color: #333;
-}
-
-.status-cooking {
-	background: #ff9800;
-	color: white;
+	padding-bottom: 15px;
+	border-bottom: 2px solid #E9EBF5;
 }
 
 .dish-name {
-	font-size: 1.5em;
+	font-size: 20px;
 	font-weight: bold;
 	color: #333;
-	margin: 15px 0;
 }
 
-.quantity {
-	font-size: 1.8em;
-	color: #ff5252;
+.table-badge {
+	background-color: #4472C4;
+	color: white;
+	padding: 5px 15px;
+	border-radius: 20px;
 	font-weight: bold;
+}
+
+.card-body {
+	margin-bottom: 15px;
+}
+
+.info-row {
+	display: flex;
+	justify-content: space-between;
 	margin: 10px 0;
+	padding: 8px 0;
 }
 
-.time-info {
-	margin: 15px 0;
-	padding: 10px;
-	background: #f9f9f9;
-	border-radius: 5px;
-}
-
-.time-label {
-	font-size: 0.9em;
+.info-label {
 	color: #666;
-	margin-right: 10px;
+	font-size: 14px;
 }
 
-.elapsed-time {
-	font-size: 1.2em;
+.info-value {
+	font-weight: bold;
+	color: #333;
+}
+
+.status-badge {
+	display: inline-block;
+	padding: 5px 12px;
+	border-radius: 5px;
+	font-size: 12px;
 	font-weight: bold;
 }
 
-.elapsed-time.normal {
-	color: #4CAF50;
+.status-0 {
+	background-color: #fff3cd;
+	color: #856404;
 }
 
-.elapsed-time.warning {
-	color: #ffc107;
+.status-1 {
+	background-color: #d1ecf1;
+	color: #0c5460;
 }
 
-.elapsed-time.urgent {
-	color: #ff5252;
-}
-
-.item-actions {
+.card-actions {
 	display: flex;
 	gap: 10px;
-	margin-top: 20px;
 }
 
-.btn {
+.action-btn {
 	flex: 1;
 	padding: 12px;
 	border: none;
-	border-radius: 5px;
-	font-size: 1em;
+	border-radius: 8px;
+	font-size: 14px;
 	font-weight: bold;
 	cursor: pointer;
 	transition: all 0.3s;
 }
 
 .btn-start {
-	background: #ff9800;
+	background-color: #28a745;
 	color: white;
 }
 
 .btn-start:hover {
-	background: #f57c00;
-	transform: translateY(-2px);
+	background-color: #218838;
 }
 
-.btn-complete {
-	background: #4CAF50;
+.btn-finish {
+	background-color: #007bff;
 	color: white;
 }
 
-.btn-complete:hover {
-	background: #45a049;
-	transform: translateY(-2px);
+.btn-finish:hover {
+	background-color: #0056b3;
 }
 
-.empty-state {
+.btn-start:disabled, .btn-finish:disabled {
+	background-color: #ccc;
+	cursor: not-allowed;
+}
+
+.empty-message {
 	text-align: center;
 	padding: 60px 20px;
+	background: white;
+	border-radius: 12px;
 	color: #999;
-	background: white;
-	border-radius: 10px;
 }
 
-.empty-icon {
-	font-size: 5em;
-	margin-bottom: 20px;
-}
-
-.auto-refresh {
-	position: fixed;
-	bottom: 20px;
-	right: 20px;
-	background: white;
-	padding: 15px 25px;
-	border-radius: 10px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-	font-size: 0.9em;
+.empty-message h2 {
 	color: #666;
+	margin-bottom: 10px;
 }
 </style>
-<script>
-	setTimeout(function() {
-		location.reload();
-	}, 10000);
-</script>
 </head>
 <body>
 	<div class="header">
-		<div class="header-content">
-			<div class="title">🔪 キッチン画面</div>
-
-			<div class="stats">
-				<div class="stat-item">
-					<div class="stat-label">未着手</div>
-					<div class="stat-value"><%=pendingCount%></div>
-				</div>
-				<div class="stat-item">
-					<div class="stat-label">調理中</div>
-					<div class="stat-value"><%=cookingCount%></div>
-				</div>
-			</div>
-
-			<div class="nav-links">
-				<a href="<%=request.getContextPath()%>/admin/hall">🚶 ホール画面</a> <a
-					href="<%=request.getContextPath()%>/admin/table-status">📊
-					テーブル状態</a> <a href="<%=request.getContextPath()%>/">🏠 トップ</a>
-			</div>
+		<h1>👨‍🍳 キッチン管理画面</h1>
+		<div class="button-group">
+			<button class="btn btn-secondary" onclick="location.reload()">🔄
+				更新</button>
+			<a href="${pageContext.request.contextPath}/admin"
+				class="btn btn-secondary">🏠 管理トップへ</a>
 		</div>
 	</div>
 
-	<div class="container">
-		<%
-		if (kitchenItems.isEmpty()) {
-		%>
-		<div class="empty-state">
-			<div class="empty-icon">✅</div>
-			<h2>未完了の注文はありません</h2>
-			<p>すべて調理完了しています</p>
-		</div>
-		<%
-		} else {
-		%>
-		<div class="items-grid">
-			<%
-			for (OrderItemWithDetails item : kitchenItems) {
-			%>
-			<div class="item-card <%=item.getPriority()%>">
-				<div class="item-header">
-					<div class="table-badge">
-						🍽️ テーブル
-						<%=item.getTableNum()%>
-					</div>
-					<div
-						class="status-badge status-<%=item.getItemStatus() == 0 ? "pending" : "cooking"%>">
-						<%=item.getItemStatus() == 0 ? "未着手" : "調理中"%>
-					</div>
-				</div>
-
-				<div class="dish-name"><%=item.getDishName()%></div>
-				<div class="quantity">
-					×
-					<%=item.getQuantity()%></div>
-
-				<div class="time-info">
-					<span class="time-label">注文時刻:</span>
-					<%=item.getFormattedOrderTime()%>
-					<br> <span class="time-label">経過時間:</span> <span
-						class="elapsed-time <%=item.getPriority()%>"> <%=item.getElapsedTimeText()%>
-					</span>
-				</div>
-
-				<div class="item-actions">
-					<%
-					if (item.getItemStatus() == 0) {
-					%>
-					<form action="<%=request.getContextPath()%>/admin/kitchen"
-						method="post" style="flex: 1;">
-						<input type="hidden" name="action" value="start"> <input
-							type="hidden" name="orderItemId"
-							value="<%=item.getOrderItemId()%>">
-						<button type="submit" class="btn btn-start">🔥 調理開始</button>
-					</form>
-					<%
-					} else {
-					%>
-					<form action="<%=request.getContextPath()%>/admin/kitchen"
-						method="post" style="flex: 1;">
-						<input type="hidden" name="action" value="complete"> <input
-							type="hidden" name="orderItemId"
-							value="<%=item.getOrderItemId()%>">
-						<button type="submit" class="btn btn-complete">✅ 調理完了</button>
-					</form>
-					<%
-					}
-					%>
-				</div>
+	<c:choose>
+		<c:when test="${empty kitchenItems}">
+			<div class="empty-message">
+				<h2>📭 注文はありません</h2>
+				<p>新しい注文が入るまでお待ちください</p>
 			</div>
-			<%
-			}
-			%>
-		</div>
-		<%
-		}
-		%>
-	</div>
+		</c:when>
+		<c:otherwise>
+			<div class="kitchen-items">
+				<c:forEach var="item" items="${kitchenItems}">
+					<div class="kitchen-card">
+						<div class="card-header">
+							<div class="dish-name">${item.dishName}</div>
+							<div class="table-badge">テーブル ${item.tableNum}</div>
+						</div>
 
-	<div class="auto-refresh">🔄 10秒ごとに自動更新</div>
+						<div class="card-body">
+							<div class="info-row">
+								<span class="info-label">数量</span> <span class="info-value">${item.quantity}</span>
+							</div>
+							<div class="info-row">
+								<span class="info-label">注文時刻</span> <span class="info-value">${item.orderTime}</span>
+							</div>
+							<div class="info-row">
+								<span class="info-label">状態</span> <span
+									class="status-badge status-${item.itemStatus}"> <c:choose>
+										<c:when test="${item.itemStatus == 0}">調理待ち</c:when>
+										<c:when test="${item.itemStatus == 1}">調理中</c:when>
+									</c:choose>
+								</span>
+							</div>
+						</div>
+
+						<!-- ★★★ 重要: form action と orderItemId の渡し方 ★★★ -->
+						<div class="card-actions">
+							<c:if test="${item.itemStatus == 0}">
+								<form action="${pageContext.request.contextPath}/admin/kitchen"
+									method="post" style="flex: 1;">
+									<input type="hidden" name="action" value="start"> <input
+										type="hidden" name="orderItemId" value="${item.orderItemId}">
+									<button type="submit" class="action-btn btn-start">調理開始</button>
+								</form>
+							</c:if>
+
+							<c:if test="${item.itemStatus == 1}">
+								<form action="${pageContext.request.contextPath}/admin/kitchen"
+									method="post" style="flex: 1;">
+									<input type="hidden" name="action" value="finish"> <input
+										type="hidden" name="orderItemId" value="${item.orderItemId}">
+									<button type="submit" class="action-btn btn-finish">調理完了</button>
+								</form>
+							</c:if>
+						</div>
+					</div>
+				</c:forEach>
+			</div>
+		</c:otherwise>
+	</c:choose>
 </body>
 </html>

@@ -35,8 +35,17 @@ public class MenuServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		HttpSession session = request.getSession();
+
+		String categoryId = request.getParameter("category");
+
+		if (categoryId != null) {
+		    session.setAttribute("selectedCategory", categoryId);
+		} else {
+		    categoryId = (String) session.getAttribute("selectedCategory");
+		}
+
+
 
 		// テーブル番号を取得（初回のみパラメータから）
 		String tableNumStr = request.getParameter("tableNum");
@@ -82,15 +91,16 @@ public class MenuServlet extends HttpServlet {
 		}
 
 		// カテゴリフィルター処理（グループメンバーの機能）
-		String categoryId = request.getParameter("category");
 		List<Dish> dishList = new ArrayList<>();
 		for (Dish dish : dishMap.values()) {
-			if (categoryId == null || categoryId.isEmpty()) {
-				dishList.add(dish); // 全件
-			} else if (categoryId.equals(dish.getCategory())) {
-				dishList.add(dish); // 指定カテゴリ
-			}
+
+		    if (categoryId == null || categoryId.isEmpty()) {
+		        dishList.add(dish);
+		    } else if (categoryId.equals(dish.getCategory())) {
+		        dishList.add(dish);
+		    }
 		}
+
 
 		request.setAttribute("dishList", dishList);
 		request.setAttribute("selectedCategory", categoryId);

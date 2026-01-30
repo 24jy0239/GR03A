@@ -8,7 +8,8 @@
 <%
 Integer tableNum = (Integer) session.getAttribute("tableNum");
 if (tableNum == null) {
-	response.sendRedirect("index.jsp");
+	response.sendRedirect(request.getContextPath() + "/index.jsp");
+
 	return;
 }
 
@@ -38,8 +39,8 @@ if (message != null) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>注文画面</title>
-<link rel="stylesheet" href="./css/orderCommon.css">
-<link rel="stylesheet" href="./css/orderMenu.css?v=5">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/orderCommon.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/orderMenu.css?v=999">
 </head>
 
 <body>
@@ -122,17 +123,17 @@ if (message != null) {
 
 		<div class="category-area">
 			<a class="category-btn"
-				href="<%=request.getContextPath()%>/menu?category=CAT001">麺類</a> <a
+				href="<%=request.getContextPath()%>/menu?category=麺類">麺類</a> <a
 				class="category-btn"
-				href="<%=request.getContextPath()%>/menu?category=CAT002">ご飯</a> <a
+				href="<%=request.getContextPath()%>/menu?category=ご飯">ご飯</a> <a
 				class="category-btn"
-				href="<%=request.getContextPath()%>/menu?category=CAT003">点心</a> <a
+				href="<%=request.getContextPath()%>/menu?category=点心">点心</a> <a
 				class="category-btn"
-				href="<%=request.getContextPath()%>/menu?category=CAT004">揚げ物</a> <a
+				href="<%=request.getContextPath()%>/menu?category=揚げ物">揚げ物</a> <a
 				class="category-btn"
-				href="<%=request.getContextPath()%>/menu?category=CAT005">ドリンク</a> <a
+				href="<%=request.getContextPath()%>/menu?category=ドリンク">ドリンク</a> <a
 				class="category-btn"
-				href="<%=request.getContextPath()%>/menu?category=CAT006">デザート</a>
+				href="<%=request.getContextPath()%>/menu?category=デザート">デザート</a>
 		</div>
 
 		<!-- メニュー -->
@@ -182,7 +183,6 @@ if (message != null) {
 		}
 		%>
 
-		<!-- 注文操作 -->
 		<!-- 注文操作 -->
 		<button class="confirm-btn"
 			onclick="location.href='<%=request.getContextPath()%>/order/history'">

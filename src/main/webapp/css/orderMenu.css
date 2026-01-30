@@ -119,10 +119,10 @@ body {
 
 /* ＋ − ボタン（文字サイズと同じ） */
 .qty-btn {
-    all: unset;                 /* 🔥 清掉浏览器默认样式 */
+    all: unset;
     font-size: 14px;
     line-height: 1;
-    padding: 0 4px;              /* 极小 padding */
+    padding: 0 4px;
     margin: 0 2px;
 
     border: 1px solid #aaa;
@@ -171,7 +171,7 @@ body {
     transform: translateX(-50%);
 
     width: 80%;
-    height: calc(100vh - 200px);  /* 🔥 自动适应窗口 */
+    height: calc(100vh - 200px);
 
     overflow-x: auto;
     overflow-y: hidden;
@@ -187,7 +187,7 @@ body {
     gap: 20px;
 
     width: max-content;
-    height: 100%;   /* 🔥 非常重要 */
+    height: 100%;
 }
 
 
@@ -207,14 +207,25 @@ body {
 /* =====================
    注文操作
 ===================== */
-.history-btn {
-    position: absolute;
-    bottom: 20px;
+.confirm-btn {
+    position: fixed;
     left: 20px;
-    width: 150px;
-    height: 50px;
-    font-size: 20px;
+    bottom: 20px;
 }
+
+.pay-btn {
+    position: fixed;
+    left: 180px; /* 20 + 按钮宽度 + 间距 */
+    bottom: 20px;
+}
+
+.confirm-btn,
+.pay-btn {
+    width: 140px;
+    height: 50px;
+    font-size: 18px;
+}
+
 
 .send-btn {
     position: absolute;

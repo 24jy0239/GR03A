@@ -40,11 +40,6 @@ NumberFormat formatter = NumberFormat.getInstance();
 	<!-- 上：标题 -->
 	<div class="header">
 		<h1>送信確認</h1>
-		<div class="table-info">
-			テーブル
-			<%=tableNum%>
-			番
-		</div>
 	</div>
 
 	<!-- 中：注文内容 -->

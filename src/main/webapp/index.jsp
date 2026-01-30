@@ -1,59 +1,114 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%
-    // ===== 桌号提交处理 =====
-    String tableNumParam = request.getParameter("tableNum");
-
-    if (tableNumParam != null) {
-        try {
-            int tableNum = Integer.parseInt(tableNumParam);
-            session.setAttribute("tableNum", tableNum);
-
-            // 桌号设置完成，跳转到菜单
-            response.sendRedirect(request.getContextPath() + "/menu");
-            return;
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "テーブル番号が不正です。");
-        }
-    }
-%>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/orderCommon.css">
-    <title>注文開始</title>
-</head>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>レストラン注文システム</title>
 <style>
-	body {
-		justify-content: center;
-		/* 縦方向の中央寄せ */
-		align-items: center;
-		/* 横方向の中央寄せ */
-	}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Hiragino Sans', 'メイリオ', sans-serif;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+}
+
+.container {
+	background: white;
+	padding: 60px 40px;
+	border-radius: 20px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	max-width: 500px;
+	width: 100%;
+	text-align: center;
+}
+
+h1 {
+	color: #333;
+	margin-bottom: 10px;
+	font-size: 2.5em;
+}
+
+.subtitle {
+	color: #666;
+	margin-bottom: 40px;
+	font-size: 1.1em;
+}
+
+.form-group {
+	margin-bottom: 30px;
+}
+
+label {
+	display: block;
+	color: #555;
+	margin-bottom: 10px;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+input[type="number"] {
+	width: 100%;
+	padding: 15px;
+	font-size: 1.5em;
+	border: 2px solid #ddd;
+	border-radius: 10px;
+	text-align: center;
+	transition: border-color 0.3s;
+}
+
+input[type="number"]:focus {
+	outline: none;
+	border-color: #667eea;
+}
+
+button {
+	width: 100%;
+	padding: 18px;
+	font-size: 1.3em;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: transform 0.2s, box-shadow 0.2s;
+	font-weight: bold;
+}
+
+button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
+button:active {
+	transform: translateY(0);
+}
 </style>
-
+</head>
 <body>
-    <h1>いらっしゃいませ！</h1>
+	<div class="container">
+		<h1>🍜 ようこそ</h1>
+		<p class="subtitle">レストラン注文システム</p>
 
-    <% if (request.getAttribute("error") != null) { %>
-        <p style="color:red;"><%= request.getAttribute("error") %></p>
-    <% } %>
+		<form action="${pageContext.request.contextPath}/menu" method="get">
+			<div class="form-group">
+				<label for="tableNum">テーブル番号を入力してください</label> <input type="number"
+					id="tableNum" name="tableNum" min="1" max="50" required autofocus
+					placeholder="例: 5">
+			</div>
 
-    <form method="get">
-        <label>
-            テーブル番号：
-            <input type="number"
-                   name="tableNum"
-                   min="1"
-                   max="50"
-                   required>
-        </label>
-        <br><br>
-
-        <button type="submit">注文開始</button>
-    </form>
+			<button type="submit">メニューを見る 🍽️</button>
+		</form>
+	</div>
 </body>
 </html>

@@ -13,9 +13,11 @@ body {
 
 /* ===== Title ===== */
 .header {
+    position: relative; /* 关键：作为按钮定位的基准 */
     flex: 0 0 auto;
     background-color: #E9EBF5;
     border-bottom: 4px solid #4472C4;
+    padding: 10px 0; /* 增加一点内边距让视觉更平衡 */
 }
 
 h1 {
@@ -285,4 +287,29 @@ h1 {
     font-weight: bold;
     cursor: pointer;
     background: #D7DDF0;
+}
+
+#topBtn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%); /* 垂直居中 */
+    
+    /* 继承并微调你的 btn-primary 风格 */
+    width: 120px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #4472C4;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 3px 3px #2e4d85;
+    transition: all 0.1s ease;
+}
+
+#topBtn:active {
+    box-shadow: 1px 1px #2e4d85;
+    transform: translateY(-50%) translate(2px, 2px);
 }

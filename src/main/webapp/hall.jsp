@@ -121,6 +121,10 @@
 <body data-mode="normal">
 <header class="header">
     <h1>注文確認画面（卓順）</h1>
+    <button id="topBtn" class="btn-primary" 
+            onclick="location.href='${pageContext.request.contextPath}/administration.jsp'">
+        戻る
+    </button>
 </header>
 
 <main class="order-main">

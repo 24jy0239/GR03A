@@ -27,7 +27,7 @@ request.setAttribute("yearlyTotal", yearlyTotal);
 </head>
 <body>
 	<h1>売り上げ分析</h1>
-	<button id="return" onclick="location.href='top.jsp'">TOPに戻る</button>
+	<button id="return" onclick="location.href='administration.jsp'">戻る</button>
 
 	<div class="main-container">
 		<div class="top-toolbar">

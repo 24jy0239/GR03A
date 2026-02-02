@@ -21,7 +21,7 @@
 <body>
 
 <header class="header" id="timeHeader">
-    <button id="backBtn" onclick="location.href='${pageContext.request.contextPath}/admin/hall'">
+    <button id="backBtn" onclick="location.href='${pageContext.request.contextPath}/hall.jsp'">
         ← 卓順を戻る
     </button>
     <h1>注文確認画面（卓順）</h1>

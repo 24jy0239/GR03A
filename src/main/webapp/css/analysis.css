@@ -1,5 +1,4 @@
-/* ---- 共通 ---- */
-
+/* --- 1. 标题与蓝色返回按钮 --- */
 h1 {
     text-align: center;
     font-size: 360%;
@@ -9,129 +8,87 @@ h1 {
 
 #return {
     position: absolute;
-    right: 75px;
+    right: 5%;
     top: 50px;
     padding: 8px 24px;
     font-size: 16px;
-}
-
-/* ---- ページ全体の Grid レイアウト ---- */
-/* 2行構成：上 = ヘッダー／下 = 表 */
-.layout {
-    display: grid;
-    grid-template-rows: auto 1fr;               /* 上段は高さ auto、下段が残り全部 */
-    grid-template-columns: 180px minmax(0, 1fr) 140px;
-    column-gap: 24px;
-    row-gap: 20px;
-    width: calc(100% - 120px);                  /* 左右に少し余白を出す */
-    margin: 40px auto 0;
-}
-
-/* ---- 上段：フォーム・年間合計・単位 ---- */
-
-/* 年選択フォーム（左上） */
-form {
-    grid-row: 1 / 2;
-    grid-column: 1 / 2;
-    display: inline-flex;
-    align-items: center;
-}
-
-/* 年部分の背景バー */
-.year-box {
-    display: inline-flex;
-    align-items: center;
-    background: #CDD4EA;
-    padding: 6px 16px;
-    border-radius: 4px 4px 0 0;
-    font-weight: bold;
-}
-
-/* セレクト（2025 ▼） */
-.year-box select {
-    font-size: 16px;
+    background-color: #4472C4; /* 蓝色 */
+    color: #ffffff;
     border: none;
-    background: transparent;
-    outline: none;
-    padding-right: 18px;
-    appearance: none;
-    cursor: pointer;
-}
-
-/* ▼を擬似的に表示する */
-.year-box::after {
-    content: "▼";
-    margin-left: -14px;
-    font-size: 12px;
-    pointer-events: none;
-}
-
-/* 「年」文字 */
-.year-box span {
-    margin-left: 8px;
-}
-
-/* 検索ボタン */
-form input[type="submit"] {
-    margin-left: 8px;
-    padding: 6px 24px;
     border-radius: 8px;
-    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 100;
+}
+
+/* --- 2. 容器与控制栏 (确保高度和边缘对齐) --- */
+.main-container {
+    width: 90%;
+    margin: 40px auto;
+}
+
+.top-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* 垂直居中，使 select 和文字同高度 */
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.header-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+/* 年份选择：原始风格，高度 32px */
+.header-left select {
+    font-size: 16px;
+    height: 32px;
+    border: 1px solid #767676;
+    padding: 0 5px;
+}
+
+.search-button {
+    margin-left: 10px;
+    height: 32px;
+    padding: 0 20px;
     background-color: #4472C4;
-    color: #fff;
+    color: white;
+    border: none;
+    border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
 }
 
-/* 年間合計（上段中央） */
-h3 {
-    grid-row: 1 / 2;
-    grid-column: 2 / 3;
-    justify-self: center;
-    align-self: center;
+.header-center {
+    flex: 2;
+    text-align: center;
+}
+
+.total-display {
     font-size: 24px;
+    font-weight: bold;
 }
 
-/* 単位（上段右） */
-p {
-    grid-row: 1 / 2;
-    grid-column: 3 / 4;
-    align-self: flex-end;
+.header-right {
+    flex: 1;
+    text-align: right;
+}
+
+/* 单位文字：高度 32px，确保对齐 */
+.unit-text {
     font-size: 14px;
+    line-height: 32px;
+    display: inline-block;
 }
 
-/* ---- 下段：月／日／合計 ---- */
-
-/* 月・日・合計は全部 下の行 */
-.month,
-.date,
-.total {
-    grid-row: 2 / 3;
+/* --- 3. 表格布局 --- */
+.layout {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
 }
-
-/* 左：月列 */
-.month {
-    grid-column: 1 / 2;
-    margin-top: 4px;
-    width: 140px;
-}
-
-/* 中央：日別テーブル（横スクロール） */
-.date {
-    grid-column: 2 / 3;
-    margin-top: 4px;
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-/* 右：合計列 */
-.total {
-    grid-column: 3 / 4;
-    margin-top: 4px;
-    width: 120px;
-}
-
-/* ---- テーブル共通デザイン ---- */
 
 table {
     border-collapse: collapse;
@@ -143,34 +100,33 @@ th, td {
     padding: 6px 10px;
     text-align: center;
     white-space: nowrap;
-    font-weight: normal;
 }
 
-/* 左の「日付・月」列 */
-.month th {
+/* 统一对齐行高 */
+.month tr, .date tr, .total tr {
+    height: 40px;
+}
+
+/* 颜色配置 */
+.month th, .total th {
     background-color: #4472C4;
     color: #ffffff;
 }
 
-/* 中央のヘッダー行（1〜31日） */
 .date tr:first-child th {
     background-color: #CDD4EA;
     font-weight: bold;
 }
 
-/* 中央データ行の背景色 */
-.date tr:nth-child(n+2) th,
 .date tr:nth-child(n+2) td {
     background-color: #f5f5f8;
 }
 
-/* 右の「合計」列 */
-.total th {
-    background-color: #4472C4;
-    color: #ffffff;
+/* 宽度锁定 */
+.month { width: 140px; flex-shrink: 0; }
+.total { width: 120px; flex-shrink: 0; }
+.date { 
+    flex-grow: 1; 
+    overflow-x: auto; 
 }
-
-/* 日別テーブルが横に長くなるように最低幅を設定 */
-.date table {
-    min-width: 1100px;   /* 必要なら 1200px とか好きな値に調整 */
-}
+.date table { min-width: 1100px; }

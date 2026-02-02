@@ -564,4 +564,36 @@ public class OrderManager {
 		}
 		System.out.println("==========================================");
 	}
+	
+	/**
+	 * 年間の売上マトリックスを取得
+	 */
+	public Map<Integer, Map<Integer, Integer>> getYearlySalesMatrix(int year) {
+	    OrderDAO dao = new OrderDAO();
+	    try {
+	        // DAOからデータを取得（初期化済みのMapが返ってくる）
+	        return dao.getYearlySalesData(year);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        // エラー時は空の構造を返す
+	        Map<Integer, Map<Integer, Integer>> emptyMap = new HashMap<>();
+	        for (int i = 1; i <= 12; i++) emptyMap.put(i, new HashMap<>());
+	        return emptyMap;
+	    }
+	}
+
+	/**
+	 * 年間の総合計金額を計算
+	 */
+	public long calculateYearlyTotal(Map<Integer, Map<Integer, Integer>> matrix) {
+	    long total = 0;
+	    for (Map<Integer, Integer> monthMap : matrix.values()) {
+	        for (Integer dailyAmount : monthMap.values()) {
+	            if (dailyAmount != null) {
+	                total += dailyAmount;
+	            }
+	        }
+	    }
+	    return total;
+	}
 }

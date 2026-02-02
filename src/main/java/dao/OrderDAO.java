@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.OrderItem;
 
@@ -293,6 +295,40 @@ public class OrderDAO {
 		// itemStatusはDBに保存しないのでデフォルト値（0）
 
 		return item;
+	}
+	
+	/**
+	 * 获取指定年份的每日销售总额
+	 * 返回结构：Map<月份, Map<日期, 当日总额>>
+	 */
+	public Map<Integer, Map<Integer, Integer>> getYearlySalesData(int year) throws SQLException {
+		String sql = "SELECT MONTH(v.ARRIVAL_TIME) as m, DAY(v.ARRIVAL_TIME) as d, " +
+                "SUM(oi.PRICE * oi.QUANTITY) as daily_sum " +
+                "FROM ORDER_ITEMS oi " +
+                "JOIN VISITS v ON oi.VISIT_ID = v.VISIT_ID " +
+                "WHERE YEAR(v.ARRIVAL_TIME) = ? " +
+                "GROUP BY MONTH(v.ARRIVAL_TIME), DAY(v.ARRIVAL_TIME)";
+
+	    Map<Integer, Map<Integer, Integer>> salesData = new HashMap<>();
+	    
+	    // 初始化 1-12 月的 Map，防止 JSP 出现空指针
+	    for (int i = 1; i <= 12; i++) {
+	        salesData.put(i, new HashMap<>());
+	    }
+
+	    try (Connection conn = getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, year);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                int month = rs.getInt("m");
+	                int day = rs.getInt("d");
+	                int sum = rs.getInt("daily_sum");
+	                salesData.get(month).put(day, sum);
+	            }
+	        }
+	    }
+	    return salesData;
 	}
 }
 

@@ -19,7 +19,7 @@
 		<button
 			onclick="location.href='${pageContext.request.contextPath}/admin/hall'">ホール画面</button>
 		<button
-			onclick="location.href='${pageContext.request.contextPath}/admin/slaes'">売上分析</button>
+			onclick="location.href='${pageContext.request.contextPath}/sales.jsp'">売上分析</button>
 	</div>
 </body>
 </html>

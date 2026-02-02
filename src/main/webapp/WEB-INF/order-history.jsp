@@ -1,17 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="java.util.List" %>
-<%@ page import="java.text.NumberFormat" %>
-<%@ page import="model.CartItem" %>
+<%@ page import="java.util.List"%>
+<%@ page import="java.text.NumberFormat"%>
+<%@ page import="model.CartItem"%>
 
 <%
 @SuppressWarnings("unchecked")
-List<CartItem> summaryList =
-    (List<CartItem>) request.getAttribute("summaryList");
+List<CartItem> summaryList = (List<CartItem>) request.getAttribute("summaryList");
 
 Integer visitTotal = (Integer) request.getAttribute("visitTotal");
 if (visitTotal == null) {
-    visitTotal = 0;
+	visitTotal = 0;
 }
 
 NumberFormat formatter = NumberFormat.getInstance();

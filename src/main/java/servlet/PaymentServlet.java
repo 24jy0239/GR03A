@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,22 +16,35 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import dao.DishDAO;
 import manager.OrderManager;
+import model.CartItem;
+import model.Dish;
+import model.Order;
+import model.OrderItem;
 import model.Visit;
 
 /**
- * PaymentServlet - 会計処理
+ * PaymentServlet - 会計処理（詳細表示付き会計確認画面）
  * 
  * 機能:
- * 1. 会計処理の実行
- * 2. Visit完了処理 (paymentTime設定)
- * 3. データベースへの保存（重複チェック付き）
- * 4. 会計完了画面への遷移
+ * 1. 会計確認画面の表示 (GET) - 注文明細付き
+ * 2. 会計処理の実行 (POST)
+ * 3. Visit完了処理 (paymentTime設定)
+ * 4. データベースへの保存（重複チェック付き）
+ * 5. 会計完了画面への遷移
  * 
- * URL: /payment
+ * URL: /order/payment （統一性のため）
+ * 
+ * フロー:
+ * GET  /order/payment → payment-confirm.jsp（会計確認画面：明細付き）
+ * POST /order/payment → 会計処理 → payment-complete.jsp（会計完了画面）
  * 
  * 変更履歴:
  * 2026-02-02: 重複保存防止機能追加
+ * 2026-02-02: 会計確認画面追加
+ * 2026-02-02: 注文明細表示追加（既存コード活用）
+ * 2026-02-02: URL変更 /payment → /order/payment（統一性のため）
  */
 @WebServlet("/order/payment")
 public class PaymentServlet extends HttpServlet {
@@ -35,10 +52,15 @@ public class PaymentServlet extends HttpServlet {
 	private OrderManager manager = OrderManager.getInstance();
 
 	/**
-	 * 会計画面表示 (GET)
+	 * 会計確認画面表示 (GET) - 注文明細付き
 	 * 
-	 * 注意: 現在の実装では直接doPost()を呼び出しているため、
-	 * 会計確認画面は表示されません。即座に会計処理が実行されます。
+	 * 処理フロー:
+	 * 1. visitId検証
+	 * 2. Visit取得
+	 * 3. 注文チェック
+	 * 4. 会計済みチェック
+	 * 5. 注文明細をCartItemに変換（OrderHistoryServletと同じロジック）
+	 * 6. 会計確認画面へ転送（注文明細付き）
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -54,7 +76,7 @@ public class PaymentServlet extends HttpServlet {
 			return;
 		}
 
-		// Visit存在チェック
+		// Visit取得
 		Visit visit = manager.getVisit(visitId);
 		if (visit == null) {
 			System.out.println("エラー: visitが見つかりません: " + visitId);
@@ -84,11 +106,102 @@ public class PaymentServlet extends HttpServlet {
 			return;
 		}
 
-		// Visit情報をrequestに設定
-		request.setAttribute("visit", visit);
+		// ========================================
+		// 注文明細をCartItemに変換
+		// （OrderHistoryServletのロジックを活用）
+		// ========================================
 
-		// 直接会計処理へ (会計確認画面をスキップ)
-		doPost(request, response);
+		// sessionのdishMapを取得（最適化）
+		@SuppressWarnings("unchecked")
+		Map<String, Dish> dishMap = (Map<String, Dish>) session.getAttribute("dishMap");
+
+		// DishDAOはフォールバック用
+		DishDAO dishDAO = null;
+
+		// Order → CartItem 変換（同じ商品を集計）
+		Map<String, CartItem> summaryMap = new HashMap<>();
+		int visitTotal = 0;
+
+		List<Order> orders = visit.getOrders();
+
+		if (orders != null && !orders.isEmpty()) {
+			for (Order order : orders) {
+				List<OrderItem> orderItems = order.getOrderItems();
+
+				if (orderItems != null) {
+					for (OrderItem item : orderItems) {
+						String dishId = item.getDishId();
+
+						// 既存のCartItemを取得、なければ新規作成
+						CartItem cartItem = summaryMap.get(dishId);
+
+						if (cartItem == null) {
+							String photo = null;
+
+							// まずsessionのdishMapから取得を試みる
+							if (dishMap != null && dishMap.containsKey(dishId)) {
+								Dish dish = dishMap.get(dishId);
+								photo = dish.getPhoto();
+							} else {
+								// dishMapにない場合のみDBアクセス
+								if (dishDAO == null) {
+									dishDAO = new DishDAO();
+								}
+
+								try {
+									Dish dish = dishDAO.findById(dishId);
+									if (dish != null) {
+										photo = dish.getPhoto();
+									}
+								} catch (Exception e) {
+									System.err.println("写真取得エラー: dishId=" + dishId);
+									e.printStackTrace();
+								}
+							}
+
+							// CartItem作成
+							cartItem = new CartItem(
+									dishId,
+									item.getDishName(),
+									item.getPrice(),
+									0,
+									photo);
+
+							summaryMap.put(dishId, cartItem);
+						}
+
+						// 数量を加算
+						cartItem.setQuantity(cartItem.getQuantity() + item.getQuantity());
+
+						// 合計金額を計算
+						visitTotal += item.getSubtotal();
+					}
+				}
+			}
+		}
+
+		// MapをListに変換
+		List<CartItem> orderDetailsList = new ArrayList<>(summaryMap.values());
+
+		System.out.println("====================================");
+		System.out.println("会計確認画面表示:");
+		System.out.println("  visitId: " + visitId);
+		System.out.println("  テーブル番号: " + visit.getTableNum());
+		System.out.println("  注文件数: " + visit.getOrderCount());
+		System.out.println("  明細項目数: " + orderDetailsList.size());
+		System.out.println("  合計金額: ¥" + visitTotal);
+		System.out.println("====================================");
+
+		// Visit情報とカート情報をrequestに設定
+		request.setAttribute("visit", visit);
+		request.setAttribute("totalAmount", visitTotal);
+		request.setAttribute("tableNum", visit.getTableNum());
+		request.setAttribute("orderCount", visit.getOrderCount());
+		request.setAttribute("orderDetailsList", orderDetailsList); // 注文明細リスト
+
+		// 会計確認画面へ転送（注文明細付き）
+		request.getRequestDispatcher("/WEB-INF/payment-confirm.jsp")
+				.forward(request, response);
 	}
 
 	/**

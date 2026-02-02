@@ -39,16 +39,13 @@ if (message != null) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>注文画面</title>
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/orderCommon.css">
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/orderMenu.css?v=999">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/orderCommon.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/orderMenu.css?">
 </head>
 
 <body>
-
-	<!--     桌号表示（加分项） -->
-	<!--    <div class="table-number">-->
-	<!--        テーブルtableNumNum %>-->
-	<!--    </div>-->
 
 	<!-- cartリスト -->
 	<div id="sideList" class="side-list">
@@ -102,7 +99,7 @@ if (message != null) {
 				%>
 			</ul>
 
-			<!-- 清空按钮 -->
+			<!-- リスト取消 -->
 			<%
 			if (cart != null && !cart.isEmpty()) {
 			%>
@@ -206,30 +203,53 @@ if (message != null) {
 		</div>
 
 		<script>
-        document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-            /* リスト開閉 */
-            const btn = document.getElementById("listBtn");
-            const panel = document.getElementById("sideList");
-            panel.classList.remove("open");
+    /*リスト開閉*/
+    const btn = document.getElementById("listBtn");
+    const panel = document.getElementById("sideList");
 
-            btn.addEventListener("click", () => {
-                panel.classList.toggle("open");
-            });
+    const isOpen = sessionStorage.getItem("cartOpen");
 
-            /* モーダル */
-            const params = new URLSearchParams(window.location.search);
-            const modal = document.getElementById("sentModal");
-            const closeBtn = document.getElementById("closeModal");
+    if (isOpen === "true") {
+        panel.classList.add("open");
+    } else {
+        panel.classList.remove("open");
+    }
 
-            if (params.get('sent') === '1') {
-                modal.classList.add("show");
-            }
+    btn.addEventListener("click", () => {
+        panel.classList.toggle("open");
 
-            closeBtn.addEventListener("click", () => {
-                modal.classList.remove("show");
-            });
-        });
-    </script>
+        sessionStorage.setItem(
+            "cartOpen",
+            panel.classList.contains("open")
+        );
+    });
+    
+	/*初めてカート追加時*/
+    const cartCount = <%=cartCount%>;
+
+    const everOpened = sessionStorage.getItem("cartEverOpened");
+
+    if (cartCount > 0 && everOpened !== "true") {
+        panel.classList.add("open");
+        sessionStorage.setItem("cartOpen", "true");
+        sessionStorage.setItem("cartEverOpened", "true");
+    }
+
+    /* モーダル */
+    const params = new URLSearchParams(window.location.search);
+    const modal = document.getElementById("sentModal");
+    const closeBtn = document.getElementById("closeModal");
+
+    if (params.get('sent') === '1') {
+        modal.classList.add("show");
+    }
+
+    closeBtn.addEventListener("click", () => {
+        modal.classList.remove("show");
+    });
+});
+</script>
 </body>
 </html>

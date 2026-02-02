@@ -113,9 +113,6 @@ public class OrderServlet extends HttpServlet {
 				System.out.println("❌ visits に Visit が存在しない！");
 			}
 			System.out.println("------------------------------------------");
-			// ========== デバッグログ終了 ==========
-
-			// データベースに保存（重要！）
 			try {
 				manager.saveOrderItems(order);
 				System.out.println("✅ DB保存完了: orderId=" + order.getOrderId());

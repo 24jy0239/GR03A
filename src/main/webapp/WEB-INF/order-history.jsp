@@ -6,16 +6,11 @@
 
 <%
 @SuppressWarnings("unchecked")
-List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+List<CartItem> summaryList = (List<CartItem>) request.getAttribute("summaryList");
 
-Integer cartTotal = (Integer) request.getAttribute("cartTotal");
-if (cartTotal == null) {
-	cartTotal = 0;
-}
-
-Integer tableNum = (Integer) session.getAttribute("tableNum");
-if (tableNum == null) {
-	tableNum = 0;
+Integer visitTotal = (Integer) request.getAttribute("visitTotal");
+if (visitTotal == null) {
+	visitTotal = 0;
 }
 
 NumberFormat formatter = NumberFormat.getInstance();
@@ -23,43 +18,43 @@ NumberFormat formatter = NumberFormat.getInstance();
 
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>送信確認</title>
+<title>注文履歴</title>
+
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/orderCommon.css">
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/orderConfirmation.css">
-
 </head>
 
 <body>
 
 	<div class="header">
-		<h1>送信確認</h1>
+		<h1>注文履歴</h1>
 	</div>
 
 	<div class="order-list" id="orderList">
 
 		<%
-		if (cart == null || cart.isEmpty()) {
+		if (summaryList == null || summaryList.isEmpty()) {
 		%>
-		<div class="order-item">注文内容がありません</div>
+		<div class="order-item">まだ注文履歴はありません</div>
 		<%
 		} else {
-		for (CartItem item : cart) {
+		for (CartItem item : summaryList) {
 		%>
 		<div class="order-item">
 			<div class="item-name">
 				<%=item.getName()%>
 			</div>
+
 			<div class="item-detail">
 				￥<%=formatter.format(item.getPrice())%>
 				×
 				<%=item.getQuantity()%>
 			</div>
+
 			<div class="item-subtotal">
 				小計：￥<%=formatter.format(item.getSubtotal())%>
 			</div>
@@ -71,19 +66,14 @@ NumberFormat formatter = NumberFormat.getInstance();
 
 	</div>
 
+	<!-- 合計 -->
 	<div class="bottom-area">
-		<div class="total" id="totalAmount">
-			合計：￥<%=formatter.format(cartTotal)%>（税込）
+		<div class="total">
+			合計：￥<%=formatter.format(visitTotal)%>（税込）
 		</div>
 
 		<div class="btn-area">
-			<button class="btn back-btn"
-				onclick="location.href='<%=request.getContextPath()%>/menu'">
-				戻る</button>
-
-			<form action="<%=request.getContextPath()%>/order" method="post">
-				<button class="btn send-btn">送信</button>
-			</form>
+			<button class="btn back-btn" onclick="history.back()">戻る</button>
 		</div>
 	</div>
 

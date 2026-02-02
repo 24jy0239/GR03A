@@ -42,7 +42,7 @@ body {
 .side-list {
     position: fixed;
     top: 10%;
-    right: -250px;
+    right: -220px;
     display: flex;
     z-index: 1000;
     transition: right 0.3s ease;

@@ -4,18 +4,27 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 25px;
-    background-color: #E9EBF5; /* 建议背景色与整体风格一致 */
+    gap: 50px; /* 标题与按钮组之间的垂直距离 */
+    background-color: #E9EBF5;
+    margin: 0;
 }
 
 h1 {
     font-size: 480%;
-    margin-top: 0px;
+    margin-top: 0;
     color: #333;
 }
 
+.menu-grid {
+    display: grid;
+    /* 这里的 300px 对应你按钮的宽度 */
+    grid-template-columns: repeat(2, 300px); 
+    /* 增加间距：第一个值是行间距 (Row)，第二个值是列间距 (Column) */
+    gap: 80px 80px; 
+}
+
 button {
-    height: 60px; /* 稍微增加高度以适应大字体 */
+    height: 60px;
     width: 300px;
     font-size: 180%;
     background-color: #4472c4;
@@ -24,27 +33,14 @@ button {
     border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
-    
-    /* 初始阴影：右下角偏移 */
     box-shadow: 4px 4px 0px #2e4d85;
-    
-    /* 平滑过渡效果 */
     transition: all 0.1s ease;
-    
-    /* 防止文字被选中 */
     user-select: none;
 }
 
-/* 悬停效果：按钮稍微变亮 */
-button:hover {
-    background-color: #5583d5;
-}
-
-/* 点击效果：模仿物理点击感 */
+/* 保持你原有的点击动画效果 */
+button:hover { background-color: #5583d5; }
 button:active {
-    /* 1. 减少阴影大小 */
     box-shadow: 1px 1px 0px #2e4d85;
-    
-    /* 2. 按钮向右下角移动，抵消掉减少的阴影高度 */
     transform: translate(3px, 3px);
 }

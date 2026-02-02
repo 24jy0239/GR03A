@@ -1,11 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.text.NumberFormat"%>
+<%@ page import="model.Visit"%>
 <%
-Integer totalAmount = (Integer) session.getAttribute("paymentAmount");
+// PaymentServletから受け取ったデータを取得
+Visit visit = (Visit) request.getAttribute("visit");
+Integer totalAmount = (Integer) request.getAttribute("totalAmount");
+Integer tableNum = (Integer) request.getAttribute("tableNum");
 
+// デフォルト値設定
 if (totalAmount == null)
 	totalAmount = 0;
+if (tableNum == null)
+	tableNum = 0;
 
 NumberFormat formatter = NumberFormat.getInstance();
 %>
@@ -69,6 +76,12 @@ h1 {
 	font-size: 2em;
 }
 
+.table-info {
+	color: #666;
+	margin-bottom: 10px;
+	font-size: 1.1em;
+}
+
 .message {
 	color: #666;
 	margin-bottom: 30px;
@@ -129,6 +142,16 @@ h1 {
 		<div class="success-icon">✅</div>
 
 		<h1>会計完了</h1>
+
+		<%
+		if (tableNum > 0) {
+		%>
+		<p class="table-info">
+			テーブル番号: <strong><%=tableNum%></strong>
+		</p>
+		<%
+		}
+		%>
 
 		<p class="message">
 			ご利用ありがとうございました！<br> お支払いが完了しました。

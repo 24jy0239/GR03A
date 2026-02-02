@@ -190,7 +190,7 @@ if (message != null) {
 			会計</button>
 
 		<button class="send-btn"
-			onclick="location.href='<%=request.getContextPath()%>/order-confirm'">
+			onclick="location.href='<%=request.getContextPath()%>/order/confirm'">
 			注文送信</button>
 
 

@@ -29,3 +29,9 @@
     border-top: 2px solid #ddd;
     flex-shrink: 0; /* 下部エリアが縮まらないように */
 }
+
+.item-photo {
+    height: 100px;
+    width: 100px;
+    border-radius: 10px;
+}

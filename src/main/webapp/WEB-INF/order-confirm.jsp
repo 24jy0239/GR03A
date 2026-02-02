@@ -31,7 +31,7 @@ NumberFormat formatter = NumberFormat.getInstance();
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/orderCommon.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/orderConfirmation.css">
+	href="<%=request.getContextPath()%>/css/orderConfirmation.css?v=5">
 
 </head>
 
@@ -52,13 +52,18 @@ NumberFormat formatter = NumberFormat.getInstance();
 		for (CartItem item : cart) {
 		%>
 		<div class="order-item">
-			<div class="item-name">
-				<%=item.getName()%>
-			</div>
-			<div class="item-detail">
-				￥<%=formatter.format(item.getPrice())%>
-				×
-				<%=item.getQuantity()%>
+			<img class="item-photo"
+				src="<%=request.getContextPath()%>/<%=item.getPhotoPath()%>"
+				alt="<%=item.getName()%>">
+			<div class="item-info">
+				<div class="item-name">
+					<%=item.getName()%>
+				</div>
+				<div class="item-detail">
+					￥<%=formatter.format(item.getPrice())%>
+					×
+					<%=item.getQuantity()%>
+				</div>
 			</div>
 			<div class="item-subtotal">
 				小計：￥<%=formatter.format(item.getSubtotal())%>
@@ -82,7 +87,7 @@ NumberFormat formatter = NumberFormat.getInstance();
 				戻る</button>
 
 			<form action="<%=request.getContextPath()%>/order" method="post">
-				<button class="btn send-btn">送信</button>
+				<button class="btn send-btn" style="background-color: gold;">送信</button>
 			</form>
 		</div>
 	</div>

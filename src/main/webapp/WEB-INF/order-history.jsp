@@ -1,20 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="java.util.List"%>
-<%@ page import="java.text.NumberFormat"%>
-<%@ page import="model.CartItem"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.text.NumberFormat" %>
+<%@ page import="model.CartItem" %>
 
 <%
 @SuppressWarnings("unchecked")
-List<CartItem> summaryList = (List<CartItem>) request.getAttribute("summaryList");
+List<CartItem> summaryList =
+    (List<CartItem>) request.getAttribute("summaryList");
 
 Integer visitTotal = (Integer) request.getAttribute("visitTotal");
 if (visitTotal == null) {
-	visitTotal = 0;
+    visitTotal = 0;
 }
 
 NumberFormat formatter = NumberFormat.getInstance();
 %>
+
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -25,10 +27,11 @@ NumberFormat formatter = NumberFormat.getInstance();
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/orderCommon.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/orderConfirmation.css">
+	href="<%=request.getContextPath()%>/css/orderConfirmation.css?v=5">
 </head>
 
 <body>
+
 
 	<div class="header">
 		<h1>注文履歴</h1>
@@ -44,7 +47,11 @@ NumberFormat formatter = NumberFormat.getInstance();
 		} else {
 		for (CartItem item : summaryList) {
 		%>
+
 		<div class="order-item">
+			<img class="item-photo"
+				src="<%=request.getContextPath()%>/<%=item.getPhotoPath()%>"
+				alt="<%=item.getName()%>">
 			<div class="item-name">
 				<%=item.getName()%>
 			</div>

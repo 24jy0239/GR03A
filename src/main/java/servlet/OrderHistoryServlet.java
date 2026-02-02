@@ -13,8 +13,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import dao.DishDAO;
 import manager.OrderManager;
 import model.CartItem;
+import model.Dish;
 import model.Order;
 import model.OrderItem;
 import model.Visit;
@@ -25,6 +27,8 @@ public class OrderHistoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+    	DishDAO dishDAO = new DishDAO();
 
         HttpSession session = request.getSession();
         
@@ -63,15 +67,28 @@ public class OrderHistoryServlet extends HttpServlet {
 
                     CartItem cartItem = summaryMap.get(dishId);
                     if (cartItem == null) {
+
+                        String photo = null;
+                        try {
+                            Dish dish = dishDAO.findById(dishId);
+                            if (dish != null) {
+                                photo = dish.getPhoto();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         cartItem = new CartItem(
                                 dishId,
                                 item.getDishName(),
                                 item.getPrice(),
                                 0,
-                                null
+                                photo
                         );
+
                         summaryMap.put(dishId, cartItem);
                     }
+
 
                     // 数量
                     cartItem.setQuantity(

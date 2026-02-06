@@ -1,89 +1,152 @@
 body {
-    background-color: #E9EBF5;
-    font-family: sans-serif;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
+	background-color: #E9EBF5;
+	font-family: sans-serif;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100vh;
+	overflow: hidden;
 }
 
 .header {
-    width: 100%;
-    padding: 30px 0;
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    top: 0;
+	width: 100%;
+	padding: 30px 0;
+	display: flex;
+	justify-content: center;
+	position: absolute;
+	top: 0;
 }
 
-h1.page-title { font-size: 3.5rem; margin: 0; }
+h1.page-title {
+	font-size: 3.5rem;
+	margin: 0;
+}
 
 /* --- 核心按钮样式：应用物理厚度感 --- */
-#topBtn, .btn-large {
-    background-color: #4472c4;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    user-select: none;
-    box-shadow: 4px 4px 0px #2e4d85; /* 物理厚度 */
-    transition: all 0.1s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#topBtn,
+.btn-large {
+	background-color: #4472c4;
+	color: white;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+	user-select: none;
+	box-shadow: 4px 4px 0px #2e4d85;
+	/* 物理厚度 */
+	transition: all 0.1s ease;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 #topBtn {
-    position: absolute;
-    right: 50px;
-    top: 40px;
-    width: 200px;
-    height: 65px;
-    font-size: 24px;
+	position: absolute;
+	right: 50px;
+	top: 40px;
+	width: 200px;
+	height: 65px;
+	font-size: 24px;
 }
 
 .btn-large {
-    width: 320px;
-    height: 75px;
-    font-size: 26px;
-    border-radius: 15px;
+	width: 320px;
+	height: 75px;
+	font-size: 26px;
+	border-radius: 15px;
 }
 
 .btn-danger {
-    background-color: #E74C3C !important;
-    box-shadow: 4px 4px 0px #c0392b !important;
+	background-color: #E74C3C !important;
+	box-shadow: 4px 4px 0px #c0392b !important;
 }
 
 /* --- 交互效果：位移下沉 --- */
-#topBtn:hover, .btn-large:hover { background-color: #5583d5; }
-.btn-danger:hover { background-color: #ff5e4d !important; }
+#topBtn:hover,
+.btn-large:hover {
+	background-color: #5583d5;
+}
 
-#topBtn:active, .btn-large:active {
-    box-shadow: 1px 1px 0px #2e4d85 !important;
-    transform: translate(3px, 3px); /* 物理按下位移 */
+.btn-danger:hover {
+	background-color: #ff5e4d !important;
+}
+
+#topBtn:active,
+.btn-large:active {
+	box-shadow: 1px 1px 0px #2e4d85 !important;
+	transform: translate(3px, 3px);
+	/* 物理按下位移 */
 }
 
 .btn-danger:active {
-    box-shadow: 1px 1px 0px #c0392b !important;
+	box-shadow: 1px 1px 0px #c0392b !important;
 }
 
 /* 布局保持不变 */
 .new-menu-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 100px;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding-top: 100px;
 }
 
-.new-menu-row { display: flex; justify-content: center; gap: 100px; margin-bottom: 60px; }
-.upload-box { width: 320px; height: 320px; border: 3px dashed #9FAEDC; border-radius: 50px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-.upload-box img { width: 100%; height: 100%; object-fit: cover; }
-.form-fields { width: 500px; }
-.field-row { display: flex; align-items: center; margin-bottom: 25px; }
-.field-label { width: 100px; font-size: 24px; font-weight: bold; }
-.field-input { flex: 1; height: 60px; border: 2px solid #9FAEDC; border-radius: 10px; padding: 0 20px; font-size: 22px; }
-.new-menu-buttons { display: flex; justify-content: center; gap: 40px; }
+.new-menu-row {
+	display: flex;
+	justify-content: center;
+	gap: 100px;
+	margin-bottom: 60px;
+}
+
+/* 确保预览框有固定的大小且溢出隐藏 */
+.upload-box {
+	width: 250px;
+	/* 或者你需要的宽度 */
+	height: 250px;
+	/* 或者你需要的高度 */
+	border: 2px dashed #ccc;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	/* 防止图片超出边界 */
+	background-color: #f8f9fa;
+}
+
+.upload-box img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.form-fields {
+	width: 500px;
+}
+
+.field-row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 25px;
+}
+
+.field-label {
+	width: 100px;
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.field-input {
+	flex: 1;
+	height: 60px;
+	border: 2px solid #9FAEDC;
+	border-radius: 10px;
+	padding: 0 20px;
+	font-size: 22px;
+}
+
+.new-menu-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 40px;
+}

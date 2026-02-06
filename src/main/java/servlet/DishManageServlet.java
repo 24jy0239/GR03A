@@ -20,6 +20,11 @@ import model.Dish;
  * 料理の一覧・追加・編集・削除
  */
 @WebServlet("/admin/dish-manage")
+@jakarta.servlet.annotation.MultipartConfig(
+	    fileSizeThreshold = 1024 * 1024 * 1,  // 1MB
+	    maxFileSize = 1024 * 1024 * 10,       // 10MB
+	    maxRequestSize = 1024 * 1024 * 15     // 15MB
+	)
 public class DishManageServlet extends HttpServlet {
 
 	private DishDAO dishDAO = new DishDAO();
@@ -174,9 +179,11 @@ public class DishManageServlet extends HttpServlet {
 
 	/**
 	 * 料理追加
+	 * @throws IOException 
+	 * @throws ServletException 
 	 */
 	private void addDish(HttpServletRequest request, HttpSession session)
-			throws SQLException {
+			throws SQLException, ServletException, IOException {
 
 		// パラメータ取得
 		String dishId = request.getParameter("dishId");
@@ -185,6 +192,7 @@ public class DishManageServlet extends HttpServlet {
 		String dishCategory = request.getParameter("dishCategory");
 		String dishPhoto = request.getParameter("dishPhoto");
 		boolean available = "1".equals(request.getParameter("available"));
+		String uploadedFileName = handleFileUpload(request);
 
 		// Dishオブジェクト作成
 		Dish dish = new Dish();
@@ -194,6 +202,12 @@ public class DishManageServlet extends HttpServlet {
 		dish.setCategory(dishCategory);
 		dish.setPhoto(dishPhoto);
 		dish.setAvailable(available);
+		
+		if (uploadedFileName != null) {
+	        dish.setPhoto(uploadedFileName);
+	    } else {
+	        dish.setPhoto(request.getParameter("dishPhoto"));
+	    }
 
 		// DB登録
 		dishDAO.insert(dish);
@@ -205,14 +219,18 @@ public class DishManageServlet extends HttpServlet {
 
 	/**
 	 * 料理編集
+	 * @throws IOException 
+	 * @throws ServletException 
 	 */
-	private void editDish(HttpServletRequest request, HttpSession session) throws SQLException {
+	private void editDish(HttpServletRequest request, HttpSession session) throws SQLException, ServletException, IOException {
 	    String dishId = request.getParameter("dishId");
 	    String dishName = request.getParameter("dishName");
 	    int dishPrice = Integer.parseInt(request.getParameter("dishPrice"));
 	    String dishCategory = request.getParameter("dishCategory"); // 这里拿到的是 CAT001
 	    String dishPhoto = request.getParameter("dishPhoto");
 	    boolean available = "1".equals(request.getParameter("available"));
+	    
+	    String uploadedFileName = handleFileUpload(request);
 
 	    Dish dish = new Dish();
 	    dish.setDishId(dishId);
@@ -221,6 +239,12 @@ public class DishManageServlet extends HttpServlet {
 	    dish.setCategory(dishCategory);
 	    dish.setPhoto(dishPhoto);
 	    dish.setAvailable(available);
+	    
+	    if (uploadedFileName != null) {
+	        dish.setPhoto(uploadedFileName);
+	    } else {
+	        dish.setPhoto(request.getParameter("dishPhoto"));
+	    }
 
 	    dishDAO.update(dish);
 	    session.setAttribute("message", "料理「" + dishName + "」を更新しました");
@@ -256,5 +280,27 @@ public class DishManageServlet extends HttpServlet {
 	        System.out.println("料理物理删除: " + dishId);
 	        session.setAttribute("message", "料理をデータベースから完全に削除しました");
 	    }
+	}
+	
+	private String handleFileUpload(HttpServletRequest request) throws ServletException, IOException {
+	    // 对应 JSP 中 <input type="file" id="fileInput" name="fileInput">
+	    // 注意：你需要在 JSP 的 file input 标签加上 name="fileInput"
+	    jakarta.servlet.http.Part filePart = request.getPart("fileInput");
+	    
+	    if (filePart != null && filePart.getSize() > 0) {
+	        String fileName = filePart.getSubmittedFileName();
+	        // 获取服务器中 images 文件夹的绝对路径
+	        String savePath = getServletContext().getRealPath("/images");
+	        
+	        java.io.File fileSaveDir = new java.io.File(savePath);
+	        if (!fileSaveDir.exists()) {
+	            fileSaveDir.mkdir();
+	        }
+	        
+	        // 保存文件到硬盘
+	        filePart.write(savePath + java.io.File.separator + fileName);
+	        return fileName; // 返回文件名以便存入数据库
+	    }
+	    return null; // 如果没上传新图，返回空
 	}
 }

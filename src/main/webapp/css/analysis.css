@@ -15,62 +15,57 @@ h1 {
     background-color: #4472C4;
     color: #ffffff;
     border: none;
-    border-radius: 8px; /* 圆角 */
+    border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
     z-index: 100;
     
-    /* --- 核心点击特效：立体感 --- */
-    box-shadow: 4px 4px 0px #2e4d85; /* 深蓝色底部阴影 */
-    transition: all 0.1s ease;      /* 动画平滑过渡 */
+    /* 核心点击特效 */
+    box-shadow: 4px 4px 0px #2e4d85;
+    transition: all 0.1s ease;
     user-select: none;
 }
 
-/* 悬停效果 */
 #return:hover {
     background-color: #5583d5;
 }
 
-/* 点击下沉效果：阴影变小，按钮向右下方位移 */
 #return:active {
     box-shadow: 1px 1px 0px #2e4d85;
     transform: translate(3px, 3px);
 }
 
-/* --- 2. 容器与控制栏 --- */
+/* --- 2. 容器与控制栏 (修正对齐与间距) --- */
 .main-container {
     width: 90%;
-    margin: 40px auto;
+    /* 将原本的 40px 增加到 100px，让布局整体下移 */
+    margin: 100px auto 40px; 
 }
 
 .top-toolbar {
     display: flex;
+    /* 核心：确保左右两端对齐，中间内容有空间居中 */
     justify-content: space-between;
     align-items: center; 
     width: 100%;
     margin-bottom: 15px;
 }
 
-/* 年份选择器：保持简洁，高度与单位对齐 */
-.header-left select {
-    font-size: 16px;
-    height: 32px;
-    border: 1px solid #767676;
-    padding: 0 5px;
-    cursor: pointer;
+/* 修正：通过 flex 权重让中间部分真正居中 */
+.header-left {
+    flex: 1; /* 占据 1 份空间 */
+    display: flex;
+    align-items: center;
 }
-
-.header-left span {
-    margin-left: 8px;
-    font-size: 16px;
-}
-
-/* 如果你依然保留搜索按钮，可以把相同的特效加给 .search-button */
-/* 但你之前提到想选完年份直接跳转，所以这里的 search-button 可以隐藏或删除 */
 
 .header-center {
-    flex: 2;
+    flex: 2; /* 占据 2 份空间，确保它有足够的宽度来让文字居中 */
     text-align: center;
+}
+
+.header-right {
+    flex: 1; /* 占据 1 份空间，与左侧对称 */
+    text-align: right;
 }
 
 .total-display {
@@ -78,18 +73,17 @@ h1 {
     font-weight: bold;
 }
 
-.header-right {
-    flex: 1;
-    text-align: right;
+.header-left select {
+    font-size: 16px;
+    height: 32px;
+    padding: 0 5px;
 }
 
 .unit-text {
     font-size: 14px;
-    line-height: 32px;
-    display: inline-block;
 }
 
-/* --- 3. 表格布局 (保持之前的逻辑) --- */
+/* --- 3. 表格布局 --- */
 .layout {
     display: flex;
     width: 100%;

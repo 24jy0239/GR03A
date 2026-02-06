@@ -26,8 +26,10 @@ request.setAttribute("yearlyTotal", yearlyTotal);
 <link rel="stylesheet" href="css/analysis.css">
 </head>
 <body>
-	<h1>売り上げ分析</h1>
-	<button id="return" onclick="location.href='administration.jsp'">戻る</button>
+	<div class="header-section">
+		<h1>売り上げ分析</h1>
+		<button id="return" onclick="location.href='administration.jsp'">戻る</button>
+	</div>
 
 	<div class="main-container">
 		<div class="top-toolbar">

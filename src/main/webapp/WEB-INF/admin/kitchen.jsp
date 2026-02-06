@@ -20,6 +20,14 @@
 </header>
 
 <main class="wait-container">
+    <c:set var="totalQuantity" value="0" />
+    <c:forEach var="item" items="${kitchenItems}">
+        <c:set var="totalQuantity" value="${totalQuantity + item.quantity}" />
+    </c:forEach>
+    <div class="summary-bar">
+        料理数量：${totalQuantity}
+    </div>
+    
     <section class="order-grid">
 
         <%-- 1. 渲染实际订单数据 --%>
@@ -75,8 +83,8 @@
 
         <%-- 2. 补齐 14 格布局 --%>
         <c:set var="currentSize" value="${fn:length(kitchenItems)}" />
-        <c:if test="${currentSize < 14}">
-            <c:forEach begin="${currentSize + 1}" end="14">
+        <c:if test="${currentSize < 12}">
+            <c:forEach begin="${currentSize + 1}" end="12">
                 <div class="order-card empty">
                     <div class="col name-col"></div>
                     <div class="col start-col"></div>

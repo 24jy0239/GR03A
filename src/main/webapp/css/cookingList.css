@@ -3,8 +3,7 @@ body {
     background-color: #E9EBF5;
     margin: 0;
     padding: 0;
-    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-    /* 确保页面超出时可以平滑滚动 */
+    font-family: "Helvetica Neue", Arial, sans-serif;
     overflow-y: auto; 
 }
 
@@ -13,23 +12,20 @@ body {
     align-items: center;
     padding: 20px 40px;
     height: 100px;
-    position: sticky; /* 让 Header 在滚动时固定在顶部 */
+    position: sticky;
     top: 0;
     background-color: #E9EBF5;
     z-index: 1000;
 }
 
-/* 标题：绝对定位，永远在页面正中央 */
 h1 {
     font-size: 360%;
     margin: 0;
-    white-space: nowrap;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
 }
 
-/* 返回按钮：固定在右侧 */
 #topBtn {
     position: absolute;
     right: 40px;
@@ -38,7 +34,6 @@ h1 {
     font-size: 180%;
 }
 
-/* 更新按钮：定位在标题和返回按钮中间 */
 .square-refresh-btn {
     position: absolute;
     right: calc(340px + (100% - 340px - 50%) / 2); 
@@ -46,10 +41,9 @@ h1 {
     height: 60px;
     width: 60px;
     font-size: 110%;
-    padding: 0;
 }
 
-/* ===== 按钮通用样式 (你的原版效果) ===== */
+/* ===== 按钮通用样式 ===== */
 button {
     background-color: #4472c4;
     color: white;
@@ -71,6 +65,15 @@ button:active {
     transform: translate(3px, 3px);
 }
 
+/* ===== 总数显示条 ===== */
+.summary-bar {
+    max-width: 1400px;
+    margin: 0 auto 10px auto;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left; /* 确保左对齐 */
+}
+
 /* ===== 布局容器 (支持滚动) ===== */
 .wait-container {
     max-width: 1400px;
@@ -80,11 +83,9 @@ button:active {
 
 .order-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 保持两列 */
-    grid-auto-rows: minmax(90px, auto);    /* 自动增加行高，且根据内容扩展 */
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(90px, auto); 
     gap: 10px;
-    /* 不再固定高度，确保超过14个时能向下排列 */
-    min-height: calc(100vh - 180px); 
 }
 
 /* ===== 订单卡片内部结构 ===== */
@@ -102,7 +103,6 @@ button:active {
     background-color: transparent;
 }
 
-/* 列颜色区分 */
 .name-col { background-color: #E3E7F5; padding: 10px; }
 .start-col { background-color: #D0DCF8; display: flex; justify-content: center; align-items: center; }
 .finish-col { background-color: #C3D4F0; display: flex; justify-content: center; align-items: center; }
@@ -139,7 +139,6 @@ button:disabled {
     transform: none !important;
 }
 
-/* 空卡片隐藏内容 */
 .order-card.empty .dish-name,
 .order-card.empty .info-row-3,
 .order-card.empty .action-btn,

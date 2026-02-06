@@ -36,16 +36,16 @@ public class MenuServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-
 		String categoryId = request.getParameter("category");
 
-		if (categoryId != null) {
+		if ("ALL".equals(categoryId)) {
+		    session.removeAttribute("selectedCategory");
+		    categoryId = null;
+		} else if (categoryId != null) {
 		    session.setAttribute("selectedCategory", categoryId);
 		} else {
 		    categoryId = (String) session.getAttribute("selectedCategory");
 		}
-
-
 
 		// テーブル番号を取得（初回のみパラメータから）
 		String tableNumStr = request.getParameter("tableNum");
@@ -89,7 +89,7 @@ public class MenuServlet extends HttpServlet {
 				throw new ServletException("料理マスタ読み込みエラー", e);
 			}
 		}
-
+		
 		// カテゴリフィルター処理（グループメンバーの機能）
 		List<Dish> dishList = new ArrayList<>();
 		for (Dish dish : dishMap.values()) {
@@ -138,6 +138,17 @@ public class MenuServlet extends HttpServlet {
 				request.setAttribute("orderHistory", visit.getOrders());
 			}
 		}
+		
+		boolean hasOrder = false;
+
+		if (visitId != null) {
+		    Visit visit = manager.getVisit(visitId);
+		    if (visit != null && visit.getOrderCount() > 0) {
+		        hasOrder = true;
+		    }
+		}
+
+		request.setAttribute("hasOrder", hasOrder);
 
 		// メニュー画面へ
 		request.getRequestDispatcher("/WEB-INF/menu.jsp").forward(request, response);

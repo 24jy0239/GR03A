@@ -12,23 +12,15 @@ if (tableNum == null) {
 
 	return;
 }
-
+boolean hasOrder = Boolean.TRUE.equals(request.getAttribute("hasOrder"));
 @SuppressWarnings("unchecked")
 List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
 
-Integer cartCount = 0;
-Integer cartTotal = 0;
-
+int cartCount = 0;
 if (cart != null) {
 	for (CartItem item : cart) {
 		cartCount += item.getQuantity();
-		cartTotal += item.getSubtotal();
 	}
-}
-
-String message = (String) session.getAttribute("message");
-if (message != null) {
-	session.removeAttribute("message");
 }
 %>
 
@@ -119,6 +111,7 @@ if (message != null) {
 	<div class="container">
 
 		<div class="category-area">
+			<a class="category-btn" href="<%=request.getContextPath()%>/menu?category=ALL">TOP</a>
 			<a class="category-btn"
 				href="<%=request.getContextPath()%>/menu?category=麺類">麺類</a> <a
 				class="category-btn"
@@ -171,7 +164,7 @@ if (message != null) {
 				</div>
 
 				<%
-				} // for
+				}
 				%>
 
 			</div>
@@ -185,9 +178,7 @@ if (message != null) {
 			onclick="location.href='<%=request.getContextPath()%>/order/history'">
 			注文履歴</button>
 
-		<button class="pay-btn"
-			onclick="location.href='<%=request.getContextPath()%>/order/payment'">
-			会計</button>
+		<button class="pay-btn" onclick="goPayment()">会計</button>
 
 		<button class="send-btn"
 			onclick="location.href='<%=request.getContextPath()%>/order/confirm'">
@@ -201,6 +192,14 @@ if (message != null) {
 				<button id="closeModal">閉じる</button>
 			</div>
 		</div>
+
+		<div id="noOrderModal" class="modal">
+			<div class="modal-content">
+				<p>まだ注文がありません</p>
+				<button onclick="closeNoOrderModal()">閉じる</button>
+			</div>
+		</div>
+
 
 		<script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -249,7 +248,32 @@ document.addEventListener("DOMContentLoaded", () => {
     closeBtn.addEventListener("click", () => {
         modal.classList.remove("show");
     });
+
+
 });
+</script>
+
+		<script>
+/* ===== 会計ボタン ===== */
+function goPayment() {
+    const hasOrder = <%=hasOrder%>;
+
+    if (!hasOrder) {
+        showNoOrderModal();
+        return;
+    }
+
+    location.href = "<%=request.getContextPath()%>/order/payment";
+}
+
+/* ===== 未注文モーダル ===== */
+function showNoOrderModal() {
+    document.getElementById("noOrderModal").classList.add("show");
+}
+
+function closeNoOrderModal() {
+    document.getElementById("noOrderModal").classList.remove("show");
+}
 </script>
 </body>
 </html>

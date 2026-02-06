@@ -26,7 +26,7 @@ NumberFormat formatter = NumberFormat.getInstance();
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/orderCommon.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/orderConfirmation.css?v=5">
+	href="<%=request.getContextPath()%>/css/orderConfirmation.css">
 </head>
 
 <body>
@@ -51,16 +51,17 @@ NumberFormat formatter = NumberFormat.getInstance();
 			<img class="item-photo"
 				src="<%=request.getContextPath()%>/<%=item.getPhotoPath()%>"
 				alt="<%=item.getName()%>">
-			<div class="item-name">
-				<%=item.getName()%>
-			</div>
+			<div class="item-info">
+				<div class="item-name">
+					<%=item.getName()%>
+				</div>
 
-			<div class="item-detail">
-				￥<%=formatter.format(item.getPrice())%>
-				×
-				<%=item.getQuantity()%>
+				<div class="item-detail">
+					￥<%=formatter.format(item.getPrice())%>
+					×
+					<%=item.getQuantity()%>
+				</div>
 			</div>
-
 			<div class="item-subtotal">
 				小計：￥<%=formatter.format(item.getSubtotal())%>
 			</div>

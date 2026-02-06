@@ -31,7 +31,7 @@ NumberFormat formatter = NumberFormat.getInstance();
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/orderCommon.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/orderConfirmation.css?v=5">
+	href="<%=request.getContextPath()%>/css/orderConfirmation.css">
 
 </head>
 

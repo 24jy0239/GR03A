@@ -285,7 +285,7 @@ h1 {
 		<div class="button-group">
 			<button class="btn btn-secondary" onclick="location.reload()">🔄
 				更新</button>
-			<a href="${pageContext.request.contextPath}/admin"
+			<a href="${pageContext.request.contextPath}/administration.jsp"
 				class="btn btn-secondary">🏠 管理トップへ</a>
 		</div>
 	</div>

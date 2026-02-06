@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    background-color: #eef0f6;
+}
+
+.header {
+    background-color: #ffc400;
+    padding: 16px 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #000;
+}
+
+.content {
+    padding: 60px 40px;
+    font-size: 26px;
+    line-height: 1.8;
+    color: #000;
+}
+
+.important {
+    color: red;
+    font-weight: bold;
+    text-decoration: underline;
+}

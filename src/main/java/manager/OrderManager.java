@@ -564,36 +564,63 @@ public class OrderManager {
 		}
 		System.out.println("==========================================");
 	}
-	
+
 	/**
 	 * 年間の売上マトリックスを取得
 	 */
 	public Map<Integer, Map<Integer, Integer>> getYearlySalesMatrix(int year) {
-	    OrderDAO dao = new OrderDAO();
-	    try {
-	        // DAOからデータを取得（初期化済みのMapが返ってくる）
-	        return dao.getYearlySalesData(year);
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        // エラー時は空の構造を返す
-	        Map<Integer, Map<Integer, Integer>> emptyMap = new HashMap<>();
-	        for (int i = 1; i <= 12; i++) emptyMap.put(i, new HashMap<>());
-	        return emptyMap;
-	    }
+		OrderDAO dao = new OrderDAO();
+		try {
+			// DAOからデータを取得（初期化済みのMapが返ってくる）
+			return dao.getYearlySalesData(year);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// エラー時は空の構造を返す
+			Map<Integer, Map<Integer, Integer>> emptyMap = new HashMap<>();
+			for (int i = 1; i <= 12; i++)
+				emptyMap.put(i, new HashMap<>());
+			return emptyMap;
+		}
 	}
 
 	/**
 	 * 年間の総合計金額を計算
 	 */
 	public long calculateYearlyTotal(Map<Integer, Map<Integer, Integer>> matrix) {
-	    long total = 0;
-	    for (Map<Integer, Integer> monthMap : matrix.values()) {
-	        for (Integer dailyAmount : monthMap.values()) {
-	            if (dailyAmount != null) {
-	                total += dailyAmount;
-	            }
-	        }
-	    }
-	    return total;
+		long total = 0;
+		for (Map<Integer, Integer> monthMap : matrix.values()) {
+			for (Integer dailyAmount : monthMap.values()) {
+				if (dailyAmount != null) {
+					total += dailyAmount;
+				}
+			}
+		}
+		return total;
 	}
+
+	// ==================== OrderManager.java に追加するメソッド ====================
+
+	/**
+	 * ホール画面用：全進捗のOrderItem取得（状態0,1,2）
+	 * 
+	 * 改善内容:
+	 * - 旧版: status=2（完了）のみ表示
+	 * - 新版: status=0,1,2（注文、調理中、完了）すべて表示
+	 * 
+	 * 用途: ホールスタッフが注文全体の進捗を把握するため
+	 * 
+	 * @return 全進捗のOrderItemリスト（注文時刻でソート）
+	 */
+	public List<OrderItemWithDetails> getAllProgressItems() {
+		return getAllOrderItemsWithDetails(0, 1, 2); // 注文、調理中、完了
+	}
+
+	// ==================== 使用方法 ====================
+	// HallServlet.java で以下のように変更:
+	//
+	// 【旧】
+	// List<OrderItemWithDetails> hallItems = manager.getHallItems();
+	//
+	// 【新】
+	// List<OrderItemWithDetails> allProgressItems = manager.getAllProgressItems();
 }

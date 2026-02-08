@@ -169,10 +169,13 @@ public class OrderManager {
 		System.out.println("全Visit削除");
 	}
 
-	// ==================== Order管理 ====================
+	// ==================== 1. createOrderFromCartメソッドを修正（177行目付近）====================
 
 	/**
-	 * カートから注文作成
+	 * カートから注文を作成
+	 * 
+	 * 変更履歴:
+	 * 2026-02-02: calculateTotalAmount()メソッド使用に統一
 	 */
 	public Order createOrderFromCart(String visitId, List<CartItem> cartList) {
 		Visit visit = visits.get(visitId);
@@ -198,18 +201,25 @@ public class OrderManager {
 
 			order.addOrderItem(item);
 
-			// 合計金額を更新
-			synchronized (visit) {
-				int subtotal = cart.getPrice() * cart.getQuantity();
-				visit.setTotalAmount(visit.getTotalAmount() + subtotal);
-			}
+			// ========================================
+			// 旧コード（削除）:
+			// synchronized (visit) {
+			//     int subtotal = cart.getPrice() * cart.getQuantity();
+			//     visit.setTotalAmount(visit.getTotalAmount() + subtotal);
+			// }
+			// ========================================
 		}
 
 		visit.addOrder(order);
 
+		// ========================================
+		// 新コード: calculateTotalAmount()使用（統一！）
+		// ========================================
+		visit.calculateTotalAmount();
+
 		System.out.println("注文作成: orderId=" + order.getOrderId()
 				+ ", items=" + order.getItemCount()
-				+ ", total=" + order.calculateTotal());
+				+ ", visitTotal=¥" + visit.getTotalAmount());
 
 		return order;
 	}
@@ -623,4 +633,96 @@ public class OrderManager {
 	//
 	// 【新】
 	// List<OrderItemWithDetails> allProgressItems = manager.getAllProgressItems();
+
+	// ==================== OrderManager.java に追加するメソッド ====================
+
+	/**
+	 * 注文明細を削除（取り消し）
+	 * 
+	 * 制限:
+	 * - status=0（注文）の場合のみ削除可能
+	 * - status=1,2,3（調理中、完了、配膳済）は削除不可
+	 * 
+	 * @param orderItemId 削除する注文明細のID
+	 * @return 削除成功ならtrue、失敗ならfalse
+	 */
+	public boolean deleteOrderItem(String orderItemId) {
+		System.out.println("====================================");
+		System.out.println("注文明細削除:");
+		System.out.println("  orderItemId: " + orderItemId);
+
+		// 全visitを検索
+		for (Visit visit : visits.values()) {
+			for (Order order : visit.getOrders()) {
+				List<OrderItem> items = order.getOrderItems();
+
+				for (int i = 0; i < items.size(); i++) {
+					OrderItem item = items.get(i);
+
+					if (item.getOrderItemId().equals(orderItemId)) {
+						// status=0（注文）のみ削除可能
+						if (item.getItemStatus() != 0) {
+							System.out.println("  ❌ 削除不可: status=" + item.getItemStatus() + "（調理開始済み）");
+							System.out.println("====================================");
+							return false;
+						}
+
+						// 削除前の情報をログ出力
+						System.out.println("  削除対象:");
+						System.out.println("    料理名: " + item.getDishName());
+						System.out.println("    数量: " + item.getQuantity());
+						System.out.println("    単価: ¥" + item.getPrice());
+						System.out.println("    小計: ¥" + item.getSubtotal());
+
+						// 削除
+						items.remove(i);
+
+						// Visit合計金額を再計算
+						visit.calculateTotalAmount();
+
+						System.out.println("  ✅ 削除成功");
+						System.out.println("  更新後の訪問合計: ¥" + visit.getTotalAmount());
+						System.out.println("====================================");
+						return true;
+					}
+				}
+			}
+		}
+
+		System.out.println("  ❌ 削除失敗: 注文明細が見つかりません");
+		System.out.println("====================================");
+		return false;
+	}
+
+	/**
+	 * 注文明細の削除可否をチェック
+	 * 
+	 * @param orderItemId チェックする注文明細のID
+	 * @return 削除可能ならtrue、不可ならfalse
+	 */
+	public boolean canDeleteOrderItem(String orderItemId) {
+		for (Visit visit : visits.values()) {
+			for (Order order : visit.getOrders()) {
+				for (OrderItem item : order.getOrderItems()) {
+					if (item.getOrderItemId().equals(orderItemId)) {
+						// status=0（注文）のみ削除可能
+						return item.getItemStatus() == 0;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	// ==================== 使用例 ====================
+	// TableStatusServlet.java で以下のように使用:
+	//
+	// String orderItemId = request.getParameter("orderItemId");
+	// boolean success = manager.deleteOrderItem(orderItemId);
+	//
+	// if (success) {
+	//	     System.out.println("注文明細を削除しました");
+	// } else {
+	//	     System.out.println("削除できませんでした（調理開始済み）");
+	// }
 }

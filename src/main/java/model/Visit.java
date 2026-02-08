@@ -7,6 +7,9 @@ import java.util.List;
 /**
  * Visit（来店記録）
  * 1つの来店に対して複数の注文（Order）が紐づく
+ * 
+ * 変更履歴:
+ * 2026-02-02: calculateTotalAmount()メソッド追加（削除機能対応、計算統一）
  */
 public class Visit {
     
@@ -117,6 +120,34 @@ public class Visit {
             allItems.addAll(order.getOrderItems());
         }
         return allItems;
+    }
+    
+    /**
+     * 合計金額を再計算
+     * すべての注文明細の小計を合算してtotalAmountを更新
+     * 
+     * 使用場面:
+     * - 注文追加時（計算統一）
+     * - 注文明細の削除時
+     * - 注文明細の数量変更時
+     * - 会計時の最終確認
+     */
+    public void calculateTotalAmount() {
+        int total = 0;
+        
+        // すべてのOrderを巡回
+        for (Order order : orders) {
+            // 各OrderのすべてのOrderItemを巡回
+            for (OrderItem item : order.getOrderItems()) {
+                // 各OrderItemの小計を合算
+                total += item.getSubtotal();
+            }
+        }
+        
+        // totalAmountフィールドを更新
+        this.totalAmount = total;
+        
+        System.out.println("Visit合計金額再計算: visitId=" + visitId + ", total=¥" + total);
     }
     
     @Override

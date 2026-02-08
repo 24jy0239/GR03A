@@ -20,6 +20,12 @@ Integer occupiedCount = (Integer) request.getAttribute("occupiedCount");
 Integer totalSales = (Integer) request.getAttribute("totalSales");
 Integer totalOrders = (Integer) request.getAttribute("totalOrders");
 
+// ステータスメッセージ取得（取り消し結果など）
+String statusMessage = (String) session.getAttribute("statusMessage");
+if (statusMessage != null) {
+	session.removeAttribute("statusMessage");
+}
+
 if (occupiedCount == null)
 	occupiedCount = 0;
 if (totalSales == null)
@@ -83,7 +89,24 @@ body {
 	background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* サマリーバー（hall.jspスタイル） */
+/* ステータスメッセージ */
+.status-message {
+	max-width: 1400px;
+	margin: 20px auto 10px auto;
+	padding: 15px 20px;
+	background-color: #4caf50;
+	color: white;
+	border-radius: 8px;
+	text-align: center;
+	font-weight: bold;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-message.error {
+	background-color: #f44336;
+}
+
+/* サマリーバー */
 .summary-bar {
 	display: flex;
 	justify-content: space-around;
@@ -249,7 +272,7 @@ body {
 	background-color: #f0f0f0;
 }
 
-/* ステータスごとのボーダー色（hall.jspと同じ） */
+/* ステータスごとのボーダー色 */
 .order-item.status-0 {
 	border-left-color: #2196f3;
 	background-color: #e3f2fd;
@@ -323,6 +346,28 @@ body {
 	margin-right: 10px;
 }
 
+/* 取り消しボタン */
+.cancel-btn {
+	padding: 6px 12px;
+	background-color: #f44336;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	font-size: 0.85em;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+	background-color: #d32f2f;
+	transform: scale(1.05);
+}
+
+.cancel-btn:active {
+	transform: scale(0.95);
+}
+
 .empty-state {
 	text-align: center;
 	padding: 60px 20px;
@@ -369,6 +414,17 @@ body {
 				href="<%=request.getContextPath()%>/admin">🏠 管理トップ</a>
 		</div>
 	</div>
+
+	<!-- ステータスメッセージ -->
+	<%
+	if (statusMessage != null && !statusMessage.isEmpty()) {
+	%>
+	<div class="status-message">
+		<%=statusMessage%>
+	</div>
+	<%
+	}
+	%>
 
 	<!-- サマリーバー -->
 	<div class="summary-bar">
@@ -469,6 +525,23 @@ body {
 
 						<div class="quantity">
 							×<%=item.getQuantity()%></div>
+
+						<!-- 取り消しボタン（status=0のみ表示）-->
+						<%
+						if (status == 0) {
+						%>
+						<form method="post"
+							action="<%=request.getContextPath()%>/admin/table-status"
+							style="margin: 0;"
+							onsubmit="return confirm('「<%=item.getDishName()%> ×<%=item.getQuantity()%>」を取り消しますか？\n\n※調理開始前のみ取り消し可能です。');">
+							<input type="hidden" name="action" value="cancel"> <input
+								type="hidden" name="orderItemId"
+								value="<%=item.getOrderItemId()%>">
+							<button type="submit" class="cancel-btn">✕ 取消</button>
+						</form>
+						<%
+						}
+						%>
 					</div>
 					<%
 					}

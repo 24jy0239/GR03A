@@ -18,15 +18,17 @@ import model.TableStatus;
 import model.Visit;
 
 /**
- * TableStatusServlet - テーブル状態管理画面（注文明細付き）
+ * TableStatusServlet - テーブル状態管理画面（注文明細付き + 取り消し機能）
  * 
  * 機能:
  * 1. 全テーブルの使用状況を表示
  * 2. 各テーブルの注文明細を表示
  * 3. 各料理の注文時間を表示
+ * 4. 未制作料理の取り消し機能（NEW!）
  * 
  * 変更履歴:
  * 2026-02-02: 注文明細表示追加
+ * 2026-02-02: 取り消し機能追加
  */
 @WebServlet("/admin/table-status")
 public class TableStatusServlet extends HttpServlet {
@@ -43,10 +45,7 @@ public class TableStatusServlet extends HttpServlet {
 		// テーブル状態リストを取得
 		List<TableStatus> tableStatusList = manager.getTableStatusList();
 
-		// ========================================
-		// 改善: 各visitの注文明細を取得
-		// visitId → OrderItem詳細のマップを作成
-		// ========================================
+		// 各visitの注文明細を取得
 		Map<String, OrderDetailsInfo> orderDetailsByVisit = new HashMap<>();
 
 		for (TableStatus status : tableStatusList) {
@@ -117,32 +116,54 @@ public class TableStatusServlet extends HttpServlet {
 	}
 
 	/**
-	 * Visit詳細表示（AJAX用）
+	 * 注文明細の操作（取り消し、詳細表示）
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String visitId = request.getParameter("visitId");
+		String action = request.getParameter("action");
+		String orderItemId = request.getParameter("orderItemId");
 
-		if (visitId == null) {
+		System.out.println("====================================");
+		System.out.println("【TableStatusServlet】注文操作");
+		System.out.println("action: " + action);
+		System.out.println("orderItemId: " + orderItemId);
+
+		if (orderItemId == null) {
+			System.out.println("❌ orderItemId が null");
+			System.out.println("====================================");
 			response.sendRedirect(request.getContextPath() + "/admin/table-status");
 			return;
 		}
 
-		Visit visit = manager.getVisit(visitId);
+		boolean success = false;
+		String message = "";
 
-		if (visit == null) {
-			response.sendRedirect(request.getContextPath() + "/admin/table-status");
-			return;
+		// ========================================
+		// 取り消し処理（NEW!）
+		// ========================================
+		if ("cancel".equals(action)) {
+			success = manager.deleteOrderItem(orderItemId);
+
+			if (success) {
+				message = "注文を取り消しました";
+				System.out.println("✅ 取り消し成功");
+			} else {
+				message = "取り消しできませんでした（調理開始済み）";
+				System.out.println("❌ 取り消し失敗");
+			}
 		}
 
-		// Visit詳細を表示（今回は簡易版）
-		request.setAttribute("visit", visit);
+		System.out.println("====================================");
 
-		// テーブル状態画面へ
-		request.getRequestDispatcher("/WEB-INF/admin/table-status.jsp")
-				.forward(request, response);
+		// メッセージをセッションに保存（表示用）
+		if (!message.isEmpty()) {
+			request.getSession().setAttribute("statusMessage", message);
+		}
+
+		// テーブル状態画面へリダイレクト
+		response.sendRedirect(request.getContextPath() + "/admin/table-status");
 	}
 
 	/**

@@ -95,12 +95,9 @@ public class PaymentServlet extends HttpServlet {
 		// 既に会計済みかチェック
 		if (visit.getPaymentTime() != null) {
 			System.out.println("警告: 既に会計済みです: " + visitId);
-
-			// 会計完了画面へ直接遷移（再表示）
 			request.setAttribute("visit", visit);
 			request.setAttribute("totalAmount", visit.getTotalAmount());
 			request.setAttribute("tableNum", visit.getTableNum());
-
 			request.getRequestDispatcher("/WEB-INF/payment-complete.jsp")
 					.forward(request, response);
 			return;
@@ -108,19 +105,16 @@ public class PaymentServlet extends HttpServlet {
 
 		// ========================================
 		// 注文明細をCartItemに変換
-		// （OrderHistoryServletのロジックを活用）
 		// ========================================
 
 		// sessionのdishMapを取得（最適化）
 		@SuppressWarnings("unchecked")
 		Map<String, Dish> dishMap = (Map<String, Dish>) session.getAttribute("dishMap");
-
-		// DishDAOはフォールバック用
 		DishDAO dishDAO = null;
 
 		// Order → CartItem 変換（同じ商品を集計）
 		Map<String, CartItem> summaryMap = new HashMap<>();
-		int visitTotal = 0;
+		// ========== 削除: int visitTotal = 0; ==========
 
 		List<Order> orders = visit.getOrders();
 
@@ -173,8 +167,7 @@ public class PaymentServlet extends HttpServlet {
 						// 数量を加算
 						cartItem.setQuantity(cartItem.getQuantity() + item.getQuantity());
 
-						// 合計金額を計算
-						visitTotal += item.getSubtotal();
+						// ========== 削除: visitTotal += item.getSubtotal(); ==========
 					}
 				}
 			}
@@ -182,6 +175,11 @@ public class PaymentServlet extends HttpServlet {
 
 		// MapをListに変換
 		List<CartItem> orderDetailsList = new ArrayList<>(summaryMap.values());
+
+		// ========================================
+		// 新コード: Visit.getTotalAmount()を使用（統一！）
+		// ========================================
+		int visitTotal = visit.getTotalAmount();
 
 		System.out.println("====================================");
 		System.out.println("会計確認画面表示:");
@@ -197,11 +195,12 @@ public class PaymentServlet extends HttpServlet {
 		request.setAttribute("totalAmount", visitTotal);
 		request.setAttribute("tableNum", visit.getTableNum());
 		request.setAttribute("orderCount", visit.getOrderCount());
-		request.setAttribute("orderDetailsList", orderDetailsList); // 注文明細リスト
+		request.setAttribute("orderDetailsList", orderDetailsList);
 
 		// 会計確認画面へ転送（注文明細付き）
 		request.getRequestDispatcher("/WEB-INF/payment-confirm.jsp")
 				.forward(request, response);
+
 	}
 
 	/**

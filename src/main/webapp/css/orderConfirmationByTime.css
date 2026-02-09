@@ -1,111 +1,114 @@
-/* ================================
-   FULL SCREEN BASE
-================================ */
-html, body {
+/* ===== 基础布局 (与 Kitchen 保持一致) ===== */
+body {
+    background-color: #E9EBF5;
     margin: 0;
     padding: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #E9EBF5;
-    font-family: "Noto Sans JP", sans-serif;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    overflow-y: auto;
 }
 
-/* ================================
-   HEADER
-================================ */
 .header {
-    position: relative;      
-    height: 12vh;
+    display: flex;
+    align-items: center;
+    padding: 20px 40px;
+    height: 100px;
+    position: sticky;
+    top: 0;
+    background-color: #E9EBF5;
+    z-index: 1000;
 }
 
-.header h1 {
+h1 {
+    font-size: 360%;
     margin: 0;
-    height: 12vh;
-    line-height: 12vh;
-    text-align: center;
-    font-size: 40px;
-    font-weight: bold;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-#backBtn {
+#topBtn {
     position: absolute;
-    top: 18px;
     right: 40px;
+    height: 60px;
+    width: 300px;
+    font-size: 180%;
+}
 
-    padding: 10px 26px;
+.square-refresh-btn {
+    position: absolute;
+    right: calc(340px + (100% - 340px - 50%) / 2);
+    transform: translateX(50%);
+    height: 60px;
+    width: 60px;
+}
+
+/* ===== 按钮样式 ===== */
+button {
     background-color: #4472c4;
-    color: #ffffff;
+    color: white;
     border: none;
     border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 3px 3px #5f5f5f;
-
     cursor: pointer;
-    z-index: 9999;
-}
-
-/* ================================
-   MAIN LAYOUT
-================================ */
-.confirm-container {
-    height: calc(100vh - 12vh);
+    font-weight: bold;
+    box-shadow: 4px 4px 0px #2e4d85;
+    transition: all 0.1s ease;
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.left-side,
-.right-side {
-    width: 50%;
-    height: 100%;
+button:hover { background-color: #5583d5; }
+button:active {
+    box-shadow: 1px 1px 0px #2e4d85;
+    transform: translate(3px, 3px);
+}
+
+.action-btn {
+    width: 85%;
+    height: 55px; /* 匹配厨房页按钮高度 */
+    font-size: 140%;
+}
+
+/* ===== 布局容器 ===== */
+.summary-bar {
+    max-width: 1400px;
+    margin: 0 auto 10px auto;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.wait-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.order-grid {
     display: grid;
-    grid-template-rows: repeat(7, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 90px; /* 严格同步厨房行高 */
     gap: 10px;
-    padding: 10px;
 }
 
-/* ================================
-   CARD
-================================ */
-.confirm-card {
+/* ===== 核心修正：比例对齐与内容居中 ===== */
+.order-card {
     display: grid;
-    grid-template-columns: 3fr 1fr; 
-    background-color: #E3E7F5;
-    border-radius: 6px;
-}
-
-.confirm-card.empty {
-    background-color: transparent;
-    border: 1px solid #C7CFE8;
+    /* 3.5fr 对应厨房内容区，1.2fr 对应厨房的一个功能按钮区 */
+    /* 这会让状态列看起来正好是厨房页两列按钮的一半宽度 */
+    grid-template-columns: 3.5fr 1.2fr; 
+    height: 90px; 
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 .name-col {
-    padding: 10px;
-}
-
-.dish-name {
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.info-row-3 {
-    margin-top: 6px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-}
-
-.info-box {
-    background-color: #D7DDF0;
-    padding: 4px 6px;
-    border-radius: 4px;
+    background-color: #E3E7F5;
+    padding: 0 15px; /* 增加左右内边距，去除上下内边距以实现完美居中 */
     display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-}
-
-.info-box strong {
-    font-size: 18px;
-    font-weight: bold;
+    flex-direction: column;
+    justify-content: center; /* 关键：垂直居中内容 */
 }
 
 .action-col {
@@ -113,30 +116,59 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: bold;
 }
 
-.action-btn {
-    width: 70%;
-    height: 46px;
-    background-color: #4472c4;
-    color: #ffffff;
-    border: none;
-    border-radius: 10px;
+/* ===== 文字与内容细节 ===== */
+.dish-name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.2;
+    margin-bottom: 4px; /* 与下方信息框的间距 */
+}
+
+.info-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.info-box {
+    background-color: #D7DDF0;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #555;
+}
+
+.info-value {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.cooking-status-text {
     font-size: 20px;
     font-weight: bold;
-    box-shadow: 3px 3px #5f5f5f;
-    cursor: pointer;
+    color: #4472C4;
 }
 
-.action-btn:active {
-    position: relative;
-    top: 2px;
-    left: 2px;
-    box-shadow: 1px 1px #5f5f5f;
+/* ===== 空卡片样式 ===== */
+.order-card.empty {
+    border: 1px solid #C7CFE8;
+    background-color: transparent;
 }
 
-.confirm-card.empty .name-col,
-.confirm-card.empty .action-col {
+.order-card.empty .col {
+    display: block;
+}
+
+.order-card.empty .dish-name,
+.order-card.empty .info-row-3,
+.order-card.empty .action-btn,
+.order-card.empty .cooking-status-text {
     display: none;
 }

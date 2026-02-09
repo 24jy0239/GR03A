@@ -28,7 +28,7 @@ String selectedCat = request.getParameter("category");
 		<h1 class="page-title">メニュー管理</h1>
 		<div class="header-btn-wrap">
 			<button id="topBtn" class="effect-btn"
-				onclick="location.href='${pageContext.request.contextPath}/administration.jsp'">TOPに戻る</button>
+				onclick="location.href='${pageContext.request.contextPath}/administration.jsp'">管理画面へ</button>
 		</div>
 	</header>
 

@@ -28,5 +28,11 @@
         <p>ご来店ありがとうございました。</p>
     </div>
 
+<script>
+        setTimeout(() => {
+            location.href = "<%=request.getContextPath()%>/index.jsp";
+        }, 15000);
+    </script>
+    
 </body>
 </html>

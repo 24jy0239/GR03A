@@ -34,12 +34,25 @@ h1 {
     font-size: 180%;
 }
 
+/* 1. 初始状态 */
 .square-refresh-btn {
     position: absolute;
     right: calc(340px + (100% - 340px - 50%) / 2);
-    transform: translateX(50%);
+    /* 必须确保这里只有这一个 transform */
+    transform: translateX(50%); 
     height: 60px;
     width: 60px;
+    z-index: 1001;
+}
+
+/* 2. 点击状态 - 关键修正点 */
+.square-refresh-btn:active {
+    /* 使用 calc 将原有的居中位移 (50%) 和 点击位移 (3px) 加在一起 */
+    /* 同时显式声明 translateY(3px) 来实现下沉效果 */
+    transform: translateX(calc(50% + 3px)) translateY(3px) !important;
+    
+    /* 缩短阴影，增强下沉感 */
+    box-shadow: 1px 1px 0px #2e4d85 !important;
 }
 
 /* ===== 按钮样式 ===== */

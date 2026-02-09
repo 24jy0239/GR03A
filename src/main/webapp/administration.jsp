@@ -42,7 +42,7 @@
 				<div class="button-description">使用状況・注文明細確認</div>
 			</a>
 
-			<!-- メニュー管理（NEW!） -->
+			<!-- メニュー管理（既存のDishManageServlet使用）-->
 			<a href="<%=request.getContextPath()%>/admin/dish-manage"
 				class="admin-button menu">
 				<div class="button-icon">📋</div>
@@ -51,7 +51,7 @@
 			</a>
 
 			<!-- 売上分析 -->
-			<a href="<%=request.getContextPath()%>/sales.jsp"
+			<a href="<%=request.getContextPath()%>/admin/sales"
 				class="admin-button analytics">
 				<div class="button-icon">💰</div>
 				<div class="button-title">売上分析</div>

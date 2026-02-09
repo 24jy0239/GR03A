@@ -1,40 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="manager.OrderManager, java.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
-<%
-String yearStr = request.getParameter("year");
-int selectedYear = (yearStr == null || yearStr.isEmpty()) ? 2026 : Integer.parseInt(yearStr);
-
-OrderManager manager = OrderManager.getInstance();
-Map<Integer, Map<Integer, Integer>> salesData = manager.getYearlySalesMatrix(selectedYear);
-long yearlyTotal = manager.calculateYearlyTotal(salesData);
-
-request.setAttribute("salesData", salesData);
-request.setAttribute("selectedYear", selectedYear);
-request.setAttribute("yearlyTotal", yearlyTotal);
-%>
 
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <title>売上分析</title>
-<link rel="stylesheet" href="css/general.css">
-<link rel="stylesheet" href="css/analysis.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/general.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/analysis.css">
 </head>
 <body>
 	<div class="header-section">
 		<h1>売り上げ分析</h1>
-		<button id="return" onclick="location.href='administration.jsp'">戻る</button>
+		<button id="return"
+			onclick="location.href='${pageContext.request.contextPath}/administration.jsp'">管理画面へ</button>
 	</div>
 
 	<div class="main-container">
 		<div class="top-toolbar">
 			<div class="header-left">
-				<form action="sales.jsp" method="get">
+				<form action="${pageContext.request.contextPath}/admin/sales"
+					method="get">
 					<select name="year" onchange="this.form.submit()">
 						<c:forEach var="y" begin="2024" end="2026">
 							<option value="${y}" ${y == selectedYear ? 'selected' : ''}>${y}</option>

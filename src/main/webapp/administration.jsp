@@ -5,91 +5,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>管理者画面</title>
+<title>管理画面</title>
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/general.css">
-<style>
-body {
-	font-family: 'Arial', sans-serif;
-	background-color: #E9EBF5;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	min-height: 100vh;
-}
-
-h1 {
-	font-size: 3em;
-	color: #333;
-	margin-bottom: 40px;
-	text-align: center;
-}
-
-.menu-grid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 20px;
-	max-width: 800px;
-	width: 100%;
-	padding: 20px;
-}
-
-.menu-grid button {
-	height: 120px;
-	font-size: 1.5em;
-	background-color: #4472c4;
-	color: white;
-	border: none;
-	border-radius: 10px;
-	cursor: pointer;
-	font-weight: bold;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-	transition: all 0.3s;
-}
-
-.menu-grid button:hover {
-	background-color: #5583d5;
-	transform: translateY(-5px);
-	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-}
-
-.menu-grid button:active {
-	transform: translateY(0);
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-@media ( max-width : 768px) {
-	.menu-grid {
-		grid-template-columns: 1fr;
-	}
-	h1 {
-		font-size: 2em;
-	}
-	.menu-grid button {
-		height: 100px;
-		font-size: 1.2em;
-	}
-}
-</style>
+	href="<%=request.getContextPath()%>/css/general.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/administration.css">
 </head>
 <body>
-	<h1>🏢 管理者画面</h1>
-	<div class="menu-grid">
-		<button
-			onclick="location.href='${pageContext.request.contextPath}/admin/kitchen'">
-			🔪 キッチン画面</button>
-		<button
-			onclick="location.href='${pageContext.request.contextPath}/admin/hall'">
-			🚶 ホール画面</button>
-		<button
-			onclick="location.href='${pageContext.request.contextPath}/admin/table-status'">
-			📊 テーブル状態</button>
-		<button
-			onclick="location.href='${pageContext.request.contextPath}/sales.jsp'">
-			💰 売上分析</button>
+	<div class="header">
+		<h1>🏠 管理画面</h1>
+	</div>
+
+	<div class="container">
+		<div class="button-grid">
+			<!-- キッチン画面 -->
+			<a href="<%=request.getContextPath()%>/admin/kitchen"
+				class="admin-button kitchen">
+				<div class="button-icon">🔪</div>
+				<div class="button-title">キッチン画面</div>
+				<div class="button-description">調理待ち一覧・調理管理</div>
+			</a>
+
+			<!-- ホール画面 -->
+			<a href="<%=request.getContextPath()%>/admin/hall"
+				class="admin-button hall">
+				<div class="button-icon">🚶</div>
+				<div class="button-title">ホール画面</div>
+				<div class="button-description">配膳待ち一覧・配膳管理</div>
+			</a>
+
+			<!-- テーブル状態 -->
+			<a href="<%=request.getContextPath()%>/admin/table-status"
+				class="admin-button table-status">
+				<div class="button-icon">📊</div>
+				<div class="button-title">テーブル状態</div>
+				<div class="button-description">使用状況・注文明細確認</div>
+			</a>
+
+			<!-- メニュー管理（NEW!） -->
+			<a href="<%=request.getContextPath()%>/admin/dish-manage"
+				class="admin-button menu">
+				<div class="button-icon">📋</div>
+				<div class="button-title">メニュー管理</div>
+				<div class="button-description">メニュー編集・価格設定</div>
+			</a>
+
+			<!-- 売上分析 -->
+			<a href="<%=request.getContextPath()%>/sales.jsp"
+				class="admin-button analytics">
+				<div class="button-icon">💰</div>
+				<div class="button-title">売上分析</div>
+				<div class="button-description">売上統計・レポート</div>
+			</a>
+		</div>
+	</div>
+
+	<div class="footer">
+		<p>© 2026 Restaurant Management System - GR03A</p>
 	</div>
 </body>
 </html>

@@ -433,7 +433,7 @@ body {
 		<div class="nav-links">
 			<a href="<%=request.getContextPath()%>/admin/kitchen">🔪 キッチン</a> <a
 				href="<%=request.getContextPath()%>/admin/hall">🚶 ホール</a> <a
-				href="<%=request.getContextPath()%>/admin">🏠 管理トップ</a>
+				href="<%=request.getContextPath()%>/administration.jsp">🏠 管理トップ</a>
 		</div>
 	</div>
 

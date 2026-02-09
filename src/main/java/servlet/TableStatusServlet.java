@@ -18,17 +18,19 @@ import model.TableStatus;
 import model.Visit;
 
 /**
- * TableStatusServlet - テーブル状態管理画面（注文明細付き + 取り消し機能）
+ * TableStatusServlet - テーブル状態管理画面（注文明細付き + 取り消し機能 + 作り直し機能）
  * 
  * 機能:
  * 1. 全テーブルの使用状況を表示
  * 2. 各テーブルの注文明細を表示
  * 3. 各料理の注文時間を表示
- * 4. 未制作料理の取り消し機能（NEW!）
+ * 4. 未制作料理の取り消し機能（status=0のみ）
+ * 5. 提供済み料理の作り直し機能（status=3のみ）
  * 
  * 変更履歴:
  * 2026-02-02: 注文明細表示追加
  * 2026-02-02: 取り消し機能追加
+ * 2026-02-02: 作り直し機能追加
  */
 @WebServlet("/admin/table-status")
 public class TableStatusServlet extends HttpServlet {
@@ -116,7 +118,7 @@ public class TableStatusServlet extends HttpServlet {
 	}
 
 	/**
-	 * 注文明細の操作（取り消し、詳細表示）
+	 * 注文明細の操作（取り消し、作り直し、詳細表示）
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -141,7 +143,7 @@ public class TableStatusServlet extends HttpServlet {
 		String message = "";
 
 		// ========================================
-		// 取り消し処理（NEW!）
+		// 取り消し処理
 		// ========================================
 		if ("cancel".equals(action)) {
 			success = manager.deleteOrderItem(orderItemId);
@@ -152,6 +154,21 @@ public class TableStatusServlet extends HttpServlet {
 			} else {
 				message = "取り消しできませんでした（調理開始済み）";
 				System.out.println("❌ 取り消し失敗");
+			}
+		}
+
+		// ========================================
+		// 作り直し処理（NEW!）
+		// ========================================
+		else if ("reset".equals(action)) {
+			success = manager.resetOrderItem(orderItemId);
+
+			if (success) {
+				message = "料理を作り直します。キッチンに再調理依頼を送信しました。";
+				System.out.println("✅ 作り直し成功");
+			} else {
+				message = "作り直しできませんでした（配膳済みではありません）";
+				System.out.println("❌ 作り直し失敗");
 			}
 		}
 

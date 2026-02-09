@@ -319,10 +319,15 @@ public class OrderManager {
 		return getAllOrderItemsWithDetails(2); // 完了（提供待ち）
 	}
 
-	// ==================== テーブル状態管理 ====================
+	// ==================== OrderManager.java の getTableStatusList メソッド修正版 ====================
+	// 317行目付近を以下に置き換え
 
 	/**
 	 * テーブル状態リストを取得
+	 * 
+	 * 修正内容:
+	 * - 同じテーブル番号で複数のVisitがある場合、注文のあるVisitを優先
+	 * - 注文数が同じ場合は、より新しいVisit（来店時刻が遅い）を優先
 	 */
 	public List<TableStatus> getTableStatusList() {
 		Map<Integer, TableStatus> statusMap = new HashMap<>();
@@ -335,18 +340,21 @@ public class OrderManager {
 
 			int tableNum = visit.getTableNum();
 
-			// 既存のStatusがあれば取得、なければ新規作成
-			TableStatus status = statusMap.getOrDefault(
-					tableNum,
-					new TableStatus(tableNum, "使用中", visit.getVisitId()));
+			// 既存のStatusを確認
+			TableStatus existingStatus = statusMap.get(tableNum);
 
-			// 合計金額を更新
-			status.setTotalAmount(visit.getTotalAmount());
+			// 既存のStatusがない、または既存より優先度が高い場合に更新
+			if (existingStatus == null || shouldReplaceVisit(existingStatus.getVisitId(), visit.getVisitId())) {
+				TableStatus status = new TableStatus(tableNum, "使用中", visit.getVisitId());
+				status.setTotalAmount(visit.getTotalAmount());
+				status.setArrivalTime(visit.getArrivalTime());
+				statusMap.put(tableNum, status);
 
-			// 来店時刻を設定
-			status.setArrivalTime(visit.getArrivalTime());
-
-			statusMap.put(tableNum, status);
+				System.out.println("TableStatus更新: table=" + tableNum
+						+ ", visitId=" + visit.getVisitId()
+						+ ", orders=" + visit.getOrderCount()
+						+ ", amount=¥" + visit.getTotalAmount());
+			}
 		}
 
 		List<TableStatus> result = new ArrayList<>(statusMap.values());
@@ -354,6 +362,57 @@ public class OrderManager {
 
 		return result;
 	}
+
+	/**
+	 * Visitの置き換え判定
+	 * 
+	 * 優先順位:
+	 * 1. 注文数が多いVisit
+	 * 2. 注文数が同じ場合、来店時刻が新しいVisit
+	 * 
+	 * @param currentVisitId 現在のvisitId
+	 * @param newVisitId 新しいvisitId
+	 * @return 新しいVisitで置き換えるべきならtrue
+	 */
+	private boolean shouldReplaceVisit(String currentVisitId, String newVisitId) {
+		Visit currentVisit = visits.get(currentVisitId);
+		Visit newVisit = visits.get(newVisitId);
+
+		if (currentVisit == null) {
+			return true; // 現在のVisitがnullなら置き換え
+		}
+		if (newVisit == null) {
+			return false; // 新しいVisitがnullなら置き換えない
+		}
+
+		// 1. 注文数で比較
+		int currentOrders = currentVisit.getOrderCount();
+		int newOrders = newVisit.getOrderCount();
+
+		if (newOrders > currentOrders) {
+			System.out.println("  → 注文数で置き換え: " + currentOrders + " → " + newOrders);
+			return true; // 新しいVisitの方が注文が多い
+		}
+		if (newOrders < currentOrders) {
+			return false; // 現在のVisitの方が注文が多い
+		}
+
+		// 2. 注文数が同じ場合、来店時刻で比較（新しい方を優先）
+		if (newVisit.getArrivalTime() != null && currentVisit.getArrivalTime() != null) {
+			boolean isNewer = newVisit.getArrivalTime().isAfter(currentVisit.getArrivalTime());
+			if (isNewer) {
+				System.out.println("  → 来店時刻で置き換え");
+			}
+			return isNewer;
+		}
+
+		return false;
+	}
+
+	// ==================== 統合方法 ====================
+	// 
+	// 1. OrderManager.java の getTableStatusList() メソッド（317行目付近）を上記に置き換え
+	// 2. shouldReplaceVisit() メソッドを getTableStatusList() の後に追加
 
 	// ==================== 会計処理 ====================
 
@@ -725,4 +784,102 @@ public class OrderManager {
 	// } else {
 	//	     System.out.println("削除できませんでした（調理開始済み）");
 	// }
+
+	// ==================== OrderManager.java に追加するメソッド ====================
+	// deleteOrderItem()メソッドの後に追加してください
+
+	/**
+	 * 注文明細を作り直し（提供済み→未制作に変更）
+	 * 
+	 * 用途:
+	 * - 料理の制作不備対応
+	 * - 顧客からのクレーム対応
+	 * 
+	 * 制限:
+	 * - status=3（配膳済）の場合のみ作り直し可能
+	 * - status=0,1,2は作り直し不可
+	 * 
+	 * 処理:
+	 * - status=3 → status=0 に変更
+	 * - キッチン画面に再表示される
+	 * - ホール画面で再度配膳可能になる
+	 * 
+	 * @param orderItemId 作り直しする注文明細のID
+	 * @return 作り直し成功ならtrue、失敗ならfalse
+	 */
+	public boolean resetOrderItem(String orderItemId) {
+		System.out.println("====================================");
+		System.out.println("注文明細作り直し:");
+		System.out.println("  orderItemId: " + orderItemId);
+
+		for (Visit visit : visits.values()) {
+			for (Order order : visit.getOrders()) {
+				List<OrderItem> items = order.getOrderItems();
+
+				for (OrderItem item : items) {
+					if (item.getOrderItemId().equals(orderItemId)) {
+						// status=3（配膳済）のみ作り直し可能
+						if (item.getItemStatus() != 3) {
+							System.out.println("  ❌ 作り直し不可: status=" + item.getItemStatus() + "（配膳済みではありません）");
+							System.out.println("====================================");
+							return false;
+						}
+
+						// 作り直し前の情報をログ出力
+						System.out.println("  作り直し対象:");
+						System.out.println("    料理名: " + item.getDishName());
+						System.out.println("    数量: " + item.getQuantity());
+						System.out.println("    単価: ¥" + item.getPrice());
+						System.out.println("    現在のステータス: 3（配膳済）");
+
+						// status を 0（未制作）に変更
+						item.setItemStatus(0);
+
+						System.out.println("  ✅ 作り直し成功");
+						System.out.println("  新しいステータス: 0（未制作）");
+						System.out.println("  → キッチン画面に表示されます");
+						System.out.println("====================================");
+						return true;
+					}
+				}
+			}
+		}
+
+		System.out.println("  ❌ 作り直し失敗: 注文明細が見つかりません");
+		System.out.println("====================================");
+		return false;
+	}
+
+	/**
+	 * 注文明細の作り直し可否をチェック
+	 * 
+	 * @param orderItemId チェックする注文明細のID
+	 * @return 作り直し可能ならtrue、不可ならfalse
+	 */
+	public boolean canResetOrderItem(String orderItemId) {
+		for (Visit visit : visits.values()) {
+			for (Order order : visit.getOrders()) {
+				for (OrderItem item : order.getOrderItems()) {
+					if (item.getOrderItemId().equals(orderItemId)) {
+						// status=3（配膳済）のみ作り直し可能
+						return item.getItemStatus() == 3;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	// ==================== 使用例 ====================
+	// TableStatusServlet.java で以下のように使用:
+	//
+	// String orderItemId = request.getParameter("orderItemId");
+	// boolean success = manager.resetOrderItem(orderItemId);
+	//
+	// if (success) {
+	//	     System.out.println("料理を作り直します");
+	// } else {
+	//	     System.out.println("作り直しできませんでした（配膳済みではありません）");
+	// }
+
 }

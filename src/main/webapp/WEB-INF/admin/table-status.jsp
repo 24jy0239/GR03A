@@ -20,7 +20,7 @@ Integer occupiedCount = (Integer) request.getAttribute("occupiedCount");
 Integer totalSales = (Integer) request.getAttribute("totalSales");
 Integer totalOrders = (Integer) request.getAttribute("totalOrders");
 
-// ステータスメッセージ取得（取り消し結果など）
+// ステータスメッセージ取得（取り消し・作り直し結果など）
 String statusMessage = (String) session.getAttribute("statusMessage");
 if (statusMessage != null) {
 	session.removeAttribute("statusMessage");
@@ -368,6 +368,28 @@ body {
 	transform: scale(0.95);
 }
 
+/* 作り直しボタン（NEW!） */
+.reset-btn {
+	padding: 6px 12px;
+	background-color: #ff9800;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	font-size: 0.85em;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.reset-btn:hover {
+	background-color: #f57c00;
+	transform: scale(1.05);
+}
+
+.reset-btn:active {
+	transform: scale(0.95);
+}
+
 .empty-state {
 	text-align: center;
 	padding: 60px 20px;
@@ -538,6 +560,23 @@ body {
 								type="hidden" name="orderItemId"
 								value="<%=item.getOrderItemId()%>">
 							<button type="submit" class="cancel-btn">✕ 取消</button>
+						</form>
+						<%
+						}
+						%>
+
+						<!-- 作り直しボタン（status=3のみ表示）NEW! -->
+						<%
+						if (status == 3) {
+						%>
+						<form method="post"
+							action="<%=request.getContextPath()%>/admin/table-status"
+							style="margin: 0; margin-left: 5px;"
+							onsubmit="return confirm('「<%=item.getDishName()%> ×<%=item.getQuantity()%>」を作り直しますか？\n\nキッチンに再調理依頼が送られます。');">
+							<input type="hidden" name="action" value="reset"> <input
+								type="hidden" name="orderItemId"
+								value="<%=item.getOrderItemId()%>">
+							<button type="submit" class="reset-btn">🔄 作り直し</button>
 						</form>
 						<%
 						}

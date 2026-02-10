@@ -16,7 +16,7 @@
     <header class="header">
         <h1>🏃 注文確認(時間順)</h1>
         <button id="refreshBtn" onclick="location.reload()" class="square-refresh-btn">🔄</button>
-        <button id="topBtn" onclick="location.href='${pageContext.request.contextPath}/administration.jsp'">管理画面へ</button>
+        <button id="topBtn" onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
     </header>
 
     <main class="wait-container">

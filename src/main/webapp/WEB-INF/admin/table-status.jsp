@@ -57,7 +57,7 @@
 <header class="header">
     <h1>📊テーブル状態</h1>
     <button class="square-refresh-btn" onclick="location.reload()">🔄</button>
-    <button id="topBtn" onclick="location.href='${pageContext.request.contextPath}/administration.jsp'">管理画面へ</button>
+    <button id="topBtn" onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
 </header>
 
 <main class="order-main">

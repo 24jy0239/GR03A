@@ -17,7 +17,7 @@
 	<div class="header-section">
 		<h1>売り上げ分析</h1>
 		<button id="return"
-			onclick="location.href='${pageContext.request.contextPath}/administration.jsp'">管理画面へ</button>
+			onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
 	</div>
 
 	<div class="main-container">

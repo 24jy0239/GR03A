@@ -27,6 +27,6 @@ public class AdminServlet extends HttpServlet {
 		System.out.println("==========================================");
 
 		// 管理トップ画面へ
-		request.getRequestDispatcher("/administration.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/administration.jsp").forward(request, response);
 	}
 }

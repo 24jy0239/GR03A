@@ -21,7 +21,7 @@
 		<button id="refreshBtn" onclick="location.reload()"
 			class="square-refresh-btn">🔄</button>
 		<button id="topBtn"
-			onclick="location.href='${pageContext.request.contextPath}/administration.jsp'">管理画面へ</button>
+			onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
 	</header>
 
 	<main class="wait-container">

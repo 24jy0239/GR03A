@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -250,5 +251,30 @@ public class VisitDAO {
 		}
 
 		return visit;
+	}
+
+	// dao/VisitDAO.java
+
+	// 引数の arrivalTime を削除
+	public void updatePaymentTime(String visitId, LocalDateTime paymentTime) throws SQLException {
+
+		// SQLをシンプルに戻す（ARRIVAL_TIMEの記述を削除）
+		// DBの設定を直したので、これだけで来店時刻は守られます！
+		String sql = "UPDATE VISITS SET PAYMENT_TIME = ? WHERE VISIT_ID = ?";
+
+		try (Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			if (paymentTime != null) {
+				pstmt.setTimestamp(1, Timestamp.valueOf(paymentTime));
+			} else {
+				pstmt.setNull(1, Types.TIMESTAMP);
+			}
+
+			// 2番目のパラメータはvisitIdに戻ります
+			pstmt.setString(2, visitId);
+
+			pstmt.executeUpdate();
+		}
 	}
 }

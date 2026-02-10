@@ -285,6 +285,15 @@ public class PaymentServlet extends HttpServlet {
 
 				// エラーログは出すが、処理は継続
 				// （会計完了画面は正常に表示）
+
+				try {
+					// ★★★ 引数から visit.getArrivalTime() を削除 ★★★
+					manager.updateVisitPaymentTimeInDb(visitId, paymentTime);
+
+					System.out.println("✅ 会計時刻の更新完了");
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
 			}
 
 			// 会計完了情報をrequestに設定

@@ -882,4 +882,12 @@ public class OrderManager {
 	//	     System.out.println("作り直しできませんでした（配膳済みではありません）");
 	// }
 
+	// manager/OrderManager.java
+
+	// 引数の arrivalTime を削除
+	public void updateVisitPaymentTimeInDb(String visitId, LocalDateTime paymentTime) throws SQLException {
+		VisitDAO dao = new VisitDAO();
+		// DAOへの渡し方もシンプルに
+		dao.updatePaymentTime(visitId, paymentTime);
+	}
 }

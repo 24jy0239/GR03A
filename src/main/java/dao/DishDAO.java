@@ -37,7 +37,7 @@ public class DishDAO {
 	public Connection getConnection() throws SQLException {
 		// 接続時に明示的にドライバをロード
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

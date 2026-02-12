@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 body {
 	background-color: #E9EBF5;
 	font-family: sans-serif;
@@ -5,8 +7,10 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	height: 100vh;
-	overflow: hidden;
+	min-height: 100vh;
+	/* heightから変更してスクロール可能に */
+	overflow-y: auto;
+	/* 縦スクロールを許可 */
 }
 
 .header {
@@ -16,14 +20,17 @@ body {
 	justify-content: center;
 	position: absolute;
 	top: 0;
+	z-index: 10;
+	/* ヘッダーを前面に */
 }
 
 h1.page-title {
 	font-size: 3.5rem;
 	margin: 0;
+	color: #333;
 }
 
-/* --- 核心按钮样式：应用物理厚度感 --- */
+/* --- ボタンデザイン --- */
 #topBtn,
 .btn-large {
 	background-color: #4472c4;
@@ -34,11 +41,11 @@ h1.page-title {
 	font-weight: bold;
 	user-select: none;
 	box-shadow: 4px 4px 0px #2e4d85;
-	/* 物理厚度 */
 	transition: all 0.1s ease;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	text-decoration: none;
 }
 
 #topBtn {
@@ -62,7 +69,7 @@ h1.page-title {
 	box-shadow: 4px 4px 0px #c0392b !important;
 }
 
-/* --- 交互效果：位移下沉 --- */
+/* --- 動き --- */
 #topBtn:hover,
 .btn-large:hover {
 	background-color: #5583d5;
@@ -76,42 +83,54 @@ h1.page-title {
 .btn-large:active {
 	box-shadow: 1px 1px 0px #2e4d85 !important;
 	transform: translate(3px, 3px);
-	/* 物理按下位移 */
 }
 
 .btn-danger:active {
 	box-shadow: 1px 1px 0px #c0392b !important;
 }
 
-/* 布局保持不变 */
+/* --- レイアウト調整 --- */
 .new-menu-container {
 	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	padding-top: 100px;
+	padding-top: 150px;
+	/* ★余白を増やしました（ヘッダー被り防止） */
+	padding-bottom: 50px;
+	width: 100%;
+	align-items: center;
 }
 
 .new-menu-row {
 	display: flex;
 	justify-content: center;
-	gap: 100px;
-	margin-bottom: 60px;
+	gap: 80px;
+	/* 少し間隔を調整 */
+	margin-bottom: 50px;
 }
 
-/* 确保预览框有固定的大小且溢出隐藏 */
+/* 左カラム（写真） */
+.photo-column {
+	display: flex;
+	flex-direction: column;
+	width: 300px;
+	gap: 15px;
+	/* 写真と開発オプションの間隔 */
+}
+
 .upload-box {
-	width: 250px;
-	/* 或者你需要的宽度 */
-	height: 250px;
-	/* 或者你需要的高度 */
+	width: 300px;
+	/* ★幅を少し大きくしました */
+	height: 300px;
+	/* ★高さも合わせました */
 	border: 2px dashed #ccc;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	overflow: hidden;
-	/* 防止图片超出边界 */
 	background-color: #f8f9fa;
+	border-radius: 8px;
 }
 
 .upload-box img {
@@ -120,8 +139,10 @@ h1.page-title {
 	object-fit: cover;
 }
 
+/* 右カラム（入力フォーム） */
 .form-fields {
-	width: 500px;
+	width: 650px;
+	/* ★幅を500pxから650pxに広げました */
 }
 
 .field-row {
@@ -131,9 +152,11 @@ h1.page-title {
 }
 
 .field-label {
-	width: 100px;
+	width: 120px;
+	/* ラベル幅を少し確保 */
 	font-size: 24px;
 	font-weight: bold;
+	color: #333;
 }
 
 .field-input {
@@ -143,10 +166,73 @@ h1.page-title {
 	border-radius: 10px;
 	padding: 0 20px;
 	font-size: 22px;
+	outline: none;
+	width: 100%;
+	/* 親要素いっぱいに */
+	box-sizing: border-box;
+}
+
+.price-unit {
+	font-size: 22px;
+	margin-left: 10px;
+	font-weight: bold;
+}
+
+/* チェックボックス用 */
+.checkbox-label {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	font-size: 20px;
+	font-weight: bold;
+	color: #333;
+	user-select: none;
+}
+
+.checkbox-input {
+	transform: scale(1.8);
+	/* チェックボックスを大きく */
+	margin-right: 15px;
+	cursor: pointer;
 }
 
 .new-menu-buttons {
 	display: flex;
 	justify-content: center;
 	gap: 40px;
+}
+
+/* --- 開発用オプションエリア --- */
+.dev-option-area {
+	padding: 10px;
+	background-color: #f0f0f0;
+	border: 2px dashed #aaa;
+	border-radius: 8px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.dev-option-title {
+	font-size: 14px;
+	font-weight: bold;
+	color: #555;
+	display: block;
+	margin-bottom: 5px;
+}
+
+.dev-option-desc {
+	font-size: 11px;
+	color: #777;
+	margin-bottom: 5px;
+	line-height: 1.2;
+}
+
+.dev-option-input {
+	width: 100%;
+	padding: 5px;
+	font-size: 12px;
+	font-family: Consolas, monospace;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
 }

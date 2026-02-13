@@ -1,4 +1,4 @@
-/* ===== 基础布局 (与 Kitchen 保持一致) ===== */
+/* ===== 基础布局 (自适应) ===== */
 body {
     background-color: #E9EBF5;
     margin: 0;
@@ -10,53 +10,58 @@ body {
 .header {
     display: flex;
     align-items: center;
-    padding: 20px 40px;
+    justify-content: space-between;
+    padding: 0 40px;
     height: 100px;
     position: sticky;
     top: 0;
     background-color: #E9EBF5;
     z-index: 1000;
+    box-sizing: border-box;
+}
+
+/* Header 比例分配 */
+.header-left {
+    flex: 1;
+}
+
+.center-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex: 2; /* 标题区域占更多空间 */
+}
+
+.header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
 }
 
 h1 {
-    font-size: 360%;
+    font-size: clamp(1.5rem, 3.5vw, 3.6rem);
     margin: 0;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+/* --- 刷新按钮：改为相对定位，彻底解决点击偏移问题 --- */
+.square-refresh-btn {
+    position: relative;
+    height: 60px;
+    width: 60px;
+    font-size: 150%;
+    flex-shrink: 0;
+    transform: none; /* 移除之前的位移 */
 }
 
 #topBtn {
-    position: absolute;
-    right: 40px;
     height: 60px;
-    width: 300px;
-    font-size: 180%;
+    width: clamp(150px, 20vw, 300px);
+    font-size: clamp(1rem, 1.5vw, 1.8rem);
 }
 
-/* 1. 初始状态 */
-.square-refresh-btn {
-    position: absolute;
-    right: calc(340px + (100% - 340px - 50%) / 2);
-    /* 必须确保这里只有这一个 transform */
-    transform: translateX(50%); 
-    height: 60px;
-    width: 60px;
-    z-index: 1001;
-	font-size: 150%;
-}
-
-/* 2. 点击状态 - 关键修正点 */
-.square-refresh-btn:active {
-    /* 使用 calc 将原有的居中位移 (50%) 和 点击位移 (3px) 加在一起 */
-    /* 同时显式声明 translateY(3px) 来实现下沉效果 */
-    transform: translateX(calc(50% + 3px)) translateY(3px) !important;
-    
-    /* 缩短阴影，增强下沉感 */
-    box-shadow: 1px 1px 0px #2e4d85 !important;
-}
-
-/* ===== 按钮样式 ===== */
+/* ===== 按钮通用样式 ===== */
 button {
     background-color: #4472c4;
     color: white;
@@ -72,21 +77,24 @@ button {
 }
 
 button:hover { background-color: #5583d5; }
+
+/* 统一点击效果：垂直下压感，无水平偏移 */
 button:active {
     box-shadow: 1px 1px 0px #2e4d85;
-    transform: translate(3px, 3px);
+    transform: translate(3px, 3px) !important;
 }
 
 .action-btn {
     width: 85%;
-    height: 55px; /* 匹配厨房页按钮高度 */
+    height: 55px;
     font-size: 140%;
 }
 
-/* ===== 布局容器 ===== */
+/* ===== 布局容器 (自适应) ===== */
 .summary-bar {
     max-width: 1400px;
-    margin: 0 auto 10px auto;
+    margin: 10px auto;
+    padding: 0 20px;
     font-size: 24px;
     font-weight: bold;
     text-align: left;
@@ -100,29 +108,29 @@ button:active {
 
 .order-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 90px; /* 严格同步厨房行高 */
+    /* 响应式网格：宽度足够时2列，宽度小时自动变1列 */
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-auto-rows: 90px;
     gap: 10px;
 }
 
-/* ===== 核心修正：比例对齐与内容居中 ===== */
+/* ===== 订单卡片结构 ===== */
 .order-card {
     display: grid;
-    /* 3.5fr 对应厨房内容区，1.2fr 对应厨房的一个功能按钮区 */
-    /* 这会让状态列看起来正好是厨房页两列按钮的一半宽度 */
     grid-template-columns: 3.5fr 1.2fr; 
     height: 90px; 
     background-color: white;
     border-radius: 4px;
     overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .name-col {
     background-color: #E3E7F5;
-    padding: 0 15px; /* 增加左右内边距，去除上下内边距以实现完美居中 */
+    padding: 0 15px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* 关键：垂直居中内容 */
+    justify-content: center;
 }
 
 .action-col {
@@ -132,13 +140,15 @@ button:active {
     align-items: center;
 }
 
-/* ===== 文字与内容细节 ===== */
 .dish-name {
     font-size: 22px;
     font-weight: bold;
     color: #333;
     line-height: 1.2;
-    margin-bottom: 4px; /* 与下方信息框的间距 */
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .info-row-3 {
@@ -151,21 +161,23 @@ button:active {
     background-color: #D7DDF0;
     padding: 2px 6px;
     border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .info-label {
-    font-size: 12px;
+    font-size: 11px;
     color: #555;
 }
 
 .info-value {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: bold;
-    text-align: right;
 }
 
 .cooking-status-text {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     color: #4472C4;
 }
@@ -173,16 +185,5 @@ button:active {
 /* ===== 空卡片样式 ===== */
 .order-card.empty {
     border: 1px solid #C7CFE8;
-    background-color: transparent;
-}
-
-.order-card.empty .col {
-    display: block;
-}
-
-.order-card.empty .dish-name,
-.order-card.empty .info-row-3,
-.order-card.empty .action-btn,
-.order-card.empty .cooking-status-text {
-    display: none;
+    background-color: rgba(255,255,255,0.2);
 }

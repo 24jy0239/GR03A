@@ -1,4 +1,4 @@
-/* ===== 基础与 Header 布局 ===== */
+/* ===== 基础与 Header 布局 (自适应) ===== */
 body {
     background-color: #E9EBF5;
     margin: 0;
@@ -10,38 +10,56 @@ body {
 .header {
     display: flex;
     align-items: center;
-    padding: 20px 40px;
+    justify-content: space-between; /* 左右两端分布 */
+    padding: 0 40px;
     height: 100px;
     position: sticky;
     top: 0;
     background-color: #E9EBF5;
     z-index: 1000;
+    box-sizing: border-box;
+}
+
+/* Header 内部三个区域的自适应分配 */
+.header-left {
+    flex: 1; /* 左侧占位，确保中间居中 */
+}
+
+.center-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex: 2; /* 标题区域占用更多空间 */
+}
+
+.header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end; /* 按钮靠右 */
 }
 
 h1 {
-    font-size: 360%;
+    font-size: clamp(1.5rem, 3.5vw, 3.6rem); /* 根据窗口大小自动缩放字体 */
     margin: 0;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    white-space: nowrap; /* 防止换行 */
 }
 
-#topBtn {
-    position: absolute;
-    right: 40px;
-    height: 60px;
-    width: 300px;
-    font-size: 180%;
-}
-
-/* --- 刷新按钮定位修复 --- */
+/* --- 刷新按钮：改为相对定位，完美解决点击偏移 --- */
 .square-refresh-btn {
-    position: absolute;
-    right: calc(340px + (100% - 340px - 50%) / 2);
-    transform: translateX(50%);
+    position: relative; /* 改为 relative */
     height: 60px;
     width: 60px;
     font-size: 150%;
+    flex-shrink: 0; /* 防止被挤压 */
+    /* 移除之前的 position: absolute 和 transform */
+}
+
+#topBtn {
+    height: 60px;
+    width: clamp(150px, 20vw, 300px); /* 宽度自适应 */
+    font-size: clamp(1rem, 1.5vw, 1.8rem);
+    /* 移除 position: absolute */
 }
 
 /* ===== 按钮通用样式 ===== */
@@ -64,17 +82,10 @@ button:hover {
     background-color: #5583d5;
 }
 
-/* 通用按钮点击效果 */
+/* 刷新按钮和其他所有按钮的点击效果：统一为简单的向右下移动 */
 button:active {
     box-shadow: 1px 1px 0px #2e4d85;
-    transform: translate(3px, 3px);
-}
-
-/* --- 核心修复：防止刷新按钮点击时左移 --- */
-.square-refresh-btn:active {
-    /* 强制保留 translateX(50%) 并叠加位移 */
-    transform: translateX(calc(50% + 3px)) translateY(3px) !important;
-    box-shadow: 1px 1px 0px #2e4d85 !important;
+    transform: translate(3px, 3px) !important;
 }
 
 button:disabled {
@@ -84,13 +95,13 @@ button:disabled {
     transform: none !important;
 }
 
-/* ===== 布局容器 ===== */
+/* ===== 订单卡片与网格 (自适应) ===== */
 .summary-bar {
     max-width: 1400px;
-    margin: 0 auto 10px auto;
+    margin: 10px auto;
+    padding: 0 20px;
     font-size: 24px;
     font-weight: bold;
-    text-align: left;
 }
 
 .wait-container {
@@ -101,28 +112,27 @@ button:disabled {
 
 .order-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 90px; /* 锁定高度 */
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); /* 屏幕小时自动调整列数 */
+    grid-auto-rows: 90px;
+    gap: 15px;
 }
 
-/* ===== 订单卡片内部结构 ===== */
 .order-card {
     display: grid;
     grid-template-columns: 3.5fr 1.2fr 1.2fr;
-    height: 90px; /* 固定高度 */
+    height: 90px;
     background-color: white;
     border-radius: 4px;
     overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* --- 核心修复：内容垂直居中 --- */
 .name-col {
     background-color: #E3E7F5;
-    padding: 0 10px; 
+    padding: 0 15px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* 垂直居中 */
+    justify-content: center;
 }
 
 .start-col {
@@ -143,8 +153,10 @@ button:disabled {
     font-size: 22px;
     font-weight: bold;
     color: #333;
-    line-height: 1.2;
     margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .info-row-3 {
@@ -157,40 +169,29 @@ button:disabled {
     background-color: #D7DDF0;
     padding: 2px 6px;
     border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .info-label {
-    font-size: 12px;
-    color: #555;
+    font-size: 11px;
+    color: #666;
 }
 
 .info-value {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    text-align: right;
-}
-
-.cooking-status-text {
-    font-size: 20px;
-    font-weight: bold;
-    color: #4472C4;
 }
 
 .action-btn {
     width: 85%;
-    height: 55px; /* 适当增加高度使视觉更平衡 */
-    font-size: 140%;
+    height: 60px;
+    font-size: 130%;
 }
 
 /* ===== 空卡片处理 ===== */
 .order-card.empty {
     border: 1px solid #C7CFE8;
-    background-color: transparent;
-}
-
-.order-card.empty .dish-name,
-.order-card.empty .info-row-3,
-.order-card.empty .action-btn,
-.order-card.empty .cooking-status-text {
-    display: none;
+    background-color: rgba(255,255,255,0.3);
 }

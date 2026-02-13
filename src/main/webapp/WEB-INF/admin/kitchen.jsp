@@ -17,11 +17,18 @@
 <body>
 
 	<header class="header">
-		<h1>🔪 調理待ち一覧</h1>
-		<button id="refreshBtn" onclick="location.reload()"
-			class="square-refresh-btn">🔄</button>
-		<button id="topBtn"
-			onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
+		<div class="header-left"></div>
+
+		<div class="center-group">
+			<h1>🔪 調理待ち一覧</h1>
+			<button id="refreshBtn" onclick="location.reload()"
+				class="square-refresh-btn">🔄</button>
+		</div>
+
+		<div class="header-right">
+			<button id="topBtn"
+				onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
+		</div>
 	</header>
 
 	<main class="wait-container">

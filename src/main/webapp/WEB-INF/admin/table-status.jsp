@@ -81,15 +81,23 @@ class ItemWrapper {
 <body>
 
 	<header class="header">
-		<div class="search-container">
-			<input type="number" id="tableSearchInput" placeholder="卓番号" min="1"
-				max="50">
-			<button class="search-btn" onclick="scrollToTable()">検索</button>
+		<div class="header-left">
+			<div class="search-container">
+				<input type="number" id="tableSearchInput" placeholder="卓番号" min="1"
+					max="50">
+				<button class="search-btn" onclick="scrollToTable()">検索</button>
+			</div>
 		</div>
-		<h1>📊 テーブル状態</h1>
-		<button class="square-refresh-btn" onclick="location.reload()">🔄</button>
-		<button id="topBtn"
-			onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
+
+		<div class="center-group">
+			<h1>📊 テーブル状態</h1>
+			<button class="square-refresh-btn" onclick="location.reload()">🔄</button>
+		</div>
+
+		<div class="header-right">
+			<button id="topBtn"
+				onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
+		</div>
 	</header>
 
 	<main class="order-main">
@@ -129,8 +137,7 @@ class ItemWrapper {
 					<%=String.format("%02d", i)%>
 					<%-- ここに来店時刻を追加 --%>
 					<div class="arrival-time-box">
-						<span class="time-label">来店</span>
-						<span class="time-value"><%=found.getFormattedArrivalTime()%></span>
+						<span class="time-label">来店</span> <span class="time-value"><%=found.getFormattedArrivalTime()%></span>
 					</div>
 				</div>
 				<div class="dish-data-container">
@@ -149,12 +156,12 @@ class ItemWrapper {
 							if (s == 0) {
 							%>
 							<button class="row-btn btn-cancel"
-								onclick="submitSingleAction('cancel', '<%=wrapper.item.getOrderItemId()%>')">取消</button>
+								onclick="submitSingleAction('cancel', '<%=wrapper.item.getOrderItemId()%>')">取り消す</button>
 							<%
 							} else if (s == 3) {
 							%>
 							<button class="row-btn btn-remake"
-								onclick="submitSingleAction('reset', '<%=wrapper.item.getOrderItemId()%>')">重做</button>
+								onclick="submitSingleAction('reset', '<%=wrapper.item.getOrderItemId()%>')">作り直す</button>
 							<%
 							}
 							%>

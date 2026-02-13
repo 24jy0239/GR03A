@@ -1,281 +1,247 @@
-/* ===== 基础布局与背景 ===== */
+/* ===== 基础布局 (自适应) ===== */
 body {
-	background-color: #E9EBF5;
-	margin: 0;
-	padding: 0;
-	font-family: "Helvetica Neue", Arial, sans-serif;
+    background-color: #E9EBF5;
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
 .header {
-	display: flex;
-	align-items: center;
-	padding: 20px 40px;
-	height: 100px;
-	position: sticky;
-	top: 0;
-	background-color: #E9EBF5;
-	z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 100px;
+    position: sticky;
+    top: 0;
+    background-color: #E9EBF5;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+/* Header 布局分配 */
+.header-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.center-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex: 2;
+}
+
+.header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
 }
 
 h1 {
-	font-size: 360%;
-	margin: 0;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-	font-weight: bold;
-	color: #333;
+    font-size: clamp(1.5rem, 3.5vw, 3.6rem);
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
 }
 
-/* ===== 顶部搜索区域 ===== */
+.search-btn {
+    /* 核心修改：固定宽度为 100px */
+    width: 100px;
+    /* 确保在 flex 容器中它不会被压缩 */
+    flex-shrink: 0; 
+    
+    height: 60px;
+    font-size: 1.5rem; /* 调整字体大小以配合高度 */
+}
+
+/* ===== 顶部搜索区域 (不再使用 absolute) ===== */
 .search-container {
-	position: absolute;
-	left: 40px;
-	display: flex;
-	gap: 10px;
-	height: 60px;
+    display: flex;
+    gap: 10px;
+    height: 60px;
+    /* 移除之前的 position: absolute，保持 flex 布局 */
 }
 
 #tableSearchInput {
-	width: 180px;
-	height: 60px;
-	border: 2px solid #4472c4;
-	border-radius: 10px;
-	padding: 0 15px;
-	font-size: 1.8rem;
-	font-weight: bold;
-	color: #333;
+    /* 输入框依然可以使用自适应宽度，或者固定宽度 */
+    width: 180px; 
+    height: 60px;
+    border: 2px solid #4472c4;
+    border-radius: 10px;
+    padding: 0 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
-.search-btn{
-	width: 100px;
-	font-size: 1.8rem;
-}
-
-/* ===== 按钮通用样式 ===== */
-button {
-	background-color: #4472c4;
-	color: white;
-	border: none;
-	border-radius: 10px;
-	cursor: pointer;
-	font-weight: bold;
-	box-shadow: 4px 4px 0px #2e4d85;
-	transition: all 0.1s ease;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-button:active {
-	box-shadow: 1px 1px 0px #2e4d85;
-	transform: translate(3px, 3px);
-}
-
-.square-refresh-btn:active {
-    /* 合并原本的定位位移 (translateX) 和点击的下压位移 (translate) */
-    transform: translateX(50%) translate(2px, 2px) !important;
-    
-    /* 缩减阴影以配合下压感 */
-    box-shadow: 2px 2px 0px #2e4d85 !important;
+/* --- 刷新按钮：改为相对定位，完美解决点击偏移 --- */
+.square-refresh-btn {
+    position: relative;
+    height: 60px;
+    width: 60px;
+    font-size: 150%;
+    flex-shrink: 0;
 }
 
 #topBtn {
-	position: absolute;
-	right: 40px;
-	height: 60px;
-	width: 300px;
-	font-size: 1.8rem;
+    height: 60px;
+    width: clamp(150px, 20vw, 300px);
+    font-size: clamp(1rem, 1.5vw, 1.8rem);
 }
 
-.square-refresh-btn {
-	position: absolute;
-	right: calc(340px + (100% - 340px - 50%) / 2);
-	transform: translateX(50%);
-	height: 60px;
-	width: 60px;
-	z-index: 1001;
-	font-size: 150%;
+/* ===== 按钮通用样式与动画 ===== */
+button {
+    background-color: #4472c4;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 4px 4px 0px #2e4d85;
+    transition: all 0.1s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* ===== 看板网格布局 ===== */
+/* 统一点击效果：向右下方沉降 3px */
+button:active {
+    box-shadow: 1px 1px 0px #2e4d85;
+    transform: translate(3px, 3px) !important;
+}
+
+/* ===== 看板网格布局 (自适应) ===== */
 .order-main {
-	padding: 20px;
+    padding: 20px;
 }
 
 .kanban-grid-container {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 15px;
+    display: grid;
+    /* 宽度足够显示2列，宽度小时自动切换为1列 */
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    gap: 15px;
 }
 
 .kanban-section {
-	display: grid;
-	grid-template-columns: 80px 1fr;
-	background: white;
-	border: 1px solid #C7CFE8;
-	height: 220px;
-	/* 5道菜 * 44px = 220px 固定高度 */
-	border-radius: 8px;
-	overflow: hidden;
+    display: grid;
+    grid-template-columns: 100px 1fr; /* 稍微加宽一点以容纳时间 */
+    background: white;
+    border: 1px solid #C7CFE8;
+    height: 220px;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-/* 卓号侧边栏 */
+/* 卓号与时间侧边栏 */
 .table-side-index {
-	background-color: #C3D4F0;
-	border-right: 1px solid #C7CFE8;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 2.8rem;
-	font-weight: bold;
-	color: #333;
+    background-color: #C3D4F0;
+    border-right: 1px solid #C7CFE8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #333;
 }
 
-/* 菜品数据容器：保持溢出滚动 */
-.dish-data-container {
-	display: flex;
-	flex-direction: column;
-	overflow-y: auto;
-	height: 100%;
-}
-
-/* 滚动条样式美化 */
-.dish-data-container::-webkit-scrollbar {
-	width: 8px;
-}
-
-.dish-data-container::-webkit-scrollbar-thumb {
-	background: #C3D4F0;
-	border-radius: 4px;
-}
-
-/* 菜品行：固定高度 44px */
-.dish-row {
-	display: grid;
-	grid-template-columns: 1fr 100px 100px 100px 100px;
-	height: 44px;
-	min-height: 44px;
-	border-bottom: 1px solid #C7CFE8;
-	box-sizing: border-box;
-}
-
-.dish-row:last-child {
-	border-bottom: none;
-}
-
-.dish-row>div {
-	display: flex;
-	align-items: center;
-	padding: 0 10px;
-	border-right: 1px solid #C7CFE8;
-	font-weight: bold;
-}
-
-.dish-row>div:last-child {
-	border-right: none;
-}
-
-/* 单元格背景与文字 */
-.cell-name {
-	background-color: #E3E7F5;
-	font-size: 1.1rem;
-	color: #333;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.cell-qty,
-.cell-status {
-	background-color: white;
-	justify-content: center;
-}
-
-.cell-time {
-	background-color: white;
-	justify-content: center;
-	color: #000;
-	font-weight: bold;
-	font-size: 1.2rem;
-}
-
-.cell-status {
-	color: #4472C4;
-	font-size: 0.9rem;
-}
-
-.cell-action {
-	background-color: #C3D4F0;
-	justify-content: center;
-}
-
-/* 补足用的空白行样式 */
-.empty-row .cell-name {
-	background-color: #F8F9FB;
-}
-
-.empty-row .cell-action {
-	background-color: #F0F4FA;
-}
-
-.row-btn {
-	width: 85px;
-	height: 32px;
-	border-radius: 6px;
-	font-size: 12px;
-	box-shadow: 2px 2px 0px #2e4d85;
-}
-
-.btn-cancel {
-	background-color: #ff7675;
-}
-
-.btn-remake {
-	background-color: #74b9ff;
-}
-
-@media (max-width: 1200px) {
-	h1 {
-		display: none;
-	}
-}
-
-/* 卓番号サイドバーのレイアウト調整 */
+/* 卓号数字样式 */
+.table-side-index > div:first-child, 
 .table-side-index {
-	display: flex;
-	flex-direction: column; /* 縦並びに変更 */
-	justify-content: center;
-	align-items: center;
-	background-color: #C3D4F0;
-	border-right: 1px solid #C7CFE8;
-	font-weight: bold;
-	color: #333;
+    font-size: 2.8rem;
+    line-height: 1.1;
 }
 
-/* 卓番号のフォントサイズ維持（既存の2.8remをここに移動） */
-.table-side-index > div:first-child {
-	font-size: 2.8rem;
-	line-height: 1;
-	margin-bottom: 5px;
-}
-
-/* 来店時刻ボックスのスタイル */
+/* 来店时间样式 */
 .arrival-time-box {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	background: rgba(255, 255, 255, 0.5); /* 視認性を上げるため薄く背景を敷く */
-	padding: 2px 5px;
-	border-radius: 4px;
-	width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 2px 5px;
+    border-radius: 4px;
+    width: 90%;
+    margin-top: 5px;
 }
 
 .time-label {
-	font-size: 0.7rem;
-	color: #555;
+    font-size: 0.7rem;
+    color: #555;
 }
 
 .time-value {
-	font-size: 1rem;
+    font-size: 0.9rem;
+}
+
+/* ===== 菜品数据容器 ===== */
+.dish-data-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.dish-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 80px 100px 100px; /* 微调宽度以适应自适应 */
+    height: 44px;
+    min-height: 44px;
+    border-bottom: 1px solid #C7CFE8;
+}
+
+.dish-row>div {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-right: 1px solid #C7CFE8;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.cell-name {
+    background-color: #E3E7F5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cell-qty, .cell-status, .cell-time {
+    background-color: white;
+    justify-content: center;
+}
+
+.cell-action {
+    background-color: #C3D4F0;
+    justify-content: center;
+}
+
+.row-btn {
+    width: 85px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 11px;
+    box-shadow: 2px 2px 0px #2e4d85;
+}
+
+.row-btn:active {
+    box-shadow: 0px 0px 0px #2e4d85;
+    transform: translate(2px, 2px) !important;
+}
+
+.btn-cancel { background-color: #ff7675; }
+.btn-remake { background-color: #74b9ff; }
+
+@media (max-width: 800px) {
+    .header {
+        height: auto;
+        flex-direction: column;
+        padding: 10px;
+    }
+    .header-left, .header-right, .center-group {
+        width: 100%;
+        justify-content: center;
+        margin: 5px 0;
+    }
 }

@@ -53,15 +53,6 @@ String currentCat = (isEdit && dish != null && dish.getCategory() != null) ? dis
 						%>
 					</div>
 
-					<div class="dev-option-area">
-						<label class="dev-option-title"> 【開発用】ソースフォルダ保存パス </label>
-						<div class="dev-option-desc">
-							※設定するとEclipse再起動後も画像が消えません。<br> ※空欄またはパスが存在しない場合は無視されます。
-						</div>
-						<input type="text" name="sourcePath" class="dev-option-input"
-							value="C:\pleiades\2024-12\workspace\GR03A\src\main\webapp\images"
-							placeholder="例: C:\Projects\MyApp\src\main\webapp\images">
-					</div>
 				</div>
 
 				<div class="form-fields">

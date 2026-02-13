@@ -1,17 +1,61 @@
-body{
-    background-color: #e9ebf5;
-    margin: 0;
-    font-family: sans-serif;
-    min-height: 100vh;  /* 画面全体を確保 */
-    display: flex;
-    flex-direction: column;  /* 縦方向のレイアウトは残す */
+body {
+	background-color: #e9ebf5;
+	margin: 0;
+	font-family: sans-serif;
+	min-height: 100vh;
+	/* 画面全体を確保 */
+	display: flex;
+	flex-direction: column;
+	/* 縦方向のレイアウトは残す */
 }
 
 
-button{
-    font-size: 25px;
+button {
+	font-size: 25px;
 	font-weight: bold;
-    border-radius: 5px;
+	border-radius: 5px;
 	width: 150px;
 	height: 50px;
+}
+
+button,
+button[type="submit"],
+.category-btn,
+a,
+.clear-btn,
+.side-list-btn,
+.confirm-btn,
+.pay-btn,
+.send-btn,
+.qty-btn {
+	transition: transform 0.08s ease,
+		filter 0.08s ease;
+}
+
+button:active,
+button[type="submit"]:active,
+.category-btn:active,
+a:active,
+.clear-btn:active,
+.side-list-btn:active,
+.confirm-btn:active,
+.pay-btn:active,
+.send-btn:active,
+.qty-btn:active {
+	transform: scale(0.96);
+	filter: brightness(0.92);
+}
+
+.menu-item img {
+	transition: transform 0.08s ease,
+		filter 0.08s ease;
+}
+
+.menu-item button:hover img {
+	transform: translateY(-3px);
+}
+
+.menu-item button:active img {
+	transform: scale(0.95);
+	filter: brightness(0.9);
 }

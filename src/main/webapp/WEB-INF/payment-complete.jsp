@@ -30,7 +30,7 @@
 
 <script>
         setTimeout(() => {
-            location.href = "<%=request.getContextPath()%>/index.jsp";
+            location.href = "<%=request.getContextPath()%>";
         }, 15000);
     </script>
     

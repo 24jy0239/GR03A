@@ -169,13 +169,15 @@ public class OrderManager {
 		System.out.println("全Visit削除");
 	}
 
-	// ==================== 1. createOrderFromCartメソッドを修正（177行目付近）====================
+	// ==================== OrderManager.java の修正箇所 ====================
+	// createOrderFromCart() メソッドを修正
 
 	/**
 	 * カートから注文を作成
 	 * 
 	 * 変更履歴:
 	 * 2026-02-02: calculateTotalAmount()メソッド使用に統一
+	 * 2026-02-09: DB更新追加（TOTAL_AMOUNT同期）
 	 */
 	public Order createOrderFromCart(String visitId, List<CartItem> cartList) {
 		Visit visit = visits.get(visitId);
@@ -200,26 +202,33 @@ public class OrderManager {
 			item.setItemStatus(0); // 0 = 注文
 
 			order.addOrderItem(item);
-
-			// ========================================
-			// 旧コード（削除）:
-			// synchronized (visit) {
-			//     int subtotal = cart.getPrice() * cart.getQuantity();
-			//     visit.setTotalAmount(visit.getTotalAmount() + subtotal);
-			// }
-			// ========================================
 		}
 
 		visit.addOrder(order);
 
 		// ========================================
-		// 新コード: calculateTotalAmount()使用（統一！）
+		// メモリ内のtotalAmountを更新
 		// ========================================
+		int oldTotal = visit.getTotalAmount();
 		visit.calculateTotalAmount();
+		int newTotal = visit.getTotalAmount();
 
 		System.out.println("注文作成: orderId=" + order.getOrderId()
 				+ ", items=" + order.getItemCount()
-				+ ", visitTotal=¥" + visit.getTotalAmount());
+				+ ", 合計金額: ¥" + oldTotal + " → ¥" + newTotal);
+
+		// ========================================
+		// DBのTOTAL_AMOUNTも更新（NEW!）
+		// ========================================
+		try {
+			VisitDAO visitDAO = new VisitDAO();
+			visitDAO.update(visit);
+			System.out.println("  ✅ VISIT.TOTAL_AMOUNT更新成功");
+		} catch (SQLException e) {
+			System.err.println("  ⚠️ VISIT更新エラー: " + e.getMessage());
+			e.printStackTrace();
+			// エラーでも注文は作成される（メモリ内は正常）
+		}
 
 		return order;
 	}
@@ -693,10 +702,14 @@ public class OrderManager {
 	// 【新】
 	// List<OrderItemWithDetails> allProgressItems = manager.getAllProgressItems();
 
-	// ==================== OrderManager.java に追加するメソッド ====================
+	// ==================== OrderManager.java の修正箇所 ====================
+	// deleteOrderItem() メソッドを以下のように修正してください
 
 	/**
-	 * 注文明細を削除（取り消し）
+	 * 注文明細を削除（メモリ＋DB完全版）
+	 * 
+	 * 用途:
+	 * - 未制作料理の取り消し（顧客の変更依頼）
 	 * 
 	 * 制限:
 	 * - status=0（注文）の場合のみ削除可能
@@ -733,14 +746,41 @@ public class OrderManager {
 						System.out.println("    単価: ¥" + item.getPrice());
 						System.out.println("    小計: ¥" + item.getSubtotal());
 
-						// 削除
+						// ========================================
+						// メモリ内から削除
+						// ========================================
 						items.remove(i);
 
-						// Visit合計金額を再計算
+						// Visit合計金額を再計算（メモリ内）
+						int oldTotal = visit.getTotalAmount();
 						visit.calculateTotalAmount();
+						int newTotal = visit.getTotalAmount();
 
-						System.out.println("  ✅ 削除成功");
-						System.out.println("  更新後の訪問合計: ¥" + visit.getTotalAmount());
+						System.out.println("  ✅ メモリ内削除成功");
+						System.out.println("  合計金額: ¥" + oldTotal + " → ¥" + newTotal);
+
+						// ========================================
+						// DBから削除
+						// ========================================
+						try {
+							OrderDAO orderDAO = new OrderDAO();
+							VisitDAO visitDAO = new VisitDAO();
+
+							// 1. ORDER_ITEMSから削除
+							orderDAO.delete(orderItemId);
+							System.out.println("  ✅ ORDER_ITEMS削除成功");
+
+							// 2. VISITSのTOTAL_AMOUNTを更新（NEW!）
+							visitDAO.update(visit);
+							System.out.println("  ✅ VISIT.TOTAL_AMOUNT更新成功");
+
+						} catch (SQLException e) {
+							System.err.println("  ⚠️ DB更新エラー: " + e.getMessage());
+							e.printStackTrace();
+							// DB更新失敗でも処理は継続
+							// （メモリからは既に削除済み）
+						}
+
 						System.out.println("====================================");
 						return true;
 					}

@@ -112,7 +112,7 @@ if (cart != null) {
 
 		<div class="category-area">
 			<a class="category-btn"
-				href="<%=request.getContextPath()%>/menu?category=ALL">ALL</a> <a
+				href="<%=request.getContextPath()%>/menu?category=ALL">すべて</a> <a
 				class="category-btn"
 				href="<%=request.getContextPath()%>/menu?category=麺類">麺類</a> <a
 				class="category-btn"

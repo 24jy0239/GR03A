@@ -71,7 +71,18 @@
 						<c:forEach var="m" begin="1" end="12">
 							<tr>
 								<c:forEach var="d" begin="1" end="31">
-									<td><c:out value="${salesData[m][d]}" default="0" /></td>
+									<c:set var="amount" value="${salesData[m][d]}" />
+									<c:choose>
+										<c:when test="${empty amount or amount == 0}">
+											<td class="no-sales">0</td>
+										</c:when>
+										<c:otherwise>
+											<td class="has-sales"><a
+												href="${pageContext.request.contextPath}/admin/daily-sales?year=${selectedYear}&month=${m}&day=${d}">
+													<c:out value="${amount}" />
+											</a></td>
+										</c:otherwise>
+									</c:choose>
 								</c:forEach>
 							</tr>
 						</c:forEach>

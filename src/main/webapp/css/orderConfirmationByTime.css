@@ -43,6 +43,7 @@ h1 {
     height: 60px;
     width: 60px;
     z-index: 1001;
+	font-size: 150%;
 }
 
 /* 2. 点击状态 - 关键修正点 */

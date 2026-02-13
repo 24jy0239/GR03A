@@ -125,7 +125,14 @@ class ItemWrapper {
 				}
 			%>
 			<div class="kanban-section" id="table-box-<%=i%>">
-				<div class="table-side-index"><%=String.format("%02d", i)%></div>
+				<div class="table-side-index">
+					<%=String.format("%02d", i)%>
+					<%-- ここに来店時刻を追加 --%>
+					<div class="arrival-time-box">
+						<span class="time-label">来店</span>
+						<span class="time-value"><%=found.getFormattedArrivalTime()%></span>
+					</div>
+				</div>
 				<div class="dish-data-container">
 					<%
 					// 1. 渲染实际菜品

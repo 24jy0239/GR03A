@@ -18,6 +18,9 @@ import model.Visit;
 /**
  * VisitDAO（来店記録 - データアクセス）
  * Visit情報のCRUD操作
+ * 
+ * 変更履歴:
+ * 2026-02-09: 売上分析用メソッドに会計済みフィルター追加
  */
 public class VisitDAO {
 
@@ -104,14 +107,21 @@ public class VisitDAO {
 	}
 
 	/**
-	 * 日付別の来店記録を取得
-	 * ★ 注文履歴確認用
+	 * 日付別の来店記録を取得（会計済みのみ）
+	 * 
+	 * 用途:
+	 * - 注文履歴確認
+	 * - 日別売上詳細
+	 * 
+	 * 変更履歴:
+	 * 2026-02-09: 会計済み（PAYMENT_TIME IS NOT NULL）のみ取得
 	 */
 	public List<Visit> findByDate(LocalDate date) throws SQLException {
 		String sql = "SELECT VISIT_ID, TABLE_NUM, ARRIVAL_TIME, " +
 				"TOTAL_AMOUNT, PAYMENT_TIME " +
 				"FROM VISITS " +
 				"WHERE DATE(ARRIVAL_TIME) = ? " +
+				"AND PAYMENT_TIME IS NOT NULL " + // ← 追加: 会計済みのみ
 				"ORDER BY ARRIVAL_TIME DESC";
 
 		List<Visit> visits = new ArrayList<>();
@@ -128,12 +138,19 @@ public class VisitDAO {
 			}
 		}
 
+		System.out.println("日別来店記録取得: date=" + date + ", 件数=" + visits.size() + "（会計済みのみ）");
+
 		return visits;
 	}
 
 	/**
-	 * 期間指定で来店記録を取得
-	 * ★ 売上分析用
+	 * 期間指定で来店記録を取得（会計済みのみ）
+	 * 
+	 * 用途:
+	 * - 売上分析
+	 * 
+	 * 変更履歴:
+	 * 2026-02-09: 会計済み（PAYMENT_TIME IS NOT NULL）のみ取得
 	 */
 	public List<Visit> findByPeriod(LocalDate startDate, LocalDate endDate)
 			throws SQLException {
@@ -142,6 +159,7 @@ public class VisitDAO {
 				"TOTAL_AMOUNT, PAYMENT_TIME " +
 				"FROM VISITS " +
 				"WHERE DATE(ARRIVAL_TIME) BETWEEN ? AND ? " +
+				"AND PAYMENT_TIME IS NOT NULL " + // ← 追加: 会計済みのみ
 				"ORDER BY ARRIVAL_TIME DESC";
 
 		List<Visit> visits = new ArrayList<>();
@@ -158,6 +176,9 @@ public class VisitDAO {
 				}
 			}
 		}
+
+		System.out.println("期間別来店記録取得: " + startDate + " ~ " + endDate
+				+ ", 件数=" + visits.size() + "（会計済みのみ）");
 
 		return visits;
 	}

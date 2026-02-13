@@ -19,6 +19,9 @@ import model.OrderItem;
  * 
  * 重要: ORDERSテーブルは使用しない
  * ORDER_ITEMSを直接VISITに紐づける
+ * 
+ * 変更履歴:
+ * 2026-02-09: 売上分析用メソッドに会計済みフィルター追加
  */
 public class OrderDAO {
 
@@ -241,8 +244,13 @@ public class OrderDAO {
 	// ==================== 統計・分析用 ====================
 
 	/**
-	 * 料理別の売上集計
-	 * ★ 売上分析用
+	 * 料理別の売上集計（会計済みのみ）
+	 * 
+	 * 用途:
+	 * - 売上分析
+	 * 
+	 * 変更履歴:
+	 * 2026-02-09: 会計済み（PAYMENT_TIME IS NOT NULL）のみ集計
 	 */
 	public List<DishSalesData> getDishSalesData(java.time.LocalDate startDate,
 			java.time.LocalDate endDate)
@@ -254,6 +262,7 @@ public class OrderDAO {
 				"FROM ORDER_ITEMS oi " +
 				"JOIN VISITS v ON oi.VISIT_ID = v.VISIT_ID " +
 				"WHERE DATE(v.ARRIVAL_TIME) BETWEEN ? AND ? " +
+				"AND v.PAYMENT_TIME IS NOT NULL " + // ← 追加: 会計済みのみ
 				"GROUP BY oi.DISH_NAME " +
 				"ORDER BY total_sales DESC";
 
@@ -276,6 +285,9 @@ public class OrderDAO {
 			}
 		}
 
+		System.out.println("料理別売上集計: " + startDate + " ~ " + endDate
+				+ ", 種類=" + dataList.size() + "（会計済みのみ）");
+
 		return dataList;
 	}
 
@@ -296,39 +308,46 @@ public class OrderDAO {
 
 		return item;
 	}
-	
+
 	/**
-	 * 获取指定年份的每日销售总额
+	 * 获取指定年份的每日销售总额（会計済みのみ）
 	 * 返回结构：Map<月份, Map<日期, 当日总额>>
+	 * 
+	 * 変更履歴:
+	 * 2026-02-09: 会計済み（PAYMENT_TIME IS NOT NULL）のみ集計
 	 */
 	public Map<Integer, Map<Integer, Integer>> getYearlySalesData(int year) throws SQLException {
 		String sql = "SELECT MONTH(v.ARRIVAL_TIME) as m, DAY(v.ARRIVAL_TIME) as d, " +
-                "SUM(oi.PRICE * oi.QUANTITY) as daily_sum " +
-                "FROM ORDER_ITEMS oi " +
-                "JOIN VISITS v ON oi.VISIT_ID = v.VISIT_ID " +
-                "WHERE YEAR(v.ARRIVAL_TIME) = ? " +
-                "GROUP BY MONTH(v.ARRIVAL_TIME), DAY(v.ARRIVAL_TIME)";
+				"SUM(oi.PRICE * oi.QUANTITY) as daily_sum " +
+				"FROM ORDER_ITEMS oi " +
+				"JOIN VISITS v ON oi.VISIT_ID = v.VISIT_ID " +
+				"WHERE YEAR(v.ARRIVAL_TIME) = ? " +
+				"AND v.PAYMENT_TIME IS NOT NULL " + // ← 追加: 会計済みのみ
+				"GROUP BY MONTH(v.ARRIVAL_TIME), DAY(v.ARRIVAL_TIME)";
 
-	    Map<Integer, Map<Integer, Integer>> salesData = new HashMap<>();
-	    
-	    // 初始化 1-12 月的 Map，防止 JSP 出现空指针
-	    for (int i = 1; i <= 12; i++) {
-	        salesData.put(i, new HashMap<>());
-	    }
+		Map<Integer, Map<Integer, Integer>> salesData = new HashMap<>();
 
-	    try (Connection conn = getConnection();
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setInt(1, year);
-	        try (ResultSet rs = pstmt.executeQuery()) {
-	            while (rs.next()) {
-	                int month = rs.getInt("m");
-	                int day = rs.getInt("d");
-	                int sum = rs.getInt("daily_sum");
-	                salesData.get(month).put(day, sum);
-	            }
-	        }
-	    }
-	    return salesData;
+		// 初始化 1-12 月的 Map，防止 JSP 出现空指针
+		for (int i = 1; i <= 12; i++) {
+			salesData.put(i, new HashMap<>());
+		}
+
+		try (Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, year);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					int month = rs.getInt("m");
+					int day = rs.getInt("d");
+					int sum = rs.getInt("daily_sum");
+					salesData.get(month).put(day, sum);
+				}
+			}
+		}
+
+		System.out.println("年間売上データ取得: year=" + year + "（会計済みのみ）");
+
+		return salesData;
 	}
 }
 

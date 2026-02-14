@@ -19,14 +19,26 @@
 	href="${pageContext.request.contextPath}/css/daily-sales.css">
 </head>
 <body>
-	<div class="container">
-		<!-- ヘッダー -->
-		<div class="header">
+	<!-- ========================================
+	     ヘッダー（キッチン画面と同じ構造）
+	     ======================================== -->
+	<div class="header-section">
+		<div class="header-section-left"></div>
+
+		<div class="header-section-center">
 			<h1>📅 ${year}年${month}月${day}日 売上詳細</h1>
-			<a href="${pageContext.request.contextPath}/admin/sales?year=${year}"
-				class="back-button"> ← 売上分析に戻る </a>
+			<!-- キッチン画面と同じ更新ボタン -->
+			<button class="square-refresh-btn" onclick="location.reload()"
+				title="画面を更新">🔄</button>
 		</div>
 
+		<div class="header-section-right">
+			<button id="return"
+				onclick="location.href='${pageContext.request.contextPath}/admin/sales?year=${year}'">売上分析に戻る</button>
+		</div>
+	</div>
+
+	<div class="container">
 		<!-- サマリー -->
 		<div class="summary">
 			<div class="summary-card">

@@ -14,10 +14,23 @@
 	href="${pageContext.request.contextPath}/css/analysis.css">
 </head>
 <body>
+	<!-- ========================================
+	     ヘッダー（キッチン画面と同じ構造）
+	     ======================================== -->
 	<div class="header-section">
-		<h1>売り上げ分析</h1>
-		<button id="return"
-			onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
+		<div class="header-section-left"></div>
+
+		<div class="header-section-center">
+			<h1>売り上げ分析</h1>
+			<!-- キッチン画面と同じ更新ボタン -->
+			<button class="square-refresh-btn" onclick="location.reload()"
+				title="画面を更新">🔄</button>
+		</div>
+
+		<div class="header-section-right">
+			<button id="return"
+				onclick="location.href='${pageContext.request.contextPath}/admin'">管理画面へ</button>
+		</div>
 	</div>
 
 	<div class="main-container">

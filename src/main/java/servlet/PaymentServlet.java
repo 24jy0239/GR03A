@@ -303,12 +303,13 @@ public class PaymentServlet extends HttpServlet {
 			request.setAttribute("tableNum", visit.getTableNum());
 
 			// セッションクリア（次の来店のため）
-			session.removeAttribute("visitId");
-			session.removeAttribute("tableNum");
-			session.removeAttribute("cart");
-			session.removeAttribute("cartTotal");
-			session.removeAttribute("cartCount");
+			//			session.removeAttribute("visitId");
+			//			session.removeAttribute("tableNum");
+			//			session.removeAttribute("cart");
+			//			session.removeAttribute("cartTotal");
+			//			session.removeAttribute("cartCount");
 
+			session.invalidate();  // すべてクリア ✅
 			System.out.println("🔄 セッションクリア完了");
 
 			// 会計完了画面へ転送

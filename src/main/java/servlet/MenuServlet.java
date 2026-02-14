@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,6 +24,9 @@ import model.Visit;
 /**
  * MenuServlet - メニュー表示
  * 来店時の初期画面、カート管理
+ * 
+ * 変更履歴:
+ * 2026-02-09: アプリケーションスコープからdishMapを取得（方法A実装）
  */
 @WebServlet("/menu")
 public class MenuServlet extends HttpServlet {
@@ -36,15 +40,17 @@ public class MenuServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
+		ServletContext context = getServletContext(); // ← NEW! アプリケーションスコープ
+
 		String categoryId = request.getParameter("category");
 
 		if ("ALL".equals(categoryId)) {
-		    session.removeAttribute("selectedCategory");
-		    categoryId = null;
+			session.removeAttribute("selectedCategory");
+			categoryId = null;
 		} else if (categoryId != null) {
-		    session.setAttribute("selectedCategory", categoryId);
+			session.setAttribute("selectedCategory", categoryId);
 		} else {
-		    categoryId = (String) session.getAttribute("selectedCategory");
+			categoryId = (String) session.getAttribute("selectedCategory");
 		}
 
 		// テーブル番号を取得（初回のみパラメータから）
@@ -65,12 +71,21 @@ public class MenuServlet extends HttpServlet {
 					+ ", table=" + tableNum);
 		}
 
-		// 料理マスタをSessionから取得（なければDB読み込み）
+		// ========================================
+		// アプリケーションスコープからdishMapを取得（NEW!）
+		// ========================================
+		// メリット:
+		// - 全ユーザーで1つのdishMapを共有（メモリ効率）
+		// - 管理画面での変更が即座に全ユーザーに反映
+		// - セッション管理不要
 		@SuppressWarnings("unchecked")
-		Map<String, Dish> dishMap = (Map<String, Dish>) session.getAttribute("dishMap");
+		Map<String, Dish> dishMap = (Map<String, Dish>) context.getAttribute("dishMap");
 
 		if (dishMap == null) {
-			// 初回のみDB読み込み
+			// フォールバック: DishInitializerListenerが動いていない場合
+			// （通常は起動時に初期化されているので、ここには来ない）
+			System.out.println("⚠️ dishMapが初期化されていません。再読み込みします。");
+
 			try {
 				DishDAO dishDAO = new DishDAO();
 				List<Dish> dishes = dishDAO.findAvailable();
@@ -81,26 +96,26 @@ public class MenuServlet extends HttpServlet {
 					dishMap.put(dish.getDishId(), dish);
 				}
 
-				session.setAttribute("dishMap", dishMap);
+				// アプリケーションスコープに保存
+				context.setAttribute("dishMap", dishMap);
 
-				System.out.println("料理マスタ読み込み: " + dishes.size() + "件");
+				System.out.println("料理マスタ読み込み（fallback）: " + dishes.size() + "件");
 
 			} catch (SQLException e) {
 				throw new ServletException("料理マスタ読み込みエラー", e);
 			}
 		}
-		
+
 		// カテゴリフィルター処理（グループメンバーの機能）
 		List<Dish> dishList = new ArrayList<>();
 		for (Dish dish : dishMap.values()) {
 
-		    if (categoryId == null || categoryId.isEmpty()) {
-		        dishList.add(dish);
-		    } else if (categoryId.equals(dish.getCategory())) {
-		        dishList.add(dish);
-		    }
+			if (categoryId == null || categoryId.isEmpty()) {
+				dishList.add(dish);
+			} else if (categoryId.equals(dish.getCategory())) {
+				dishList.add(dish);
+			}
 		}
-
 
 		request.setAttribute("dishList", dishList);
 		request.setAttribute("selectedCategory", categoryId);
@@ -138,14 +153,14 @@ public class MenuServlet extends HttpServlet {
 				request.setAttribute("orderHistory", visit.getOrders());
 			}
 		}
-		
+
 		boolean hasOrder = false;
 
 		if (visitId != null) {
-		    Visit visit = manager.getVisit(visitId);
-		    if (visit != null && visit.getOrderCount() > 0) {
-		        hasOrder = true;
-		    }
+			Visit visit = manager.getVisit(visitId);
+			if (visit != null && visit.getOrderCount() > 0) {
+				hasOrder = true;
+			}
 		}
 
 		request.setAttribute("hasOrder", hasOrder);
@@ -163,6 +178,7 @@ public class MenuServlet extends HttpServlet {
 
 		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
+		ServletContext context = getServletContext(); // ← NEW!
 
 		String action = request.getParameter("action");
 
@@ -174,8 +190,11 @@ public class MenuServlet extends HttpServlet {
 			session.setAttribute("cart", cart);
 		}
 
+		// ========================================
+		// アプリケーションスコープからdishMapを取得（NEW!）
+		// ========================================
 		@SuppressWarnings("unchecked")
-		Map<String, Dish> dishMap = (Map<String, Dish>) session.getAttribute("dishMap");
+		Map<String, Dish> dishMap = (Map<String, Dish>) context.getAttribute("dishMap");
 
 		if ("add".equals(action)) {
 			// カートに追加

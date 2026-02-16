@@ -22,6 +22,14 @@ if (cart != null) {
 		cartCount += item.getQuantity();
 	}
 }
+
+// エラーメッセージ取得（NEW!）
+String error = (String) session.getAttribute("error");
+String message = (String) session.getAttribute("message");
+if (error != null)
+	session.removeAttribute("error");
+if (message != null)
+	session.removeAttribute("message");
 %>
 
 
@@ -38,6 +46,29 @@ if (cart != null) {
 </head>
 
 <body>
+
+	<!-- ========================================
+	     エラー・成功メッセージ表示（NEW!）
+	     ======================================== -->
+	<%
+	if (error != null) {
+	%>
+	<div class="message-box error-message">
+		<%=error.replace("\n", "<br>")%>
+	</div>
+	<%
+	}
+	%>
+
+	<%
+	if (message != null) {
+	%>
+	<div class="message-box success-message">
+		<%=message%>
+	</div>
+	<%
+	}
+	%>
 
 	<!-- cartリスト -->
 	<div id="sideList" class="side-list">
@@ -250,7 +281,18 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.classList.remove("show");
     });
 
-
+    // ========================================
+    // メッセージの自動非表示（3秒後）
+    // ========================================
+    const messageBoxes = document.querySelectorAll('.message-box');
+    if (messageBoxes.length > 0) {
+        setTimeout(() => {
+            messageBoxes.forEach(box => {
+                box.style.opacity = '0';
+                setTimeout(() => box.remove(), 300);
+            });
+        }, 3000); // 3秒後に非表示
+    }
 });
 </script>
 
@@ -276,5 +318,15 @@ function closeNoOrderModal() {
     document.getElementById("noOrderModal").classList.remove("show");
 }
 </script>
+
+		<!-- ========================================
+	     自動リフレッシュ（30秒ごと）NEW!
+	     ======================================== -->
+		<script>
+		// 自動リフレッシュ（30秒ごと）
+		setTimeout(function() {
+			location.reload();
+		}, 30000); // 30秒 = 30,000ミリ秒
+	</script>
 </body>
 </html>

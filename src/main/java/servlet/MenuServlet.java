@@ -27,6 +27,7 @@ import model.Visit;
  * 
  * 変更履歴:
  * 2026-02-09: アプリケーションスコープからdishMapを取得（方法A実装）
+ * 2026-02-16: 料理有効性バリデーション追加
  */
 @WebServlet("/menu")
 public class MenuServlet extends HttpServlet {
@@ -40,7 +41,7 @@ public class MenuServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		ServletContext context = getServletContext(); // ← NEW! アプリケーションスコープ
+		ServletContext context = getServletContext();
 
 		String categoryId = request.getParameter("category");
 
@@ -72,18 +73,13 @@ public class MenuServlet extends HttpServlet {
 		}
 
 		// ========================================
-		// アプリケーションスコープからdishMapを取得（NEW!）
+		// アプリケーションスコープからdishMapを取得
 		// ========================================
-		// メリット:
-		// - 全ユーザーで1つのdishMapを共有（メモリ効率）
-		// - 管理画面での変更が即座に全ユーザーに反映
-		// - セッション管理不要
 		@SuppressWarnings("unchecked")
 		Map<String, Dish> dishMap = (Map<String, Dish>) context.getAttribute("dishMap");
 
 		if (dishMap == null) {
 			// フォールバック: DishInitializerListenerが動いていない場合
-			// （通常は起動時に初期化されているので、ここには来ない）
 			System.out.println("⚠️ dishMapが初期化されていません。再読み込みします。");
 
 			try {
@@ -106,7 +102,7 @@ public class MenuServlet extends HttpServlet {
 			}
 		}
 
-		// カテゴリフィルター処理（グループメンバーの機能）
+		// カテゴリフィルター処理
 		List<Dish> dishList = new ArrayList<>();
 		for (Dish dish : dishMap.values()) {
 
@@ -143,7 +139,7 @@ public class MenuServlet extends HttpServlet {
 		session.setAttribute("cartTotal", cartTotal);
 		session.setAttribute("cartCount", cartCount);
 
-		// 注文履歴を取得（あなたのコードの機能）
+		// 注文履歴を取得
 		String visitId = (String) session.getAttribute("visitId");
 		if (visitId != null) {
 			Visit visit = manager.getVisit(visitId);
@@ -178,7 +174,7 @@ public class MenuServlet extends HttpServlet {
 
 		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
-		ServletContext context = getServletContext(); // ← NEW!
+		ServletContext context = getServletContext();
 
 		String action = request.getParameter("action");
 
@@ -191,37 +187,58 @@ public class MenuServlet extends HttpServlet {
 		}
 
 		// ========================================
-		// アプリケーションスコープからdishMapを取得（NEW!）
+		// アプリケーションスコープからdishMapを取得
 		// ========================================
 		@SuppressWarnings("unchecked")
 		Map<String, Dish> dishMap = (Map<String, Dish>) context.getAttribute("dishMap");
 
 		if ("add".equals(action)) {
-			// カートに追加
+			// ========================================
+			// カートに追加（バリデーション追加）
+			// ========================================
 			String dishId = request.getParameter("dishId");
 			int quantity = Integer.parseInt(request.getParameter("quantity"));
 
+			// ========================================
+			// 重要: 料理の有効性を検証（NEW!）
+			// ========================================
+			if (dishMap == null) {
+				System.err.println("❌ エラー: dishMapがnull");
+				session.setAttribute("error", "メニューデータの読み込みに失敗しました。ページを更新してください。");
+				response.sendRedirect(request.getContextPath() + "/menu");
+				return;
+			}
+
 			Dish dish = dishMap.get(dishId);
 
-			if (dish != null) {
-				// 既にカートにある場合は数量を加算
-				boolean found = false;
-				for (CartItem item : cart) {
-					if (item.getDishId().equals(dishId)) {
-						item.setQuantity(item.getQuantity() + quantity);
-						found = true;
-						break;
-					}
-				}
-
-				// なければ新規追加
-				if (!found) {
-					CartItem newItem = new CartItem(dish, quantity);
-					cart.add(newItem);
-				}
-
-				System.out.println("カート追加: " + dish.getName() + " x" + quantity);
+			if (dish == null) {
+				// 料理が無効化されている
+				System.err.println("❌ 無効な料理をカートに追加しようとしました: " + dishId);
+				session.setAttribute("error", "この料理は現在ご注文いただけません。");
+				response.sendRedirect(request.getContextPath() + "/menu");
+				return;
 			}
+
+			// ========================================
+			// 検証OK: カートに追加
+			// ========================================
+			// 既にカートにある場合は数量を加算
+			boolean found = false;
+			for (CartItem item : cart) {
+				if (item.getDishId().equals(dishId)) {
+					item.setQuantity(item.getQuantity() + quantity);
+					found = true;
+					break;
+				}
+			}
+
+			// なければ新規追加
+			if (!found) {
+				CartItem newItem = new CartItem(dish, quantity);
+				cart.add(newItem);
+			}
+
+			System.out.println("✅ カート追加成功: " + dish.getName() + " x" + quantity);
 
 		} else if ("remove".equals(action)) {
 			// カートから削除

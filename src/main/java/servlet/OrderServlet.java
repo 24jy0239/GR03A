@@ -1,8 +1,11 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,12 +15,16 @@ import jakarta.servlet.http.HttpSession;
 
 import manager.OrderManager;
 import model.CartItem;
+import model.Dish;
 import model.Order;
 import model.Visit;
 
 /**
  * OrderServlet - 注文処理
  * カートから注文を作成（デバッグログ付き）
+ * 
+ * 変更履歴:
+ * 2026-02-16: 注文確定前の料理有効性バリデーション追加
  */
 @WebServlet("/order")
 public class OrderServlet extends HttpServlet {
@@ -79,6 +86,23 @@ public class OrderServlet extends HttpServlet {
 			return;
 		}
 
+		// ========================================
+		// 重要: 注文確定前の料理有効性バリデーション（NEW!）
+		// ========================================
+		String validationResult = validateCart(cart, session);
+		if (validationResult != null) {
+			// バリデーションエラー
+			System.err.println("⚠️ 注文確定前バリデーションエラー: " + validationResult);
+			session.setAttribute("error", validationResult);
+			response.sendRedirect(request.getContextPath() + "/menu");
+			return;
+		}
+
+		System.out.println("✅ カート内の全料理が有効です");
+
+		// ========================================
+		// バリデーションOK: 注文を確定
+		// ========================================
 		try {
 			// カートから注文作成（メモリに保存）
 			Order order = manager.createOrderFromCart(visitId, cart);
@@ -144,5 +168,64 @@ public class OrderServlet extends HttpServlet {
 			e.printStackTrace();
 			throw new ServletException("注文処理エラー", e);
 		}
+	}
+
+	// ==================== バリデーションメソッド ====================
+
+	/**
+	 * カート内の全料理の有効性を検証
+	 * 
+	 * @param cart カート内の商品
+	 * @param session HTTPセッション
+	 * @return エラーメッセージ（null = 検証OK）
+	 */
+	private String validateCart(List<CartItem> cart, HttpSession session) {
+		ServletContext context = getServletContext();
+		@SuppressWarnings("unchecked")
+		Map<String, Dish> dishMap = (Map<String, Dish>) context.getAttribute("dishMap");
+
+		// dishMapがnullの場合（異常事態）
+		if (dishMap == null) {
+			System.err.println("❌ エラー: dishMapがnull");
+			return "メニューデータの読み込みに失敗しました。ページを更新してください。";
+		}
+
+		// 無効な料理を検出
+		List<String> invalidDishes = new ArrayList<>();
+		List<CartItem> validItems = new ArrayList<>();
+
+		for (CartItem item : cart) {
+			Dish dish = dishMap.get(item.getDishId());
+
+			if (dish == null) {
+				// 料理が無効化されている
+				invalidDishes.add(item.getName());
+				System.err.println("❌ 無効な料理を検出: " + item.getName() + " (" + item.getDishId() + ")");
+			} else {
+				// 料理は有効
+				validItems.add(item);
+			}
+		}
+
+		// 無効な料理が見つかった場合
+		if (!invalidDishes.isEmpty()) {
+			// カートから無効な料理を削除
+			session.setAttribute("cart", validItems);
+
+			// エラーメッセージを生成
+			StringBuilder message = new StringBuilder();
+			message.append("以下の料理は現在ご注文いただけません：\n");
+			for (String dishName : invalidDishes) {
+				message.append("・").append(dishName).append("\n");
+			}
+			message.append("\nカートから削除しました。メニューを確認してください。");
+
+			System.out.println("⚠️ 無効な料理を" + invalidDishes.size() + "件検出 → カートから削除");
+
+			return message.toString();
+		}
+
+		// すべて有効
+		return null; // 検証OK
 	}
 }

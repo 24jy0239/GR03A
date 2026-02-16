@@ -23,7 +23,7 @@ if (cart != null) {
 	}
 }
 
-// エラーメッセージ取得（NEW!）
+// エラーメッセージ取得
 String error = (String) session.getAttribute("error");
 String message = (String) session.getAttribute("message");
 if (error != null)
@@ -47,9 +47,7 @@ if (message != null)
 
 <body>
 
-	<!-- ========================================
-	     エラー・成功メッセージ表示（NEW!）
-	     ======================================== -->
+	<!-- エラー・成功メッセージ表示 -->
 	<%
 	if (error != null) {
 	%>
@@ -275,15 +273,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (params.get('sent') === '1') {
         modal.classList.add("show");
+        
+        // ========================================
+        // 重要: URLパラメータをクリーン（NEW!）
+        // 自動リフレッシュ時に再表示されないように
+        // ========================================
+        window.history.replaceState({}, '', window.location.pathname);
     }
 
     closeBtn.addEventListener("click", () => {
         modal.classList.remove("show");
     });
 
-    // ========================================
     // メッセージの自動非表示（3秒後）
-    // ========================================
     const messageBoxes = document.querySelectorAll('.message-box');
     if (messageBoxes.length > 0) {
         setTimeout(() => {
@@ -319,14 +321,12 @@ function closeNoOrderModal() {
 }
 </script>
 
-		<!-- ========================================
-	     自動リフレッシュ（30秒ごと）NEW!
-	     ======================================== -->
+		<!-- 自動リフレッシュ（30秒ごと） -->
 		<script>
 		// 自動リフレッシュ（30秒ごと）
 		setTimeout(function() {
 			location.reload();
-		}, 30000); // 30秒 = 30,000ミリ秒
+		}, 30000); // 30秒
 	</script>
 </body>
 </html>
